@@ -3,7 +3,7 @@
 A general toolbox for the development of vibrational softsensors. You can find a lot of functionality for data  preprocessing, model training and evaluation for linear and non linear methods. 
 We have also adapt the general approach to a variety of signal types.
 
-The main paper `Stabilised Auto-Regressive Neural Networks (S-Arnns) for Data Driven Prediction of Forced Nonlinear Systems` can be found on http://dx.doi.org/10.2139/ssrn.4720155.
+The main paper *Stabilised Auto-Regressive Neural Networks (S-Arnns) for Data Driven Prediction of Forced Nonlinear Systems* can be found on http://dx.doi.org/10.2139/ssrn.4720155.
 
 ## Table of Contents  <!-- omit in toc -->
 
@@ -54,9 +54,9 @@ The library offers multiple sensitivity analysis methods:
 <a name="maintainers"></a>
 
 ### Maintainers
-[Tobias Westmeier](tobias.westmeier@iee.fraunhofer.de)
+[Tobias Westmeier]<tobias.westmeier@iee.fraunhofer.de>
 
-[Daniel Kreuter](danielchristopher.kreuter@de.bosch.com)
+[Daniel Kreuter]<danielchristopher.kreuter@de.bosch.com>
 
 <a name="license"></a>
 
