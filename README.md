@@ -54,9 +54,9 @@ The library offers multiple sensitivity analysis methods:
 <a name="maintainers"></a>
 
 ### Maintainers
-[Tobias Westmeier]<tobias.westmeier@iee.fraunhofer.de>
+Tobias Westmeier: <tobias.westmeier@iee.fraunhofer.de>
 
-[Daniel Kreuter]<danielchristopher.kreuter@de.bosch.com>
+Daniel Kreuter: <danielchristopher.kreuter@de.bosch.com>
 
 <a name="license"></a>
 
