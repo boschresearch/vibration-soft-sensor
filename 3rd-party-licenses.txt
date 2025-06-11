@@ -1,0 +1,135 @@
+Third Party Licenses
+====================
+
+vibration-soft-sensor includes material from the projects listed below (Third Party
+IP). The original copyright notice and the license under which we received
+such Third Party IP, are set forth below.
+
+
+--------------------------------------------------------------------------
+
+Overview
+--------------------------------------------------------------------------
+
+Name:      pybnn
+Version:   eb7d6a124cdebe77f1302b436e120f64288d19a0
+URL:       https://github.com/rubinxin/pybnn/archive/eb7d6a124cdebe77f1302b436e120f64288d19a0.tar.gz
+License:   BSD 3-Clause "New" or "Revised" License
+Comment:   Modified source, combined at build time.
+           License Obligations:
+           - YOU MUST Forward Copyright notices
+           - YOU MUST Forward License text
+           - YOU MUST Forward Warranty disclaimer
+           - YOU MUST NOT Promote
+
+Name:      pytorch-forecasting
+Version:   1.2.0
+URL:       https://github.com/sktime/pytorch-forecasting
+License:   MIT License
+Comment:   Modified source, combined at build time.
+           License Obligations:
+           - YOU MUST Forward OR Provide Copyright notices
+           - YOU MUST Forward OR Provide License text
+           - YOU MUST Forward OR Provide Warranty disclaimer
+
+Name:      uncertainty-toolbox
+Version:   Unspecified
+URL:       https://github.com/uncertainty-toolbox/uncertainty-toolbox
+License:   MIT License
+Comment:   Modified source, combined at build time.
+           License Obligations:
+           - YOU MUST Forward OR Provide Copyright notices
+           - YOU MUST Forward OR Provide License text
+           - YOU MUST Forward OR Provide Warranty disclaimer
+
+
+--------------------------------------------------------------------------
+
+License for pytorch-forecasting
+--------------------------------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) 2020 - present, the pytorch-forecasting developers
+Copyright (c) 2020 Jan Beitner
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+--------------------------------------------------------------------------
+
+License for pytorch-forecasting
+--------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2020 uncertainty-toolbox
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+--------------------------------------------------------------------------
+
+License for pybnn
+--------------------------------------------------------------------------
+
+BSD 3-Clause License
+
+Copyright (c) 2018, ML4AAD
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

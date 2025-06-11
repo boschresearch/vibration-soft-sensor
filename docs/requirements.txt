@@ -1,0 +1,9 @@
+jupyter
+matplotlib
+sphinx
+m2r2
+nbsphinx
+nbsphinx-link
+ipykernel
+jupyter_sphinx
+lxml-html-clean
