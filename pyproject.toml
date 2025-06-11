@@ -54,7 +54,7 @@ docs = [
 
 [project.urls]
 repository = "https://github.com/boschresearch/vibration-soft-sensor"
-homepage = "https://github.boschdevcloud.com/bios-MSOonGitHub/vibration-soft-sensor"
+homepage = "https://boschresearch.github.io/vibration-soft-sensor/"
 
 [build-system]
 requires = ["setuptools>=61.0", "setuptools_scm[toml]>=8", "wheel"]
