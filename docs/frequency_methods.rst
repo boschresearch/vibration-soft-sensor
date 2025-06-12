@@ -1,4 +1,3 @@
-Metrics
 ##################################
 
 .. automodule:: softsensor.frequency_methods
