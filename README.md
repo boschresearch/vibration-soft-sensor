@@ -8,10 +8,10 @@ The main paper *Stabilised Auto-Regressive Neural Networks (S-Arnns) for Data Dr
 ## Table of Contents  <!-- omit in toc -->
 
 - [Content](#content)
-- [Maintainers](#maintainers)  
+- [Installation](#installation)
+- [Maintainers](#maintainers) 
 - [License](#license)
 - [3rd Party Licenses](#3rd-party-licenses)
-  
 
 <a name="content"></a>
 
@@ -50,6 +50,56 @@ The library offers multiple sensitivity analysis methods:
 - Perturbation analysis
 - Uncertainty quantification
 
+<a name="installation"></a>
+
+## Installation
+
+```bash
+# Using pip
+pip install softsensor
+
+# Using poetry
+poetry add softsensor
+
+# Using uv
+uv pip install softsensor
+```
+
+### Installation for Development
+
+```bash
+# Clone the repository
+git clone https://github.com/boschresearch/vibration-soft-sensor.git
+cd vibration-soft-sensor
+```
+
+```bash
+# create virtual local environment
+
+# Using conda
+conda create -p ./.venv
+conda activate ./.venv
+
+# Using poetry
+poetry env
+poetry shell
+
+# Using uv
+uv venv .venv
+.venv/bin/activate
+```
+
+```bash
+# install development dependencies
+# Using pip
+pip install -e .[dev]
+
+# Using poetry
+poetry install --with dev
+
+# Using uv
+uv pip install -e .[dev]
+```
 
 <a name="maintainers"></a>
 

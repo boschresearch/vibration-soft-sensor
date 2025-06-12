@@ -54,7 +54,7 @@ def psd_smoothing(psd_df, window_size=16):
             2 * np.pi * np.arange(-window_size / 2 + 1, window_size / 2) / window_size
         )
     ) / window_size
-    smooth_df = psd_df.apply(np.convolve, Parameters=(conv_window, "same"))
+    smooth_df = psd_df.apply(np.convolve, args=(conv_window, "same"))
     return smooth_df
 
 
