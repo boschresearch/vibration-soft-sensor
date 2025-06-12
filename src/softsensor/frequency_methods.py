@@ -12,16 +12,19 @@ def scale_PSD(psd, t_original, t_new=60, b=8):
 
     Parameters
     ----------
+    psd : DataFrame
+        The power spectral density to scale
+    t_original : float
+        Original time of the PSD
     t_new : float, optional
         time new of the PSD. The default is 60.
     b : float, optional
         SN slope. The default is 8.
 
-
     Returns
     -------
-    new scaled PSDs as Series
-
+    PSD_scaled : Series
+        new scaled PSDs as Series
     """
     PSD_scaled = psd.multiply((t_original / t_new) ** (2 / b), axis=0)
     return PSD_scaled
@@ -41,7 +44,7 @@ def psd_smoothing(psd_df, window_size=16):
     Returns
     -------
     smooth_df : DataFrame
-        DESCRIPTION.
+        smoothed psd.
 
     """
 
@@ -51,7 +54,7 @@ def psd_smoothing(psd_df, window_size=16):
             2 * np.pi * np.arange(-window_size / 2 + 1, window_size / 2) / window_size
         )
     ) / window_size
-    smooth_df = psd_df.apply(np.convolve, args=(conv_window, "same"))
+    smooth_df = psd_df.apply(np.convolve, Parameters=(conv_window, "same"))
     return smooth_df
 
 
@@ -59,14 +62,25 @@ def get_amplitude(sft, complex_stft, method=np.max, columns=None, t_axis=-1):
     """
     Calculate the amplitude of the complex Short-Time Fourier Transform (STFT).
 
-    Parameters:
-        sft (object): The Short-Time Fourier Transform object from scipy.signal.
-        complex_stft (ndarray): The complex STFT array.
-        columns (list or ndarray, optional): The column labels for the resulting DataFrame.
+    Parameters
+    ----------
+    sft : object
+        The Short-Time Fourier Transform object from scipy.signal.
+    complex_stft : ndarray
+        The complex STFT array.
+    method : function, optional
+        The method to apply along time axis. The default is np.max.
+    columns : list or ndarray, optional
+        The column labels for the resulting DataFrame.
+    t_axis : int, optional
+        The time axis in the STFT array. The default is -1.
 
-    Returns:
-        amplitude (DataFrame): The amplitude of the complex STFT.
-        max_idx (ndarray): The indices of the maximum values in the complex STFT.
+    Returns
+    -------
+    amplitude : DataFrame
+        The amplitude of the complex STFT.
+    max_idx : ndarray
+        The indices of the maximum values in the complex STFT.
     """
     complex_stft = np.nan_to_num(complex_stft)
     if len(complex_stft.shape) == 2:
@@ -87,15 +101,21 @@ def get_phase(sft, complex_stft, max_idx, columns=None):
     """
     Calculate the phase of the complex STFT at the given maximum index.
 
-    Parameters:
-    - sft: The Short-Time Fourier Transform object.
-    - complex_stft: The complex STFT matrix.
-    - max_idx: The maximum index to take along the last axis of the complex STFT matrix.
-    - columns: Optional parameter specifying the column names for the resulting DataFrame.
+    Parameters
+    ----------
+    sft : object
+        The Short-Time Fourier Transform object.
+    complex_stft : ndarray
+        The complex STFT matrix.
+    max_idx : ndarray
+        The maximum index to take along the last axis of the complex STFT matrix.
+    columns : list or None, optional
+        Column names for the resulting DataFrame.
 
-    Returns:
-    - phase: DataFrame containing the phase values of the complex STFT.
-
+    Returns
+    -------
+    phase : DataFrame
+        DataFrame containing the phase values of the complex STFT.
     """
     if len(complex_stft.shape) == 2:
         complex_stft = complex_stft[:, np.newaxis, :]
@@ -124,9 +144,8 @@ def psd_moment(psd_df, n_moment=0):
 
     Returns
     -------
-    df
+    df : DataFrame
         DataFrame.
-
     """
     # ToDo: make it valid for single index "freq"
     frequency = psd_df.index
@@ -145,12 +164,16 @@ def psd_parameters_from_moments(psd_stats):
     """
     Calculate various parameters from the power spectral density (PSD) moments.
 
-    Args:
-        psd_stats (pd.DataFrame): DataFrame containing PSD moments.
+    Parameters
+    ----------
+    psd_stats : DataFrame
+        DataFrame containing PSD moments.
 
-    Returns:
-        pd.DataFrame: DataFrame containing calculated parameters including RMS, v_0_plus,
-                      v_p, and irregularity_factor.
+    Returns
+    -------
+    stats_df : DataFrame
+        DataFrame containing calculated parameters including RMS, v_0_plus,
+        v_p, and irregularity_factor.
     """
     psd_stats = psd_stats.set_index(
         pd.Index(np.ones(len(psd_stats)), name="dummy"), append=True
@@ -191,16 +214,22 @@ def psd_statistics(psd_df, n_moments=5):
     """
     Calculate statistics of Power Spectral Density (PSD) data.
 
-    Args:
-        psd_df (DataFrame): Input DataFrame containing PSD data.
-        n_moments (int, optional): Number of moments to calculate. Defaults to 5.
+    Parameters
+    ----------
+    psd_df : DataFrame
+        Input DataFrame containing PSD data.
+    n_moments : int, optional
+        Number of moments to calculate. The default is 5.
 
-    Returns:
-        DataFrame: DataFrame containing the calculated PSD statistics.
+    Returns
+    -------
+    DataFrame
+        DataFrame containing the calculated PSD statistics.
 
-    Raises:
-        UserWarning: If n_moments is less than or equal to 4, it is set to 5.
-
+    Raises
+    ------
+    UserWarning
+        If n_moments is less than or equal to 4, it is set to 5.
     """
     if n_moments <= 4:
         n_moments = 5
@@ -216,15 +245,19 @@ def _interpolate_slice(slice, x_original, x_new):
 
 def reshape_stpsd(stpsd, windows_new):
     """
-    Reshapes the Short-Time Power Spectral Density (STPSD) array to match the desired number of windows.
+    Reshapes the Short-Time Power Spectral Density (STPSD) array.
 
-    Parameters:
-        stpsd (ndarray): The input STPSD array.
-        windows_new (int): The desired number of windows.
+    Parameters
+    ----------
+    stpsd : ndarray
+        The input STPSD array.
+    windows_new : int
+        The desired number of windows.
 
-    Returns:
-        ndarray: The reshaped STPSD array.
-
+    Returns
+    -------
+    ndarray
+        The reshaped STPSD array.
     """
     stpsd_reshaped = np.apply_along_axis(
         _interpolate_slice,
@@ -241,13 +274,21 @@ def interpolate_log_series(series, new_index, left=0, right=0):
     """
     Interpolate the log values of a series based on the log values of a new index.
 
-    Parameters:
-    - series (pd.Series): The input series.
-    - new_index (pd.Index): The new index.
+    Parameters
+    ----------
+    series : pd.Series
+        The input series.
+    new_index : pd.Index
+        The new index.
+    left : float, optional
+        Value to return for x < xp[0]. The default is 0.
+    right : float, optional
+        Value to return for x > xp[-1]. The default is 0.
 
-    Returns:
-    - pd.Series: The interpolated log series.
-
+    Returns
+    -------
+    pd.Series
+        The interpolated log series.
     """
     log_series = np.log(series)
     log_interp_func = np.interp(
@@ -275,14 +316,22 @@ class FDS:
         """
         Initialize the FDS class with the given parameters.
 
-        Args:
-            Q (float): Dynamic amplification factor. Default is 10.
-            K (float): The stiffness of the SDOF system. Default is 1.0.
-            b (float): The fatigue strength exponent. Default is 4.0.
-            C (float): Basquin coefficient. Default is 1e3.
-            duration (float): The duration of the excitation in seconds. Default is 1.0.
-            response_type (str): Type of response ('disp', 'vel', 'acc'). Default is 'disp'.
-            scaled (bool): Whether to scale the FDS. Default is False.
+        Parameters
+        ----------
+        Q : float, optional
+            Dynamic amplification factor. The default is 10.
+        K : float, optional
+            The stiffness of the SDOF system. The default is 1.0.
+        b : float, optional
+            The fatigue strength exponent. The default is 4.0.
+        C : float, optional
+            Basquin coefficient. The default is 1e3.
+        duration : float, optional
+            The duration of the excitation in seconds. The default is 1.0.
+        response_type : str, optional
+            Type of response ('disp', 'vel', 'acc'). The default is 'disp'.
+        scaled : bool, optional
+            Whether to scale the FDS. The default is False.
         """
         self.Q = Q
         self.K = K
@@ -294,27 +343,34 @@ class FDS:
 
     def calculate_fds(self, psd):
         """
-        Calculate the Fatigue Damage Spectrum (FDS) from the Power Spectral Density (PSD). According to the formula in the paper:
+        Calculate the Fatigue Damage Spectrum (FDS) from the Power Spectral
+        Density (PSD). According to the formula in the paper:
         https://http://www.vibrationdata.com/tutorials_alt/fatigue_damage_spectra.pdf
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         psd : pandas.Series
-            The power spectral density data. The index should represent the frequency values.
-        Returns:
-        --------
+            The power spectral density data. The index should represent
+            the frequency values.
+
+        Returns
+        -------
         pandas.Series
-            The calculated FDS values with the same index as the input PSD and a modified name indicating the response type.
-        Notes:
-        ------
-        - The method modifies the PSD based on the response type ('vel' for velocity or 'acc' for acceleration).
+            The calculated FDS values with the same index as the input PSD and
+            a modified name indicating the response type.
+
+        Notes
+        -----
+        - The method modifies the PSD based on the response type ('vel' for
+          velocity or 'acc' for acceleration).
         - The FDS calculation involves several parameters:
             - self.duration: Duration of the signal.
-            - self.K, self.b, self.C, self.Q: Constants used in the FDS calculation.
+            - self.K, self.b, self.C, self.Q: Constants used in the FDS
+              calculation.
             - gamma: Gamma function from the scipy library.
-        - If self.scaled is True, the FDS is scaled by the integral of the FDS over the frequency range.
+        - If self.scaled is True, the FDS is scaled by the integral of the FDS
+          over the frequency range.
         """
-
         self.psd = psd.copy()
         f = psd.index.values
         if self.response_type == "vel":
@@ -337,24 +393,30 @@ class FDS:
 
     def calculate_psd(self, fds):
         """
-        Calculate the Power Spectral Density (PSD) for a given Fatigue Damage Spectrum (FDS).
-        Parameters:
-        -----------
+        Calculate the Power Spectral Density (PSD) for a given Fatigue Damage
+        Spectrum (FDS).
+
+        Parameters
+        ----------
         fds : array-like
             The Fatigue Damage Spectrum (FDS) values.
-        Returns:
-        --------
+
+        Returns
+        -------
         pd.Series
-            A pandas Series containing the calculated PSD values, indexed by the same index as `self.psd` and named
-            with the original name appended with "_PSD_" and the response type.
-        Notes:
-        ------
+            A pandas Series containing the calculated PSD values, indexed by
+            the same index as `self.psd` and named with the original name
+            appended with "_PSD_" and the response type.
+
+        Notes
+        -----
         - The PSD is calculated for a displacement-based FDS.
         - The PSD is rescaled based on the response type:
-            - If `self.response_type` is "vel", the PSD is divided by (2 * np.pi * f)^2.
-            - If `self.response_type` is "acc", the PSD is divided by (2 * np.pi * f)^4.
+            - If `self.response_type` is "vel", the PSD is divided by
+              (2 * np.pi * f)^2.
+            - If `self.response_type` is "acc", the PSD is divided by
+              (2 * np.pi * f)^4.
         """
-
         f = fds.index.values
         psd = (
             (
@@ -385,16 +447,24 @@ def calculate_coherence(df1, df2, nperseg=2048, fs=None):
     """
     Calculate the coherence between all input and all output sensors.
 
-    Parameters:
-    df1 (pd.DataFrame): DataFrame containing the first set of signals.
-    df2 (pd.DataFrame): DataFrame containing the second set of signals.
-    fs (int): Sampling frequency. Default is 4096.
-    nperseg (int): Length of each segment for the coherence calculation. Default is 2048.
+    Parameters
+    ----------
+    df1 : pd.DataFrame
+        DataFrame containing the first set of signals.
+    df2 : pd.DataFrame
+        DataFrame containing the second set of signals.
+    fs : int, optional
+        Sampling frequency. Default is None.
+    nperseg : int, optional
+        Length of each segment for the coherence calculation.
+        The default is 2048.
 
-    Returns:
-    pd.DataFrame: DataFrame containing the coherence values with frequency as the index.
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the coherence values with frequency as the index.
     """
-    if fs == None:
+    if fs is None:
         fs = np.round(np.mean((1 / df1.index.diff().total_seconds().dropna())))
     coherence_dict = {}
     for col1 in df1.columns:
