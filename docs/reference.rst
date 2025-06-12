@@ -50,3 +50,9 @@ Postprocessing
    eval_tools
    visualization
 
+Frequency Methods
+===============
+.. toctree::
+   :maxdepth: 2
+   
+   frequency_methods
