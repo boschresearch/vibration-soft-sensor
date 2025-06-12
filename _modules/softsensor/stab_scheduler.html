@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.stab_scheduler &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.stab_scheduler</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.stab_scheduler</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Sat May 13 10:12:56 2023</span>
+
+<span class="sd">@author: WET2RNG</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<div class="viewcode-block" id="Stability_Criterion">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.Stability_Criterion">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">Stability_Criterion</span><span class="p">(</span><span class="n">Network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defined stability criterion for Autoregressive Neural Networks.</span>
+<span class="sd">    If criterion &lt; 0 Network is Input to state stable according to:</span>
+<span class="sd">    https://www.researchgate.net/publication/346701375_Stability_of_discrete-time_feed-forward_neural_networks_in_NARX_configuration</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Network : torch Network</span>
+<span class="sd">        Neural Network with function Network.get_recurretn_weights.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    Warning</span>
+<span class="sd">        if activation function is not defined with Lipschitz constant</span>
+<span class="sd">        explicitly.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        stabiliyt criterion for the Network.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mult_weight_norm</span> <span class="o">=</span> <span class="n">local_weight_product</span><span class="p">(</span><span class="n">Network</span><span class="p">)</span>
+    <span class="n">const</span> <span class="o">=</span> <span class="n">arnn_threshold</span><span class="p">(</span><span class="n">Network</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">mult_weight_norm</span> <span class="o">-</span> <span class="n">const</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="local_weight_product">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.local_weight_product">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">local_weight_product</span><span class="p">(</span><span class="n">Network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines the product of the norm of the recurrent wegiths in a defined</span>
+<span class="sd">    Network</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Network : Torch Neural Network</span>
+<span class="sd">        Neural Network with function Network.get_recurretn_weights.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mult_weight_norm : float</span>
+<span class="sd">        product of the recurrent weight norm.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mult_weight_norm</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="k">for</span> <span class="n">W</span> <span class="ow">in</span> <span class="n">Network</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">():</span>
+        <span class="n">mult_weight_norm</span> <span class="o">=</span> <span class="n">mult_weight_norm</span> <span class="o">*</span> <span class="n">W</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="s1">&#39;fro&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mult_weight_norm</span></div>
+
+    
+
+<div class="viewcode-block" id="local_weight_decay">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.local_weight_decay">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">local_weight_decay</span><span class="p">(</span><span class="n">Network</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defined local weight decay for Autoregressive Neural Networks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Network : torch Network</span>
+<span class="sd">        Neural Network with function Network.get_recurretn_weights.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mult_weight_norm : float</span>
+<span class="sd">        local weigth decay of the Network.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mult_weight_norm</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">W</span> <span class="ow">in</span> <span class="n">Network</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">():</span>
+        <span class="n">mult_weight_norm</span> <span class="o">=</span> <span class="n">mult_weight_norm</span> <span class="o">+</span> <span class="n">W</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">mult_weight_norm</span></div>
+
+
+
+<div class="viewcode-block" id="Stability_Loss">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.Stability_Loss">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Stability_Loss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Callable loss function to train for accuracy and stability of an</span>
+<span class="sd">    autoregressive Network at the same time</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    criterion : nn.Loss, optional</span>
+<span class="sd">        Loss function for training. e.g. nn.MSELoss().</span>
+<span class="sd">    DNN : torch Network</span>
+<span class="sd">        Neural Network with function Network.get_recurretn_weights.</span>
+<span class="sd">    stabelizer : float, optional</span>
+<span class="sd">        added stability parameter applied to recurrent weights.</span>
+<span class="sd">        The default is 0.</span>
+<span class="sd">    local_wd : float, optional</span>
+<span class="sd">        added local weight decay parameter applied to recurrent weights.</span>
+<span class="sd">        The default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">DNN</span><span class="p">,</span> <span class="n">stabelizer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local_wd</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Stability_Loss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span> <span class="o">=</span> <span class="n">DNN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
+
+        <span class="k">if</span> <span class="n">stabelizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">=</span> <span class="n">stabelizer</span>
+        <span class="k">if</span> <span class="n">local_wd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">=</span> <span class="n">local_wd</span>
+
+<div class="viewcode-block" id="Stability_Loss.forward">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.Stability_Loss.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function for the defined loss between the prediction y_pred and</span>
+<span class="sd">        y with added stabelization term</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_pred : torch.tensor</span>
+<span class="sd">            predicted values.</span>
+<span class="sd">        y : torch.tensor</span>
+<span class="sd">            true values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        loss : torch.tensor</span>
+<span class="sd">            loss between y_pred and y.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">crit_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">*</span> <span class="n">local_weight_product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">*</span> <span class="n">local_weight_decay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_wd</span> <span class="o">*</span> <span class="n">local_weight_decay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">)</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabl</span> <span class="o">*</span> <span class="n">local_weight_product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">)</span>
+    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">crit_loss</span> <span class="o">+</span> <span class="n">loss</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="const_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.const_stab">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">const_stab</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stability score scheduler that returns a constant value</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s1 : float, optional</span>
+<span class="sd">        the constant weight to be returned. The default is 0.1.</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stab</span> <span class="o">=</span> <span class="n">s1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                      <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">s1</span><span class="p">]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">=</span> <span class="n">track_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="const_stab.get_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.const_stab.get_stab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call method to get stability parameter</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : ARNN Model, optional</span>
+<span class="sd">            Not needed, optional Parameter to be consistant with other</span>
+<span class="sd">            stability schedulers. The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            s1 value.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stab</span></div>
+</div>
+
+
+<div class="viewcode-block" id="none_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.none_stab">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">none_stab</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stability score scheduler that returns a None</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                      <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">=</span> <span class="n">track_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="none_stab.get_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.none_stab.get_stab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call method to get stability parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : ARNN Model, optional</span>
+<span class="sd">            Not needed, optional Parameter to be consistant with other</span>
+<span class="sd">            stability schedulers. The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+            
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+        
+
+<div class="viewcode-block" id="linear_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.linear_stab">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">linear_stab</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stability score scheduler designed as a linear funciton with value s1 at</span>
+<span class="sd">    stability score zero </span>
+<span class="sd">    eta = m*x + s1</span>
+<span class="sd">    m = s1 / (Network specific threshold)</span>
+<span class="sd">    If criterion &lt; 0 Network is Input to state stable according to:</span>
+<span class="sd">    https://www.researchgate.net/publication/346701375_Stability_of_discrete-time_feed-forward_neural_networks_in_NARX_configuration</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : ARNN</span>
+<span class="sd">        ARNN according to softsensor.autoregr_models design</span>
+<span class="sd">    s1 : float, optional</span>
+<span class="sd">        stability parameter at stability score zero</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">s1</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                      <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">=</span> <span class="n">track_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">arnn_threshold</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">s1</span><span class="o">/</span><span class="n">kappa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stab</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">m</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">s1</span>
+
+<div class="viewcode-block" id="linear_stab.get_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.linear_stab.get_stab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call method to get stability parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : ARNN Model</span>
+<span class="sd">            ARNN according to softsensor.autoregr_models design </span>
+<span class="sd">        sc : float or None, optional</span>
+<span class="sd">            stability score to evaluate function at, if None is given computes</span>
+<span class="sd">            stability with method Stability_Criterion(model)</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        st : float</span>
+<span class="sd">            stablizer according to the linear function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">Stability_Criterion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stab</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;eta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">st</span></div>
+</div>
+
+        
+    
+<div class="viewcode-block" id="log_lin_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.log_lin_stab">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">log_lin_stab</span><span class="p">():</span>    
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stability score scheduler designed as an exponential function up to a</span>
+<span class="sd">    stability criterion of zero and a linear function afterwards</span>
+<span class="sd">    If criterion &lt; 0 Network is Input to state stable according to:</span>
+<span class="sd">    https://www.researchgate.net/publication/346701375_Stability_of_discrete-time_feed-forward_neural_networks_in_NARX_configuration</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : ARNN</span>
+<span class="sd">        ARNN according to softsensor.autoregr_models design</span>
+<span class="sd">    s0 : float, optional</span>
+<span class="sd">        stability parameter at the lower Networkspecific threshold,</span>
+<span class="sd">        The default is 1e-6.</span>
+<span class="sd">    s1 : float, optional</span>
+<span class="sd">        stability parameter at stability score zero,The default is 1e-3.</span>
+<span class="sd">    m : float, optional</span>
+<span class="sd">        gradient of the linear function between [0, inf].</span>
+<span class="sd">        If None is given, use the gradient of the exponential function.</span>
+<span class="sd">        The default is None.</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arnn</span><span class="p">,</span> <span class="n">s0</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">s1</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                      <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">=</span> <span class="n">track_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">arnn_threshold</span><span class="p">(</span><span class="n">arnn</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">kappa</span><span class="p">,</span> <span class="n">s0</span><span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s1</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">x1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">x0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">x0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="n">x0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">b</span><span class="o">**</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span>
+        <span class="n">y_lim</span> <span class="o">=</span> <span class="n">x1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">*</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_stab</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="o">**</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_stab</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">m</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y_lim</span>
+
+<div class="viewcode-block" id="log_lin_stab.get_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.log_lin_stab.get_stab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call method to get stability parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : ARNN Model</span>
+<span class="sd">            ARNN according to softsensor.autoregr_models design </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        st : float</span>
+<span class="sd">            stablizer according to the linear function</span>
+<span class="sd">        sc : float or None, optional</span>
+<span class="sd">            stability score to evaluate function at, if None is given computes</span>
+<span class="sd">            stability with method Stability_Criterion(model)</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">Stability_Criterion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">sc</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_stab</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_stab</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;eta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">st</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="heaviside_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.heaviside_stab">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">heaviside_stab</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stability score scheduler designed as a heaviside funciton with value s1 at</span>
+<span class="sd">    stability score greater zero </span>
+<span class="sd">    If criterion &lt; 0 Network is Input to state stable according to:</span>
+<span class="sd">    https://www.researchgate.net/publication/346701375_Stability_of_discrete-time_feed-forward_neural_networks_in_NARX_configuration</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : ARNN</span>
+<span class="sd">        ARNN according to softsensor.autoregr_models design</span>
+<span class="sd">    s1 : float, optional</span>
+<span class="sd">        stability parameter at stability score zero, The default is 1e-2.</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                      <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">=</span> <span class="n">track_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">s1</span>
+        
+<div class="viewcode-block" id="heaviside_stab.get_stab">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.heaviside_stab.get_stab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call method to get stability parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : ARNN Model</span>
+<span class="sd">            ARNN according to softsensor.autoregr_models design </span>
+<span class="sd">        sc : float or None, optional</span>
+<span class="sd">            stability score to evaluate function at, if None is given computes</span>
+<span class="sd">            stability with method Stability_Criterion(model)</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        st : float</span>
+<span class="sd">            stablizer according to the linear function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">Stability_Criterion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stabs</span><span class="p">[</span><span class="s1">&#39;eta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">st</span></div>
+</div>
+
+
+<div class="viewcode-block" id="arnn_threshold">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.arnn_threshold">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">arnn_threshold</span><span class="p">(</span><span class="n">arnn</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to compute the specific lower limit for the stability of an arnn</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arnn : ARNN Model</span>
+<span class="sd">        ARNN according to softsensor.autoregr_models design </span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    Warning</span>
+<span class="sd">        if the activation function is not implemendet. currently implemented are:</span>
+<span class="sd">        [&#39;tanh&#39;, &#39;relu&#39;, &#39;leaky_relu&#39;, &#39;sine&#39;]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    kappa : float</span>
+<span class="sd">        lower limit for the stability of an arnn.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">arnn</span><span class="o">.</span><span class="n">activation</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="s1">&#39;leaky_relu&#39;</span><span class="p">,</span> <span class="s1">&#39;sine&#39;</span><span class="p">]:</span>
+        <span class="n">Lipschitz</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Lipschitz</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Warning: Lipschitz constant for activation function is not &#39;</span> <span class="o">+</span>
+                      <span class="s1">&#39;known, assuming Lipschitz = 1&#39;</span><span class="p">)</span>
+
+    <span class="n">kappa</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">Lipschitz</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">arnn</span><span class="o">.</span><span class="n">rnn_window</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">kappa</span></div>
+
+
+
+<div class="viewcode-block" id="get_scheduler">
+<a class="viewcode-back" href="../../stab_scheduler.html#softsensor.stab_scheduler.get_scheduler">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_scheduler</span><span class="p">(</span><span class="n">stab_method</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">s1</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">s0</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">track_n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wrapper function to get the specific scheduler by name</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    stab_method : str or float or None</span>
+<span class="sd">        defines the specific Method. </span>
+<span class="sd">        implemented str: [&#39;const&#39;, &#39;lin&#39;, &#39;log_lin&#39;, &#39;heaviside&#39;]</span>
+<span class="sd">        float value returnes the same scheduler as &#39;const&#39;</span>
+<span class="sd">    arnn : torch Network</span>
+<span class="sd">        Neural Network with function Network.get_recurretn_weights.</span>
+<span class="sd">    s1 : float, optional</span>
+<span class="sd">        scheduler specific parameter. The default is 1e-2.</span>
+<span class="sd">    s0 : float, optional</span>
+<span class="sd">        scheduler specific parameter. The default is 1e-8.</span>
+<span class="sd">    m : float, optional</span>
+<span class="sd">        scheduler specific parameter. The default is None.</span>
+<span class="sd">    track : Bool, optional</span>
+<span class="sd">        if True the values are tracked in a dict. The default is True.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    Warning</span>
+<span class="sd">        if invalid stab_method is given</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class </span>
+<span class="sd">        stab scheduler Method.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stab_method</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">const_stab</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stab_method</span> <span class="o">==</span> <span class="s1">&#39;const&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">const_stab</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stab_method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">none_stab</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stab_method</span> <span class="o">==</span> <span class="s1">&#39;lin&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">linear_stab</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stab_method</span> <span class="o">==</span> <span class="s1">&#39;log_lin&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">log_lin_stab</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">s0</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stab_method</span> <span class="o">==</span> <span class="s1">&#39;heaviside&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">heaviside_stab</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">track_n</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;No Valid scheduler method given&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

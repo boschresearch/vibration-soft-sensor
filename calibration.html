@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uncertainty Calibration &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluation Tools" href="eval_tools.html" />
+    <link rel="prev" title="Homoscedastic Uncertainty" href="homoscedastic_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html">Homoscedastic Uncertainty</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Uncertainty Calibration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling.estimate_uncertainty_mean_std"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling.estimate_uncertainty_mean_std()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling.forward"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling.forward_sens"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling.forward_sens()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling.get_recurrent_weights"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling.get_recurrent_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.calibration.TemperatureScaling.prediction"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling.prediction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.calibration.optimize_temperature"><code class="docutils literal notranslate"><span class="pre">optimize_temperature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html">Evaluation Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">Visualization Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Uncertainty Calibration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/calibration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.calibration">
+<span id="uncertainty-calibration"></span><h1>Uncertainty Calibration<a class="headerlink" href="#module-softsensor.calibration" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.calibration.</span></span><span class="sig-name descname"><span class="pre">TemperatureScaling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling" title="Link to this definition"></a></dt>
+<dd><p>Wrapper class for uncertainty models that applies temperature scaling after prediction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>uncertainty model</em>) – model that is used for prediction</p></li>
+<li><p><strong>temperature</strong> (<em>tensor</em><em>[</em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – factors for std scaling (squared for)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Define Model</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemperatureScaling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">softsensor</span><span class="o">.</span><span class="n">autoreg_models</span><span class="o">.</span><span class="n">DensityEstimationARNN</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">temps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scaled_model</span> <span class="o">=</span> <span class="n">TemperatureScaling</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">temps</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rec_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">scaled_model</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">rec_input</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># mean</span>
+<span class="go">torch.Size([32, 1, 1])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># new var</span>
+<span class="go">torch.Size([32, 1, 1])</span>
+</pre></div>
+</div>
+<p>Define Data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;inp1&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="go">         &#39;out&#39;: np.random.randn(101)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">Meas_handling</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">t</span><span class="p">)],</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span>
+<span class="go">                               [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+</pre></div>
+</div>
+<p>Check model prediction scaled and unscaled</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loader</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;training&#39;</span><span class="p">,</span>
+<span class="go">                               rnn_window=10, batch_size=1)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="go">tensor([0.1769, 0.1831, 0.1769, 0.1770, 0.1798])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span><span class="p">,</span> <span class="n">var_scaled</span> <span class="o">=</span> <span class="n">scaled_model</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<span class="go">tensor([0.1769, 0.1831, 0.1769, 0.1770, 0.1798])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling.estimate_uncertainty_mean_std">
+<span class="sig-name descname"><span class="pre">estimate_uncertainty_mean_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling.estimate_uncertainty_mean_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling.estimate_uncertainty_mean_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling.forward" title="Link to this definition"></a></dt>
+<dd><p>Forward function to propagate through the network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<em>input arguments</em>) – (need to be the same as the Point model in __init__() needs)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>mean</strong> (<em>torch.tensor dtype=torch.float()</em>) – shape=[batch size, pred_size]</p></li>
+<li><p><strong>std</strong> (<em>torch.tensor dtype=torch.float() in [0,1]</em>) – shape=[batch size, pred_size]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling.forward_sens">
+<span class="sig-name descname"><span class="pre">forward_sens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling.forward_sens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling.forward_sens" title="Link to this definition"></a></dt>
+<dd><p>Forward function to propagate through the network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<em>input arguments</em>) – (need to be the same as the Point model in __init__() needs)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>mean</strong> (<em>torch.tensor dtype=torch.float()</em>) – shape=[batch size, pred_size]</p></li>
+<li><p><strong>std</strong> (<em>torch.tensor dtype=torch.float() in [0,1]</em>) – shape=[batch size, pred_size]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling.get_recurrent_weights">
+<span class="sig-name descname"><span class="pre">get_recurrent_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling.get_recurrent_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling.get_recurrent_weights" title="Link to this definition"></a></dt>
+<dd><p>Function that returns the weight that effect the Recurrent input of the
+underlying Network (mean network)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recurrent_weights</strong> – List of the Weights that effect the Recurrent input of the Network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of weight Tensors</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.calibration.TemperatureScaling.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataloader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#TemperatureScaling.prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.TemperatureScaling.prediction" title="Link to this definition"></a></dt>
+<dd><p>Prediction of a whole Time Series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataloader</strong> (<em>Dataloader</em>) – Dataloader to predict output</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. The default is ‘cpu’.</p></li>
+<li><p><strong>sens_params</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Dictionary that contains the parameters for the sensitivity analysis.
+Key ‘method’ defines the method for sensitivity analysis: ‘gradient’ or ‘perturbation’.
+Key ‘comp’ defines whether gradients are computed for sensitivity analysis.
+Key ‘plot’ defines whether the results of the sensitivity analysis are visualized.
+Key ‘sens_length’ defines the number of randomly sampled subset of timesteps for the analysis.
+(If not a multiple of the model’s forecast, the number will be rounded up to the next multiple.)
+The default is None, i.e. no sensitivity analysis is computed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><em>if loss_ft=None</em> –</p>
+<dl class="simple">
+<dt>(torch.Tensor, list[torch.Tensor])</dt><dd><p>tuple of Torch Tensor of same length as input and var</p>
+</dd>
+</dl>
+</li>
+<li><p><em>if loss_ft=torch loss funciton</em> –</p>
+<dl class="simple">
+<dt>(torch.Tensor, list[torch.Tensor], loss)</dt><dd><p>tuple of Torch Tensor of same length as input, var and loss</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.calibration.optimize_temperature">
+<span class="sig-prename descclassname"><span class="pre">softsensor.calibration.</span></span><span class="sig-name descname"><span class="pre">optimize_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion=&lt;function</span> <span class="pre">ece&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device='cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worst_cal=0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_bounds=(0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">5)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/calibration.html#optimize_temperature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.calibration.optimize_temperature" title="Link to this definition"></a></dt>
+<dd><p>Optimizes the calibration temperature for each output on the calibration set</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>uncertainty model</em>) – model to calibrate</p></li>
+<li><p><strong>calibration_loader</strong> (<em>List</em><em>[</em><em>Dataloader</em><em>]</em>) – dataset to fit the scaling factor</p></li>
+<li><p><strong>criterion</strong> (<em>function with inputs</em><em> (</em><em>mean</em><em>, </em><em>targets</em><em>, </em><em>var</em><em>)</em><em>, </em><em>optional</em>) – criterion to evaluate for optimization. The default is ECE</p></li>
+<li><p><strong>worst_cal</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – worst score for criterion. The default is 0.5 (worst ECE)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>temperature</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.tensor[<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>], shape=[model.pred_size]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="homoscedastic_model.html" class="btn btn-neutral float-left" title="Homoscedastic Uncertainty" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eval_tools.html" class="btn btn-neutral float-right" title="Evaluation Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

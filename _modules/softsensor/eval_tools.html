@@ -1,0 +1,1389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.eval_tools &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.eval_tools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.eval_tools</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue May  3 17:41:37 2022</span>
+
+<span class="sd">@author: WET2RNG</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sig</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">metr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">kl_div</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.distance</span><span class="w"> </span><span class="kn">import</span> <span class="n">jensenshannon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">wasserstein_distance</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARNN</span><span class="p">,</span> <span class="n">_pred_ARNN_batch</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch_rec_SW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">crps</span><span class="p">,</span>
+    <span class="n">ece</span><span class="p">,</span>
+    <span class="n">heteroscedasticity</span><span class="p">,</span>
+    <span class="n">mpiw</span><span class="p">,</span>
+    <span class="n">nll</span><span class="p">,</span>
+    <span class="n">pearson</span><span class="p">,</span>
+    <span class="n">picp</span><span class="p">,</span>
+    <span class="n">r2</span><span class="p">,</span>
+    <span class="n">rmse</span><span class="p">,</span>
+    <span class="n">rmv</span><span class="p">,</span>
+    <span class="n">log_area_error</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.recurrent_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">AR_RNN</span><span class="p">,</span> <span class="n">RNN_DNN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_sens_analysis</span><span class="p">,</span> <span class="n">plot_uncertainty_sens</span>
+
+
+<div class="viewcode-block" id="load_model">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.load_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_model</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load function of models</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Type : str</span>
+<span class="sd">        Type of Network [&#39;CNN_DNN&#39;, &#39;NARX&#39;, &#39;CNN_NARX&#39;, &#39;AR_CNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    path : str</span>
+<span class="sd">        path of the Model</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model : nn.Model with nn.Modules</span>
+<span class="sd">    result_df : pandas.DataFrame</span>
+<span class="sd">        Results of the hyperparameter optimization.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;result_df.csv&quot;</span><span class="p">))</span>
+
+    <span class="n">state_dict</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;Best_model.pt&quot;</span><span class="p">)</span>
+
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;model_parameters.pkl&quot;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+    <span class="n">model_params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">_get_model</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">result_df</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_model</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    internal function to load the model by Type</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Type : str</span>
+<span class="sd">        Type of Network [&#39;CNN_DNN&#39;, &#39;NARX&#39;, &#39;CNN_NARX&#39;, &#39;AR_CNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    model_params : dict</span>
+<span class="sd">        Model hyper parameters.</span>
+<span class="sd">    state_dict : str</span>
+<span class="sd">        path of the state_dict of the model (weights)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model : nn.Model with nn.Modules</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">Type</span> <span class="o">==</span> <span class="s2">&quot;ARNN&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Type</span> <span class="o">==</span> <span class="s2">&quot;AR_RNN&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AR_RNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Type</span> <span class="o">==</span> <span class="s2">&quot;RNN&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">RNN_DNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No valid model Type given&quot;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state_dict</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+
+<div class="viewcode-block" id="comp_pred">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_pred">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_pred</span><span class="p">(</span>
+    <span class="n">models</span><span class="p">,</span>
+    <span class="n">data_handle</span><span class="p">,</span>
+    <span class="n">track</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+    <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">sens_analysis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the predictions for given a DataFrame and a Track for the specific</span>
+<span class="sd">    models</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    models : list of Models</span>
+<span class="sd">        DESCRIPTION.</span>
+<span class="sd">    data_handle : data handle of the Meas Handling class</span>
+<span class="sd">        data handle that should include the track.</span>
+<span class="sd">    track : str</span>
+<span class="sd">        name of the track to observe.</span>
+<span class="sd">    names : list of str.</span>
+<span class="sd">        str should include &#39;NARX&#39; if its a NARX model, &#39;AR&#39; if its an</span>
+<span class="sd">        autoregressive model and &#39;RNN&#39; if is an Recurrent Network</span>
+<span class="sd">    batch_size : int, optional</span>
+<span class="sd">        Batch size for models where batching is possible. The default is 256.</span>
+<span class="sd">    reduce : bool, optional</span>
+<span class="sd">        If True, reduce the epistemic and aleatoric uncertainty to a total one.</span>
+<span class="sd">        Only relevant for ensembles and Evidence Estimation ARNN. The default is False.</span>
+<span class="sd">    sens_analysis : dict, optional</span>
+<span class="sd">        Dictionary that defines if and how a sensitivity analysis is computed for the prediction.</span>
+<span class="sd">        If key &#39;method&#39; is valid, the sensitivity analysis is computed either &#39;gradient&#39; or &#39;perturbation&#39;-based.</span>
+<span class="sd">        If key &#39;comp&#39; is given &amp; True, gradients of the prediction w.r.t. inputs are computed.</span>
+<span class="sd">        If key &#39;plot&#39; is given &amp; True, postprocessing results of the gradients are visualized.</span>
+<span class="sd">        If key &#39;sens_length&#39; is given, the prediction is only computed for the n &#39;sens_length&#39;</span>
+<span class="sd">            samples in the time series.</span>
+<span class="sd">        The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pred_df : pd.DataFrame</span>
+<span class="sd">        New columns are Added for each Model prediction.</span>
+<span class="sd">    if comp_sens:</span>
+<span class="sd">        sens_dict : dict</span>
+<span class="sd">            Additional list of dictionaries with the sensitivity analysis results for each model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; xlow = np.sin(2 * np.pi * 100 * t)       # 100Hz Signal</span>
+<span class="sd">    &gt;&gt;&gt; xhigh = np.sin(2 * np.pi * 3000 * t)     # 3000Hz Signal</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;sine_inp&#39;: xlow + xhigh,</span>
+<span class="sd">    &gt;&gt;&gt;      &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">    &gt;&gt;&gt;      &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; list_of_df = [pd.DataFrame(d), pd.DataFrame(d)]</span>
+<span class="sd">    &gt;&gt;&gt; test_df = {&#39;sine_inp&#39;: 10*xlow + xhigh,</span>
+<span class="sd">    &gt;&gt;&gt;            &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">    &gt;&gt;&gt;            &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; test_df = [pd.DataFrame(test_df)]</span>
+<span class="sd">    &gt;&gt;&gt; data_handle = Meas_handling(list_of_df, train_names=[&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="sd">    &gt;&gt;&gt;                         input_sensors=[&#39;sine_inp&#39;, &#39;cos_inp&#39;],</span>
+<span class="sd">    &gt;&gt;&gt;                         output_sensors=[&#39;out&#39;], fs=100,</span>
+<span class="sd">    &gt;&gt;&gt;                         test_dfs=test_df, test_names=[&#39;test&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; model = ARNN(input_channels=2, pred_size=1, window_size=10, rnn_window=10)</span>
+<span class="sd">    &gt;&gt;&gt; pred_df = comp_pred([model], data_handle, track, names=[&#39;ARNN&#39;]) # without sensitivity analysis</span>
+<span class="sd">    &gt;&gt;&gt; pred_df, sens_dict = comp_pred([model], data_handle, track, names=[&#39;ARNN&#39;], sens_analysis={&#39;method&#39;: &#39;gradient&#39;, &#39;params&#39;: {&#39;comp&#39;: True, &#39;plot&#39;: True}}) # with sensitivity analysis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Type</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">]</span>
+
+    <span class="n">pred_df</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+    <span class="n">sens_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+            <span class="n">pred_df</span><span class="p">,</span> <span class="n">sens</span> <span class="o">=</span> <span class="n">_model_pred</span><span class="p">(</span>
+                <span class="n">m</span><span class="p">,</span>
+                <span class="n">data_handle</span><span class="p">,</span>
+                <span class="n">pred_df</span><span class="p">,</span>
+                <span class="n">n</span><span class="p">,</span>
+                <span class="n">track</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span>
+                <span class="n">sens_analysis</span><span class="o">=</span><span class="n">sens_analysis</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">sens_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sens</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred_df</span> <span class="o">=</span> <span class="n">_model_pred</span><span class="p">(</span>
+                <span class="n">m</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="c1"># return directly the dict itself if only one model is computed</span>
+        <span class="n">sens_list</span> <span class="o">=</span> <span class="n">sens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sens_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">sens_list</span>
+        <span class="k">return</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">sens_list</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pred_df</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_model_pred</span><span class="p">(</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sens_analysis</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal Method for the prediction of time series</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    m : model</span>
+<span class="sd">        model to predict.</span>
+<span class="sd">    data_handle : Meas_handling class</span>
+<span class="sd">        Meas handling class that has internal functions to get Dataloader and</span>
+<span class="sd">        Dataset.</span>
+<span class="sd">    pred_df : pd.Dataframe</span>
+<span class="sd">        Dataframe where the prediction is appended as additional column.</span>
+<span class="sd">    n : str</span>
+<span class="sd">        Name of the model. New columns is dataframe will be named as:</span>
+<span class="sd">        f&#39;{output sensor}_{n}&#39;</span>
+<span class="sd">    track : str</span>
+<span class="sd">        name of the track to predict.</span>
+<span class="sd">    batch_size : int, optional</span>
+<span class="sd">        Batch size for models where batching is possible. The default is 256.</span>
+<span class="sd">    reduce : bool, optional</span>
+<span class="sd">        If True, reduce the epistemic and aleatoric uncertainty to a total one.</span>
+<span class="sd">        Only relevant for ensembles and Evidence Estimation ARNN. The default is False.</span>
+<span class="sd">    sens_analysis : dict, optional</span>
+<span class="sd">        Dictionary that defines if and how a sensitivity analysis is computed for the prediction.</span>
+<span class="sd">        If key &#39;method&#39; is valid, the sensitivity analysis is computed either &#39;gradient&#39; or &#39;perturbation&#39;-based.</span>
+<span class="sd">        If key &#39;comp&#39; is given &amp; True, gradients of the prediction w.r.t. inputs are computed.</span>
+<span class="sd">        If key &#39;plot&#39; is given &amp; True, postprocessing results of the gradients are visualized.</span>
+<span class="sd">        If key &#39;sens_length&#39; is given, the prediction is only computed for the n &#39;sens_length&#39;</span>
+<span class="sd">            samples in the time series.</span>
+<span class="sd">        The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AttributeError</span>
+<span class="sd">        if Modeltype is not implemented.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pred_df : pd.Dataframe</span>
+<span class="sd">        prd_df with additional columns for the prediction.</span>
+<span class="sd">    if comp_sens:</span>
+<span class="sd">        sens_dict : dict</span>
+<span class="sd">            Dictionary with the sensitivity analysis results for each model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="n">_check_sens_analysis</span><span class="p">(</span><span class="n">sens_analysis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="n">sens_params</span> <span class="o">=</span> <span class="n">checks</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span><span class="p">,</span> <span class="n">plot_sens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sens_params</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">use_case</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;use_case&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">orig_length</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orig_length&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">random_samples</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;random_samples&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">amplification</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amplification&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">channel_names</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+        <span class="n">sens_dict</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default None type for models without sensitivities</span>
+        <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>  <span class="c1"># default None type for _predict_ARNN method and ensembles</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sens_params</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span> <span class="o">=</span> <span class="n">checks</span>
+
+    <span class="c1"># define some generic functions for prediction and sensitivity analysis to avoid code duplication</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_prediction</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generic function to get the prediction of a model&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sens_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_predictions_to_df</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the DataFrame with uncertainty labels, coming from the prediction results.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reduce</span><span class="p">:</span>
+            <span class="c1"># Uncertainty labels for Mean_Var and Ensemble without reduction</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_ep_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_al_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span> <span class="ow">and</span> <span class="n">reduce</span><span class="p">:</span>
+            <span class="c1"># Uncertainty labels for Mean_Var and Ensemble with reduction</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+            <span class="c1"># Uncertainty labels for either Mean_Var or Ensemble</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Quantile&quot;</span><span class="p">:</span>
+            <span class="c1"># quantiles = np.linspace(0, 1, m.n_quantiles+2)[1:m.n_quantiles+1]*100</span>
+            <span class="c1"># quantiles = np.rint(quantiles).astype(int)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">n_quantiles</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_lb</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_ub</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">labels</span>
+            <span class="p">]</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">n_quantiles</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pred</span><span class="p">,</span> <span class="n">labels</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+    <span class="n">Type</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">Type</span>
+    <span class="k">if</span> <span class="n">Type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;TF&quot;</span><span class="p">,</span> <span class="s2">&quot;ARX&quot;</span><span class="p">]:</span>
+        <span class="n">pred_mimo</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">pred_df</span><span class="p">)</span>
+        <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pred_mimo</span><span class="p">)[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_df</span><span class="p">)]</span>
+
+    <span class="k">elif</span> <span class="n">Type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;AR&quot;</span><span class="p">,</span> <span class="s2">&quot;AR_RNN&quot;</span><span class="p">]:</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span>
+            <span class="n">window_size</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="p">[</span><span class="n">track</span><span class="p">],</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">rnn_window</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">rnn_window</span><span class="p">,</span>
+            <span class="n">forecast</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span>
+            <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">pred_result</span> <span class="o">=</span> <span class="n">get_prediction</span><span class="p">(</span>
+            <span class="n">m</span><span class="p">,</span> <span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">and</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">random_samples</span><span class="p">:</span>
+                <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">pred_result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">pred_result</span>
+            <span class="k">if</span> <span class="n">plot_sens</span><span class="p">:</span>
+                <span class="n">_plot_sensitivities</span><span class="p">(</span>
+                    <span class="n">m</span><span class="p">,</span>
+                    <span class="n">sens_dict</span><span class="p">,</span>
+                    <span class="n">plot_sens</span><span class="p">,</span>
+                    <span class="n">method</span><span class="p">,</span>
+                    <span class="n">channel_names</span><span class="p">,</span>
+                    <span class="n">use_case</span><span class="p">,</span>
+                    <span class="n">orig_length</span><span class="p">,</span>
+                    <span class="n">sens_uq</span><span class="p">,</span>
+                    <span class="n">eps</span><span class="p">,</span>
+                    <span class="n">amplification</span><span class="p">,</span>
+                    <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred_result</span>
+
+        <span class="n">pred</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">write_predictions_to_df</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">labels</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pred</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">Type</span> <span class="o">==</span> <span class="s2">&quot;RNN&quot;</span><span class="p">:</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span>
+            <span class="n">window_size</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="p">[</span><span class="n">track</span><span class="p">],</span>
+            <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">forecast</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span>
+            <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">pred_result</span> <span class="o">=</span> <span class="n">get_prediction</span><span class="p">(</span>
+            <span class="n">m</span><span class="p">,</span> <span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">and</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">pred_result</span>
+            <span class="k">if</span> <span class="n">plot_sens</span><span class="p">:</span>
+                <span class="n">_plot_sensitivities</span><span class="p">(</span>
+                    <span class="n">m</span><span class="p">,</span>
+                    <span class="n">sens_dict</span><span class="p">,</span>
+                    <span class="n">plot_sens</span><span class="p">,</span>
+                    <span class="n">method</span><span class="p">,</span>
+                    <span class="n">channel_names</span><span class="p">,</span>
+                    <span class="n">use_case</span><span class="p">,</span>
+                    <span class="n">orig_length</span><span class="p">,</span>
+                    <span class="n">sens_uq</span><span class="p">,</span>
+                    <span class="n">eps</span><span class="p">,</span>
+                    <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># pred = m.prediction(loader[0])</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reduce</span><span class="p">:</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_ep_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="c1"># pred_df[uncertainty_labels] = pred[1].transpose(1, 0)</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_al_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="c1"># pred_df[uncertainty_labels] = pred[2].transpose(1, 0)</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span> <span class="ow">and</span> <span class="n">reduce</span><span class="p">:</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="c1"># pred_df[uncertainty_labels] = pred[1].transpose(1, 0)</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+            <span class="n">uncertainty_labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+            <span class="c1"># pred_df[uncertainty_labels] = pred[1].transpose(1, 0)</span>
+            <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">uncertainty_labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pred_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">labels</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pred</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Modeltype for model </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> not implemented&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pred_df</span><span class="p">,</span> <span class="n">sens_dict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pred_df</span>
+
+
+<div class="viewcode-block" id="comp_batch">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_batch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_batch</span><span class="p">(</span>
+    <span class="n">models</span><span class="p">,</span>
+    <span class="n">data_handle</span><span class="p">,</span>
+    <span class="n">tracks</span><span class="p">,</span>
+    <span class="n">names</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">sens_analysis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the prediction for a list of models and tracks</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    models : list of models</span>
+<span class="sd">        list of models for computation. MOdels need to be defined in _model_pred.</span>
+<span class="sd">    data_handle : Meas_handling class</span>
+<span class="sd">        Meas handling class that has internal functions to get Dataloader and</span>
+<span class="sd">        Dataset.</span>
+<span class="sd">    tracks : list of str</span>
+<span class="sd">        Names of the tracks to predict.</span>
+<span class="sd">    names : list of str</span>
+<span class="sd">        Names that are added to the column name.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device for computation. The default is &#39;cpu&#39;.</span>
+<span class="sd">    batch_size : int, optional</span>
+<span class="sd">        Batch size for models where batching is possible. The default is 256.</span>
+<span class="sd">    reduce : bool, optional</span>
+<span class="sd">        If True, reduce the epistemic and aleatoric uncertainty to a total one.</span>
+<span class="sd">        Only relevant for ensembles and Evidence Estimation ARNN. The default is False.</span>
+<span class="sd">    sens_analysis : dict, optional</span>
+<span class="sd">        Dictionary that defines if and how a sensitivity analysis is computed for the prediction.</span>
+<span class="sd">        If key &#39;method&#39; is valid, the sensitivity analysis is computed either &#39;gradient&#39; or &#39;perturbation&#39;-based.</span>
+<span class="sd">        If key &#39;comp&#39; is given &amp; True, gradients of the prediction w.r.t. inputs are computed.</span>
+<span class="sd">        If key &#39;plot&#39; is given &amp; True, postprocessing results of the gradients are visualized.</span>
+<span class="sd">        If key &#39;sens_length&#39; is given, the prediction is only computed for the n &#39;sens_length&#39;</span>
+<span class="sd">            samples in the time series.</span>
+<span class="sd">        The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pred_df : list of pd.Dataframe</span>
+<span class="sd">        pred_dfs with additional columns for the predictions.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Define Data</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                   [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+
+<span class="sd">    Compute Prediction</span>
+
+<span class="sd">    &gt;&gt;&gt; from softsensor.eval_tools import comp_batch</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models</span>
+<span class="sd">    &gt;&gt;&gt; params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                  &#39;pred_size&#39;: 1,</span>
+<span class="sd">                  &#39;window_size&#39;: 10,</span>
+<span class="sd">                  &#39;rnn_window&#39;: 10}</span>
+<span class="sd">    &gt;&gt;&gt; m = softsensor.autoreg_models.ARNN(**params, hidden_size=[16, 8])</span>
+<span class="sd">    &gt;&gt;&gt; dataframes = comp_batch([m], handler, handler.train_names,</span>
+<span class="sd">                                [&#39;ARNN&#39;], device=&#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; list(dataframes[0].columns)</span>
+<span class="sd">    [&#39;inp1&#39;, &#39;inp2&#39;, &#39;out&#39;, &#39;out_ARNN&#39;]</span>
+
+
+<span class="sd">    Compute Prediciton wth uncertainty</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.homoscedastic_model as hm</span>
+<span class="sd">    &gt;&gt;&gt; vars = hm.fit_homoscedastic_var(dataframes, [&#39;out&#39;], [&#39;out_ARNN&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; homosc_m = hm.HomoscedasticModel(m, vars)</span>
+<span class="sd">    &gt;&gt;&gt; sepmve = softsensor.autoreg_models.SeparateMVEARNN(**params,mean_model=m,</span>
+<span class="sd">                                                           var_hidden_size=[16, 8])</span>
+<span class="sd">    &gt;&gt;&gt; dataframes = comp_batch([m, homosc_m, sepmve], handler, handler.train_names,</span>
+<span class="sd">                                [&#39;ARNN&#39;, &#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;], device=&#39;cpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; list(dataframes[0].columns)</span>
+<span class="sd">    [&#39;inp1&#39;,&#39;inp2&#39;,&#39;out&#39;,&#39;out_ARNN&#39;,&#39;out_Homosc_ARNN&#39;,&#39;out_Homosc_ARNN_var&#39;,&#39;out_SepMVE&#39;,&#39;out_SepMVE_var&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="n">_check_sens_analysis</span><span class="p">(</span><span class="n">sens_analysis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="n">sens_params</span> <span class="o">=</span> <span class="n">checks</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span><span class="p">,</span> <span class="n">plot_sens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sens_params</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">use_case</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;use_case&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">orig_length</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orig_length&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">amplification</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amplification&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">channel_names</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+        <span class="n">sens_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span> <span class="o">=</span> <span class="n">checks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">dataframes</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_dataframes</span><span class="p">(</span><span class="n">tracks</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+            <span class="n">sens_dict</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default None type for models without sensitivities</span>
+            <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>  <span class="c1"># default None type for sens analysis without amplification</span>
+
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s2">&quot;AR&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ensemble</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">!=</span> <span class="s2">&quot;Quantile&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="ow">and</span> <span class="n">comp_sens</span><span class="p">:</span>
+                <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">_comp_ARNN_batch</span><span class="p">(</span>
+                    <span class="n">m</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">plot_sens</span><span class="p">:</span>
+                    <span class="n">_plot_sensitivities</span><span class="p">(</span>
+                        <span class="n">m</span><span class="p">,</span>
+                        <span class="n">sens_dict</span><span class="p">,</span>
+                        <span class="n">plot_sens</span><span class="p">,</span>
+                        <span class="n">method</span><span class="p">,</span>
+                        <span class="n">channel_names</span><span class="p">,</span>
+                        <span class="n">use_case</span><span class="p">,</span>
+                        <span class="n">orig_length</span><span class="p">,</span>
+                        <span class="n">sens_uq</span><span class="p">,</span>
+                        <span class="n">eps</span><span class="p">,</span>
+                        <span class="n">amplification</span><span class="p">,</span>
+                        <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">_comp_ARNN_batch</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+                <span class="n">dataframes</span> <span class="o">=</span> <span class="n">_ARNN_dataframe_pred</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+                <span class="n">dataframes</span> <span class="o">=</span> <span class="n">_ARNN_dataframe_pred</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">labels</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span> <span class="k">for</span> <span class="n">out_name</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span>
+                <span class="p">]</span>
+                <span class="n">dataframes</span> <span class="o">=</span> <span class="n">_ARNN_dataframe_pred</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+                <span class="n">sens_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sens_dict</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+                <span class="n">dict_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">sens_analysis</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;plot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">track</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">dataframes</span><span class="p">):</span>
+                    <span class="n">df</span><span class="p">,</span> <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">_model_pred</span><span class="p">(</span>
+                        <span class="n">m</span><span class="p">,</span>
+                        <span class="n">data_handle</span><span class="p">,</span>
+                        <span class="n">df</span><span class="p">,</span>
+                        <span class="n">n</span><span class="p">,</span>
+                        <span class="n">track</span><span class="p">,</span>
+                        <span class="n">batch_size</span><span class="p">,</span>
+                        <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span>
+                        <span class="n">sens_analysis</span><span class="o">=</span><span class="n">sens_analysis</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">dict_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sens_dict</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sens_dict</span><span class="p">:</span>
+                    <span class="n">sens_dict</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">k</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dict_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="p">}</span>  <span class="c1"># same list structure as with batched approach</span>
+                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dict_list</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">sens_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">plot_sens</span><span class="p">:</span>
+                        <span class="n">_plot_sensitivities</span><span class="p">(</span>
+                            <span class="n">m</span><span class="p">,</span>
+                            <span class="n">sens_dict</span><span class="p">,</span>
+                            <span class="n">plot_sens</span><span class="p">,</span>
+                            <span class="n">method</span><span class="p">,</span>
+                            <span class="n">channel_names</span><span class="p">,</span>
+                            <span class="n">use_case</span><span class="p">,</span>
+                            <span class="n">orig_length</span><span class="p">,</span>
+                            <span class="n">sens_uq</span><span class="p">,</span>
+                            <span class="n">eps</span><span class="p">,</span>
+                            <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                        <span class="p">)</span>
+                <span class="n">sens_analysis</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;plot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">sens_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sens_dict</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">track</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">dataframes</span><span class="p">):</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">_model_pred</span><span class="p">(</span>
+                        <span class="n">m</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span>
+                    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="n">sens_list</span> <span class="o">=</span> <span class="n">sens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sens_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">sens_list</span>
+        <span class="k">return</span> <span class="n">dataframes</span><span class="p">,</span> <span class="n">sens_list</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dataframes</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ARNN_dataframe_pred</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    internal method to add predictions to dataframes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataframes : list of df</span>
+<span class="sd">        dataframes where the predction is added as columns.</span>
+<span class="sd">    pred : list of arrays</span>
+<span class="sd">        prediction to be added to the dataframes.</span>
+<span class="sd">    labels : list of str</span>
+<span class="sd">        column names.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Raised igf lengths of dataframes and pred does not match.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataframes : dataframes : list of df</span>
+<span class="sd">        dataframes with added predictions</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of lists does not match&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+        <span class="n">dataframes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dataframes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_comp_ARNN_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal Method to compute the batch of AR Models for faster computation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : Autoregressive model</span>
+<span class="sd">        Model for the prediction.</span>
+<span class="sd">    data_handle : Meas_handling class</span>
+<span class="sd">        Measurement handling that contains tracks.</span>
+<span class="sd">    tracks : list of str</span>
+<span class="sd">        list of tracks to compute prediction.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device for computation. The default is &#39;cpu&#39;.</span>
+<span class="sd">    loss_fkt : nn.Loss, optional</span>
+<span class="sd">        Loss function for training. The default is None.</span>
+<span class="sd">    comp_gradients : bool, optional</span>
+<span class="sd">        If True, gradients of the prediction w.r.t. inputs are computed.</span>
+<span class="sd">        The default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    if loss_ft=None:</span>
+<span class="sd">        list of torch.Tensor</span>
+<span class="sd">            Torch Tensor of same length as tracks</span>
+<span class="sd">    if loss_ft=torch loss function:</span>
+<span class="sd">        list of (torch.Tensor, loss)</span>
+<span class="sd">            list of tuple of Torch Tensor of same length as input and loss</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sws</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_Datasets</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span>
+        <span class="n">keyword</span><span class="o">=</span><span class="n">tracks</span><span class="p">,</span>
+        <span class="n">rnn_window</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span><span class="p">,</span>
+        <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">forecast</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">batch_sw</span> <span class="o">=</span> <span class="n">batch_rec_SW</span><span class="p">(</span><span class="n">sws</span><span class="p">)</span>
+    <span class="n">forecast</span> <span class="o">=</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">forecast</span>
+
+    <span class="k">if</span> <span class="n">sens_params</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comp&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">sens_length</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sens_length&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sens_length</span><span class="p">:</span>
+            <span class="c1"># commonly shared sens_length cannot be larger than smallest length in the batch</span>
+            <span class="n">add_zeros</span> <span class="o">=</span> <span class="p">[</span><span class="n">sw</span><span class="o">.</span><span class="n">add_zero</span> <span class="k">for</span> <span class="n">sw</span> <span class="ow">in</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">]</span>
+            <span class="n">min_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">zeros</span>
+                    <span class="k">for</span> <span class="n">le</span><span class="p">,</span> <span class="n">zeros</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch_sw</span><span class="o">.</span><span class="n">__lengths__</span><span class="p">(),</span> <span class="n">add_zeros</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sens_length</span> <span class="o">&gt;</span> <span class="n">min_length</span><span class="p">:</span>
+                <span class="n">sens_params</span><span class="p">[</span><span class="s2">&quot;sens_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">min_length</span>  <span class="c1"># update sensitivity length in params dict</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;INFO: Given sensitivity length was changed to </span><span class="si">{</span><span class="n">min_length</span><span class="si">}</span><span class="s2"> as the smallest length in the batch.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">_pred_ARNN_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">batch_sw</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+        <span class="n">prediction_sh</span><span class="p">,</span> <span class="n">sensitivities</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">results</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prediction_sh</span> <span class="o">=</span> <span class="n">_pred_ARNN_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">batch_sw</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+    <span class="c1"># Make List of prediction</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">:</span>
+        <span class="n">pred_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction_sh</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">sens_mean_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sensitivities</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+        <span class="n">pred_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction_sh</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">var_pred_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prediction_sh</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">sens_mean_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sensitivities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">sens_var_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sensitivities</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">orig_indizes</span> <span class="o">=</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">permutation</span><span class="p">()</span>
+        <span class="n">add_zeros</span> <span class="o">=</span> <span class="p">[</span><span class="n">sw</span><span class="o">.</span><span class="n">add_zero</span> <span class="k">for</span> <span class="n">sw</span> <span class="ow">in</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">]</span>
+
+        <span class="c1"># cut the predictions and gradient matrices to their original length</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">zeros</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">pred_list</span><span class="p">,</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">__lengths__</span><span class="p">(),</span> <span class="n">add_zeros</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">pred_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:,</span> <span class="p">:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">zeros</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">comp_sens</span> <span class="ow">and</span> <span class="n">sens_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sens_mean_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sens_mean_list</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">zeros</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">zeros</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">var_pred_list</span><span class="p">,</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">__lengths__</span><span class="p">(),</span> <span class="n">add_zeros</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">var_pred_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:,</span> <span class="p">:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">zeros</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">comp_sens</span> <span class="ow">and</span> <span class="n">sens_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">sens_var_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sens_var_list</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">zeros</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="c1"># sort the predictions and gradient matrices back to their original order</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">orig_indizes</span><span class="p">,</span> <span class="n">pred_list</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+            <span class="n">var_pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">orig_indizes</span><span class="p">,</span> <span class="n">var_pred_list</span><span class="p">))]</span>
+
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">sens_mean</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">orig_indizes</span><span class="p">,</span> <span class="n">sens_mean_list</span><span class="p">))]</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+                <span class="n">sens_var</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">orig_indizes</span><span class="p">,</span> <span class="n">sens_var_list</span><span class="p">))]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">le</span> <span class="o">=</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">__lengths__</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">pred_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="p">:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_zero</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+            <span class="n">var_pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">var_pred_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="p">:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_zero</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">sens_mean</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="n">sens_mean_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_zero</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]]</span>
+                <span class="k">if</span> <span class="n">sens_length</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="p">[</span><span class="n">sens_mean_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+                <span class="n">sens_var</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">[</span><span class="n">sens_var_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span> <span class="n">le</span> <span class="o">*</span> <span class="n">forecast</span> <span class="o">-</span> <span class="n">batch_sw</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_zero</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]]</span>
+                    <span class="k">if</span> <span class="n">sens_length</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="p">[</span><span class="n">sens_var_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">var_pred</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">var_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">var_pred</span><span class="p">)</span>
+
+    <span class="c1"># print(f&#39;Shapes of predictions: {[p.shape for p in pred]}&#39;)</span>
+    <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+        <span class="c1"># print(f&#39;Shapes of {method} matrices: {[s.shape for s in sens_mean]}\n&#39;)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span><span class="p">:</span>
+            <span class="n">sensitivity_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Mean&quot;</span><span class="p">:</span> <span class="n">sens_mean</span><span class="p">,</span> <span class="s2">&quot;Aleatoric_UQ&quot;</span><span class="p">:</span> <span class="n">sens_var</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sensitivity_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Point&quot;</span><span class="p">:</span> <span class="n">sens_mean</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">pred</span><span class="p">,</span> <span class="n">sensitivity_dict</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pred</span>
+
+
+<div class="viewcode-block" id="comp_error">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_error">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_error</span><span class="p">(</span>
+    <span class="n">test_df</span><span class="p">,</span>
+    <span class="n">out_sens</span><span class="p">,</span>
+    <span class="n">fs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pred&quot;</span><span class="p">],</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MSE&quot;</span><span class="p">],</span>
+    <span class="n">freq_metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">freq_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Error from a df with specific Names in the column</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    test_df : pandas DataFrame</span>
+<span class="sd">        DataFrame that must include the original output and the prediction</span>
+<span class="sd">        column name of the prediction must look like: &#39;out_sens_name&#39;.</span>
+<span class="sd">    out_sens : list of str</span>
+<span class="sd">        column names to observe</span>
+<span class="sd">    fs : float</span>
+<span class="sd">        sampling rate of the df for psd error computation.</span>
+<span class="sd">    names : list of str, optional</span>
+<span class="sd">        list of names that are appended to the original column.</span>
+<span class="sd">        The default is [&#39;pred&#39;].</span>
+<span class="sd">    metrics : list of str, optional</span>
+<span class="sd">        Metrics to Evaluate in Time domain [&#39;MSE&#39;, &#39;MAE&#39;, &#39;MAPE&#39;].</span>
+<span class="sd">        The default is [&#39;MSE&#39;].</span>
+<span class="sd">    freq_range : tuple of float, optional</span>
+<span class="sd">        range in which the psd error is computed. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result_df : pandas DataFrame</span>
+<span class="sd">        DataFrame with errors as index and names as columns.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Based on the examples in comp_batch. Prediction of point Metrics</span>
+
+<span class="sd">    &gt;&gt;&gt; from softsensor.eval_tools import comp_error</span>
+<span class="sd">    &gt;&gt;&gt; comp_error(dataframes[0], out_sens=[&#39;out&#39;], names=[&#39;ARNN&#39;, &#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;],</span>
+<span class="sd">                   metrics=[&#39;MSE&#39;, &#39;MAE&#39;], freq_range=None)</span>
+<span class="sd">             ARNN  Homosc_ARNN    SepMVE</span>
+<span class="sd">    out_MSE  1.297152     1.297152  1.297152</span>
+<span class="sd">    out_MAE  0.924926     0.924926  0.924926</span>
+
+
+<span class="sd">    Prediction of Distributional Metrics</span>
+
+<span class="sd">    &gt;&gt;&gt; comp_error(dataframes[0], out_sens=[&#39;out&#39;], names=[&#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;],</span>
+<span class="sd">                   metrics=[&#39;NLL&#39;, &#39;ECE&#39;], freq_range=None)</span>
+<span class="sd">             Homosc_ARNN    SepMVE</span>
+<span class="sd">    out_NLL     0.630110  0.678553</span>
+<span class="sd">    out_ECE     0.023137  0.083637</span>
+
+<span class="sd">    Prediction of Statistical Metrics</span>
+
+<span class="sd">    &gt;&gt;&gt; comp_error(dataframes[0], out_sens=[&#39;out&#39;], names=[&#39;ARNN&#39;, &#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;],</span>
+<span class="sd">                   metrics=[&#39;JSD&#39;, &#39;Wasserstein&#39;], freq_range=None)</span>
+<span class="sd">                         ARNN  Homosc_ARNN    SepMVE</span>
+<span class="sd">    out_JSD          0.680494     0.680494  0.680494</span>
+<span class="sd">    out_Wasserstein  0.073267     0.073267  0.073267</span>
+
+
+<span class="sd">    Prediction of Metrics in frequency domain (PSD)</span>
+
+<span class="sd">    &gt;&gt;&gt; comp_error(dataframes[0], out_sens=[&#39;out&#39;], names=[&#39;ARNN&#39;, &#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;],</span>
+<span class="sd">                   metrics=None, freq_metrics=[&#39;MSLE&#39;], fs=100, freq_range=(5, 25))</span>
+<span class="sd">                      ARNN  Homosc_ARNN    SepMVE</span>
+<span class="sd">    out_PSD_MSLE  0.000864     0.000864  0.000864</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">metr_err</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">comp_metrics</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+            <span class="n">metr_err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">out_sens</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="n">metr_err</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">metr_err</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">freq_metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">psd_err</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">freq_metrics</span><span class="p">:</span>
+            <span class="n">psd</span> <span class="o">=</span> <span class="n">comp_psd</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">freq_range</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">comp_metrics</span><span class="p">(</span><span class="n">psd</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+            <span class="n">psd_err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">err</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_PSD_</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">out_sens</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">psd_err</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">psd_err</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">freq_metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">metr_err</span><span class="p">,</span> <span class="n">psd_err</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">freq_metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">result_df</span> <span class="o">=</span> <span class="n">psd_err</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">freq_metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">result_df</span> <span class="o">=</span> <span class="n">metr_err</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">result_df</span></div>
+
+
+
+<div class="viewcode-block" id="comp_psd">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_psd">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_psd</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pred&quot;</span><span class="p">],</span> <span class="n">freq_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the MLPE of the PSD&#39;s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    test_df : pandas DataFrame</span>
+<span class="sd">        DataFrame that must include the original output and the prediction</span>
+<span class="sd">        column name of the prediction must look like: &#39;out_sens_name&#39;.</span>
+<span class="sd">    out_sens : list of str</span>
+<span class="sd">        column names to observe</span>
+<span class="sd">    fs : float</span>
+<span class="sd">        sampling rate of the df for psd error computation.</span>
+<span class="sd">    names : list of str, optional</span>
+<span class="sd">        list of names that are appended to the original column.</span>
+<span class="sd">        The default is [&#39;pred&#39;].</span>
+<span class="sd">    freq_range : tuple of float, optional</span>
+<span class="sd">        range in which the psd error is computed. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    psd_error : matrix of shape [len(out_sens), len(names)]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">psd_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">temp_n</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">out_sens</span><span class="p">):</span>
+        <span class="n">f</span><span class="p">,</span> <span class="n">psd_original</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">welch</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">freq_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">psd_original</span> <span class="o">=</span> <span class="n">psd_original</span><span class="p">[(</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[(</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="n">temp_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">psd_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psd_original</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">psd_original</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="n">f</span><span class="p">,</span> <span class="n">psd_mod</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">welch</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">freq_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">psd_mod</span> <span class="o">=</span> <span class="n">psd_mod</span><span class="p">[(</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[(</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">f</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+            <span class="n">temp_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">psd_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psd_mod</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">psd_mod</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
+
+    <span class="n">psd_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">psd_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">psd_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">psd_array</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">temp_n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">psd_df</span></div>
+
+
+
+<div class="viewcode-block" id="comp_metrics">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_metrics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_metrics</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pred&quot;</span><span class="p">],</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;MSE&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the Errors in Time domain</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    test_df : pandas DataFrame</span>
+<span class="sd">        DataFrame that must include the original output and the prediction</span>
+<span class="sd">        column name of the prediction must look like: &#39;out_sens_name&#39;.</span>
+
+<span class="sd">        if metric is uncertainty metric:</span>
+<span class="sd">            column name of the uncertainty must look like: &#39;uncertainty_{out_sens}_{name}&#39;.</span>
+
+<span class="sd">    out_sens : list of str</span>
+<span class="sd">        column names to observe</span>
+<span class="sd">    names : list of str, optional</span>
+<span class="sd">        list of names that are appended to the original column.</span>
+<span class="sd">        The default is [&#39;pred&#39;].</span>
+<span class="sd">    metrics : list of str, optional</span>
+<span class="sd">        Metrics to Evaluate in Time domain [&#39;MSE&#39;, &#39;MAE&#39;, &#39;MAPE&#39;].</span>
+<span class="sd">        The default is [&#39;MSE&#39;].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    error : matrix of shape [len(out_sens), len(names)]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point_metrics</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;MSE&quot;</span><span class="p">:</span> <span class="n">metr</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">,</span>
+        <span class="s2">&quot;MAE&quot;</span><span class="p">:</span> <span class="n">metr</span><span class="o">.</span><span class="n">mean_absolute_error</span><span class="p">,</span>
+        <span class="s2">&quot;MAPE&quot;</span><span class="p">:</span> <span class="n">metr</span><span class="o">.</span><span class="n">mean_absolute_percentage_error</span><span class="p">,</span>
+        <span class="s2">&quot;MSLE&quot;</span><span class="p">:</span> <span class="n">metr</span><span class="o">.</span><span class="n">mean_squared_log_error</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">uncertainty_metrics</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse</span><span class="p">,</span>
+        <span class="s2">&quot;R2&quot;</span><span class="p">:</span> <span class="n">r2</span><span class="p">,</span>
+        <span class="s2">&quot;Corr&quot;</span><span class="p">:</span> <span class="n">pearson</span><span class="p">,</span>
+        <span class="s2">&quot;NLL&quot;</span><span class="p">:</span> <span class="n">nll</span><span class="p">,</span>
+        <span class="s2">&quot;RMV&quot;</span><span class="p">:</span> <span class="n">rmv</span><span class="p">,</span>
+        <span class="s2">&quot;CRPS&quot;</span><span class="p">:</span> <span class="n">crps</span><span class="p">,</span>
+        <span class="s2">&quot;Het&quot;</span><span class="p">:</span> <span class="n">heteroscedasticity</span><span class="p">,</span>
+        <span class="s2">&quot;PICP&quot;</span><span class="p">:</span> <span class="n">picp</span><span class="p">,</span>
+        <span class="s2">&quot;MPIW&quot;</span><span class="p">:</span> <span class="n">mpiw</span><span class="p">,</span>
+        <span class="s2">&quot;ECE&quot;</span><span class="p">:</span> <span class="n">ece</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">out_sens</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;KLD&quot;</span><span class="p">,</span> <span class="s2">&quot;JSD&quot;</span><span class="p">,</span> <span class="s2">&quot;Wasserstein&quot;</span><span class="p">]:</span>
+        <span class="n">nam</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">out_sens</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">out_sens</span><span class="p">]</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="n">nam</span><span class="p">]))),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">out_sens</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">point_metrics</span><span class="p">:</span>
+                <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">point_metrics</span><span class="p">[</span><span class="n">metric</span><span class="p">](</span><span class="n">test_df</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">uncertainty_metrics</span><span class="p">:</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">variance</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_var&quot;</span><span class="p">]</span>
+                <span class="p">]</span>
+                <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                    <span class="n">uncertainty_metrics</span><span class="p">[</span><span class="n">metric</span><span class="p">](</span><span class="n">mean</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">variance</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;KLD&quot;</span><span class="p">:</span>
+                <span class="n">p_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+                <span class="n">p_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">p_m</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;WARNING: Histogram contains zero elements.&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;KL Divergence will result in infinite values.&quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;Consider using the Wasserstein Distance or Jensen Shannon Divergence instead&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kl_div</span><span class="p">(</span><span class="n">p_x</span><span class="p">,</span> <span class="n">p_m</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;JSD&quot;</span><span class="p">:</span>
+                <span class="n">p_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+                <span class="n">p_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">jensenshannon</span><span class="p">(</span><span class="n">p_x</span><span class="p">,</span> <span class="n">p_m</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;Wasserstein&quot;</span><span class="p">:</span>
+                <span class="n">p_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+                <span class="n">p_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">wasserstein_distance</span><span class="p">(</span><span class="n">p_x</span><span class="p">,</span> <span class="n">p_m</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;log_area&quot;</span><span class="p">:</span>
+                <span class="c1"># err = log_area_error(test_df[f&#39;{s}_{n}&#39;], test_df[s], test_df.index)</span>
+                <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_area_error</span><span class="p">(</span>
+                    <span class="n">test_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">test_df</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">test_df</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">error</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_comp_mean_metrics_single_track</span><span class="p">(</span>
+    <span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">model_names</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">freq_range</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the metric scores of models on a single track</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    models: list[nn.Module]</span>
+<span class="sd">        Torch models to evaluate</span>
+<span class="sd">    data_handle: Datahandle</span>
+<span class="sd">        Datahandle that contains track</span>
+<span class="sd">    track: String</span>
+<span class="sd">        Name of the track to evaluate</span>
+<span class="sd">    fs : float</span>
+<span class="sd">        Sampling rate of the df for psd error computation.</span>
+<span class="sd">    model_names: list[string]</span>
+<span class="sd">        Names of the models</span>
+<span class="sd">    metrics: list[string]</span>
+<span class="sd">        Names of the metrics to evaluate</span>
+<span class="sd">    freq_range : tuple of float, optional</span>
+<span class="sd">        range in which the psd error is computed. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scores_df: dict[str, float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred_df</span> <span class="o">=</span> <span class="n">comp_pred</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">model_names</span><span class="p">)</span>
+    <span class="n">scores_df</span> <span class="o">=</span> <span class="n">comp_error</span><span class="p">(</span>
+        <span class="n">pred_df</span><span class="p">,</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">model_names</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">freq_range</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scores_df</span>
+
+
+<div class="viewcode-block" id="comp_mean_metrics">
+<a class="viewcode-back" href="../../eval_tools.html#softsensor.eval_tools.comp_mean_metrics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comp_mean_metrics</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">model_names</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">freq_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the mean metric scores of models on the test tracks</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    models: list[nn.Module]</span>
+<span class="sd">        Torch models to evaluate</span>
+<span class="sd">    data_handle: Datahandle</span>
+<span class="sd">        Datahandle that contains track</span>
+<span class="sd">    fs : float</span>
+<span class="sd">        Sampling rate of the df for psd error computation.</span>
+<span class="sd">    model_names: list[string]</span>
+<span class="sd">        Names of the models</span>
+<span class="sd">    metrics: list[string]</span>
+<span class="sd">        Names of the metrics to evaluate</span>
+<span class="sd">    freq_range : tuple of float, optional</span>
+<span class="sd">        range in which the psd error is computed. The default is None.</span>
+<span class="sd">    reduce : bool, optional</span>
+<span class="sd">        If True we compute the mean scores over all output variables. The default is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scores_df: dict[str, float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">track_scores</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_comp_mean_metrics_single_track</span><span class="p">(</span>
+            <span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">model_names</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">freq_range</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span>
+    <span class="p">]</span>
+    <span class="n">mean_scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">track_scores</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">mean_scores</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_sens_analysis</span><span class="p">(</span><span class="n">sens_analysis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the validity of the sensitivity analysis dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sens_analysis : dict</span>
+<span class="sd">        Dictionary that defines if and how a sensitivity analysis is computed for the prediction.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    if sens_analysis is None:</span>
+<span class="sd">        Flattened dict (None), method (empty string), comp_sens (False).</span>
+<span class="sd">    else:</span>
+<span class="sd">        Flattened dict (from input argument)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sens_analysis</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">sens_analysis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">sens_analysis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comp&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">plot_sens</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">sens_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;comp&quot;</span><span class="p">:</span> <span class="n">comp_sens</span><span class="p">,</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span> <span class="n">plot_sens</span><span class="p">}</span>
+        <span class="n">sens_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sens_params</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sens_params</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">sens_params</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_sensitivities</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">sens_dict</span><span class="p">,</span>
+    <span class="n">plot_sens</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">,</span>
+    <span class="n">ch_names</span><span class="p">,</span>
+    <span class="n">use_case</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">orig_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">sens_uq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">amplification</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the results of the sensitivity analysis for every item in the sensitivity dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plot_sens</span> <span class="o">=</span> <span class="n">plot_sens</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot_sens</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">plot_sens</span>
+    <span class="k">if</span> <span class="n">plot_sens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Invalid value given for key &quot;plot&quot;! &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Expected True, False or &quot;all&quot;, got &quot;</span><span class="si">{</span><span class="n">plot_sens</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">sens_dict</span> <span class="k">if</span> <span class="n">plot_sens</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">sens_dict</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">pred_result</span><span class="p">,</span> <span class="n">sens_item</span> <span class="ow">in</span> <span class="n">sens_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">batched</span><span class="p">:</span>  <span class="c1"># only for comp_batch method</span>
+            <span class="n">sens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">sens_item</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### </span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">-based Sensitivity analysis results for &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> model, avg. over </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sens_item</span><span class="p">)</span><span class="si">}</span><span class="s2"> test tracks, </span><span class="si">{</span><span class="n">pred_result</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> prediction ###&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sens</span> <span class="o">=</span> <span class="n">sens_item</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### </span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">-based Sensitivity analysis results for &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> model, </span><span class="si">{</span><span class="n">pred_result</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> prediction ###&quot;</span>
+            <span class="p">)</span>
+        <span class="n">plot_sens_analysis</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">sens</span><span class="p">,</span>
+            <span class="n">ch_names</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">use_case</span><span class="o">=</span><span class="n">use_case</span><span class="p">,</span>
+            <span class="n">orig_length</span><span class="o">=</span><span class="n">orig_length</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sens_uq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">eps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">plot_uncertainty_sens</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ch_names</span><span class="p">,</span> <span class="n">use_case</span><span class="p">,</span> <span class="n">amplification</span><span class="p">,</span> <span class="n">save_path</span>
+        <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datasets &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Datasets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/datasets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.datasets">
+<span id="datasets"></span><h1>Datasets<a class="headerlink" href="#module-softsensor.datasets" title="Link to this heading"></a></h1>
+<p>Created on Mon Feb 27 18:16:57 2023</p>
+<p>The methods and classes considered define the type of data set used. They are
+Sliding Windows over the individual time series out of pd.DataFrames
+&#64;author: Tobias Westmeier CR/AMP4</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.datasets.SlidingWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.datasets.</span></span><span class="sig-name descname"><span class="pre">SlidingWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Add_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#SlidingWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.SlidingWindow" title="Link to this definition"></a></dt>
+<dd><p>Initialize a sliding window class from a pandas Dataframe in
+torch.utils.Dataset format with a tuple of input and output data
+The dataframe is split into individual tensors with a length of windowsize
+and width if len(input_columns) using a sliding window approach for the
+input data
+if rnn_window is used, two tensors are generated for each time step, where
+the additional tensor defines the past output data with length of
+rnn_window and width of len(output_columns)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – pandas DataFrame with named columns and time dependent data.</p></li>
+<li><p><strong>windowsize</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – sliding window length.</p></li>
+<li><p><strong>output_columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – list of columns used for output.</p></li>
+<li><p><strong>input_columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – list of columns used for input.</p></li>
+<li><p><strong>Add_zeros</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – Adds zeros at the beginning of the time series to generate a dataset
+with as many inputs as the length of the windowsize.
+The default is False.</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – use an additional sliding window as input in which the past output
+values are saved. The default is None.</p></li>
+<li><p><strong>pre_comp</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – precomputed solution for models with student forcing used for second
+input instead of output columns. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The use of a recurrent time window (rnn_window) ensures that zeros are
+artificially placed at the beginning of the time series to keep the
+dimension of the time series constant in the output
+SlidingWindow.__len__() returns length of df). If a rnn_window is
+specified, the time series is shortened. If the output length is to be
+kept, Add_zeros=True must be used.</p>
+<p class="rubric">Examples</p>
+<p>Example of a pure feed forward SlidingWindow dataset</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.datasets</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;in_col&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;out_col&#39;: np.linspace(100, 0, 101)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sw</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">SlidingWindow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;out_col&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;in_col&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
+<span class="go">92</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">(tensor([[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]]), tensor([[91.]]))</span>
+</pre></div>
+</div>
+<p>Example of a  SlidingWindow dataset with recurrent connection</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.datasets</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;in_col&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;in_col2&#39;: np.linspace(0, 100, 101),</span>
+<span class="go">         &#39;out_col&#39;: np.linspace(100, 0, 101)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sw</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">SlidingWindow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;out_col&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;in_col&#39;</span><span class="p">],</span> <span class="n">rnn_window</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
+<span class="go">101</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">((tensor([[0., 1., 2.]]), tensor([[  0.,   100., 99.]])), tensor([[98.]]))</span>
+</pre></div>
+</div>
+<p>Example of a  SlidingWindow dataset with recurrent connection and
+precomputed prediction</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.datasets</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;in_col&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;in_col2&#39;: np.linspace(0, 100, 101),</span>
+<span class="go">         &#39;out_col&#39;: np.linspace(100, 0, 101),</span>
+<span class="go">         &#39;out_col_precomp&#39;: np.linspace(100, 0, 101) + 100}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sw</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">SlidingWindow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;out_col&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;in_col&#39;</span><span class="p">],</span> <span class="n">rnn_window</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="go">                          pre_comp=[&#39;out_col_precomp&#39;])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">())</span>
+<span class="go">101</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">((tensor([[0., 1., 2.]]), tensor([[  0., 200., 199.]])), tensor([[98.]]))</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.SlidingWindow.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#SlidingWindow.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.SlidingWindow.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Takes index and gives back time window for input and subsequent target
+output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int: the starting point for the time window</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – if rnn_window is None: Tensor of shape
+[len(input_columns), windowsize]
+if rnn_windwo is not None: tuple of Tensors with shape
+([len(input_columns), windowsize], [len(output_columns), rnn_window])</p></li>
+<li><p><strong>y</strong> (<em>torch.Tensor</em>) – Tensor of shape [output_channels, 1]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.SlidingWindow.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#SlidingWindow.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.SlidingWindow.__len__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number_of_samples</strong> – Samples in Dataset</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.datasets.batch_rec_SW">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.datasets.</span></span><span class="sig-name descname"><span class="pre">batch_rec_SW</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_sw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#batch_rec_SW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.batch_rec_SW" title="Link to this definition"></a></dt>
+<dd><p>Batching of multiple sliding window classes for parallelisation purposes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>list_of_sw</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference internal" href="#softsensor.datasets.SlidingWindow" title="softsensor.datasets.SlidingWindow"><em>SlidingWindow</em></a>) – list of individual SlidingWindow classes for batching</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.batch_rec_SW.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#batch_rec_SW.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.batch_rec_SW.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Takes index and gives back time window for input and subsequent target
+output. Ouput is batches for individual time series.</p>
+<p>batch_size depends on the numbr of SlidingWindow datasaets that have
+.__len__() &gt;= index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int: the starting point for the time window</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>(torch.Tensor, torch.Tensor)</em>) – Tensor with shape
+([batch_size, len(input_columns), windowsize], [batch_size, len(output_columns), rnn_window])</p></li>
+<li><p><strong>y</strong> (<em>torch.Tensor</em>) – Tensor of shape [batch_size, output_channels, 1]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.batch_rec_SW.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#batch_rec_SW.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.batch_rec_SW.__len__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number_of_samples</strong> – Samples in Dataset</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.batch_rec_SW.permutation">
+<span class="sig-name descname"><span class="pre">permutation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#batch_rec_SW.permutation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.batch_rec_SW.permutation" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>list of int dim</strong> – returns original indizes before permutation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>[len(list_of_sw)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.datasets.ff_SlidingWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.datasets.</span></span><span class="sig-name descname"><span class="pre">ff_SlidingWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windowsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Add_zeros</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#ff_SlidingWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.ff_SlidingWindow" title="Link to this definition"></a></dt>
+<dd><p>Subclass for SlidingWindow class (feed forward)
+two tensors are generated for each time step, where one tensor defines the
+input x  and the second one the past output data with length of
+rnn_window and width of len(output_columns)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>windowsize</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – sliding window length.</p></li>
+<li><p><strong>data_x</strong> (<em>torch.tensor</em>) – input data</p></li>
+<li><p><strong>data_y</strong> (<em>torch.tensor</em>) – output data</p></li>
+<li><p><strong>Add_zeros</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Adds zeros at the beginning of the time series with length of
+windowsize-1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.ff_SlidingWindow.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#ff_SlidingWindow.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.ff_SlidingWindow.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Takes index and gives back time window for input and subsequent target
+output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int: the starting point for the time window</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – shape: [len(input_columns), windowsize]</p></li>
+<li><p><strong>y</strong> (<em>torch.Tensor</em>) – Tensor of shape [output_channels, 1]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.ff_SlidingWindow.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#ff_SlidingWindow.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.ff_SlidingWindow.__len__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number_of_samples</strong> – Samples in Dataset</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.datasets.rec_SlidingWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.datasets.</span></span><span class="sig-name descname"><span class="pre">rec_SlidingWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windowsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_y_pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#rec_SlidingWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.rec_SlidingWindow" title="Link to this definition"></a></dt>
+<dd><p>Subclass for SlidingWindow class
+two tensors are generated for each time step, where one tensor defines the
+input x  and the second one the past output data with length of
+rnn_window and width of len(output_columns)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>windowsize</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – sliding window length.</p></li>
+<li><p><strong>data_x</strong> (<em>torch.tensor</em>) – input data</p></li>
+<li><p><strong>data_y</strong> (<em>torch.tensor</em>) – output data as well as data that serves as second input</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – use an additional sliding window as input in which the past output
+values are saved. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.rec_SlidingWindow.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#rec_SlidingWindow.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.rec_SlidingWindow.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Takes index and gives back time window for input and subsequent target
+output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int: the starting point for the time window</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – tuple of Tensors with shape
+([len(input_columns), windowsize], [len(output_columns), rnn_window])</p></li>
+<li><p><strong>y</strong> (<em>torch.Tensor</em>) – Tensor of shape [output_channels, 1]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.datasets.rec_SlidingWindow.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/datasets.html#rec_SlidingWindow.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.datasets.rec_SlidingWindow.__len__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number_of_samples</strong> – Samples in Dataset</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

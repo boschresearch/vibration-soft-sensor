@@ -1,0 +1,721 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.train_model &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.train_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.train_model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.stab_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">const_stab</span><span class="p">,</span> <span class="n">none_stab</span><span class="p">,</span> <span class="n">Stability_Criterion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.stab_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stability_Loss</span>
+
+
+<div class="viewcode-block" id="train_model">
+<a class="viewcode-back" href="../../train_model.html#softsensor.train_model.train_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">max_epochs</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">(),</span> <span class="n">val_loader</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">patience</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stabelizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">local_wd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">give_results</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rel_perm</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    training Function for Autoregressive Modelling of Time Series</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : nn.Module</span>
+<span class="sd">        model must have a forward function to predict the output</span>
+<span class="sd">    train_loader : dataloader or list of dataloader</span>
+<span class="sd">        dataloader for training if Model_Type is Feed_Forward or AR otherwise</span>
+<span class="sd">        list of dataloader.</span>
+<span class="sd">    max_epochs : int</span>
+<span class="sd">        Maximum number rof training epochs.</span>
+<span class="sd">    optimizer : torch.optim</span>
+<span class="sd">        optimizer with trainable parameters of the model.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device for computation. The default is &#39;cpu&#39;.</span>
+<span class="sd">    criterion : nn.Loss, optional</span>
+<span class="sd">        Loss function for training. The default is nn.MSELoss().</span>
+<span class="sd">    val_loader : dataloader or list of dataloader, optional</span>
+<span class="sd">        dataloader for training if Model_Type is Feed_Forward or AR otherwise</span>
+<span class="sd">        list of dataloader. The default is None.</span>
+<span class="sd">    patience : int, optional</span>
+<span class="sd">        patience for the val loader (only needed if val_loader is not None).</span>
+<span class="sd">        The default is None.</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        True prints result of every epoch. The default is False.</span>
+<span class="sd">    stabelizer : float, optional</span>
+<span class="sd">        stability score for Model_Type &#39;AR&#39;. The default is None.</span>
+<span class="sd">    local_wd : float, optional</span>
+<span class="sd">        Applies a local weight decay on all weights that interact with the</span>
+<span class="sd">        recurrent input for Model_Type &#39;AR&#39;. The default is None.</span>
+<span class="sd">    give_results : bool, optional</span>
+<span class="sd">        Prints results if True in every epoch. The default is True.</span>
+<span class="sd">    rel_perm : float, optional</span>
+<span class="sd">        relative permutation applied to the input to prevent overfitting.</span>
+<span class="sd">        The default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : dict</span>
+<span class="sd">        dictionary with arrays for train_loss, val_loss and stability_score.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Data Preprocessing</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 1001)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(1001),</span>
+<span class="sd">             &#39;inp2&#39;: np.random.randn(1001),</span>
+<span class="sd">             &#39;out&#39;: np.random.randn(1001)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                   [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">    </span>
+
+<span class="sd">    Train an ARNN</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.train_model import train_model</span>
+<span class="sd">    &gt;&gt;&gt; import torch.optim as optim</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; model = am.ARNN(2, 1, 10, 10 , [16])</span>
+<span class="sd">    &gt;&gt;&gt; train_dat, val_dat = handler.give_torch_loader(10, &#39;training&#39;, rnn_window=10,</span>
+<span class="sd">                                                       shuffle=True)</span>
+<span class="sd">    &gt;&gt;&gt; opt = optim.Adam(model.parameters(), lr=1e-4)</span>
+<span class="sd">    &gt;&gt;&gt; crit = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; results = train_model(model=model, train_loader=train_dat, max_epochs=5,</span>
+<span class="sd">                              optimizer=opt, device=&#39;cpu&#39;, criterion=crit, stabelizer=5e-3,</span>
+<span class="sd">                              val_loader=val_dat, print_results=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(results[&#39;val_loss&#39;])</span>
+
+<span class="sd">    Train an ARNN with stabilits scheduling</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.train_model import train_model</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.stab_scheduler import get_scheduler</span>
+<span class="sd">    &gt;&gt;&gt; import torch.optim as optim</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; model = am.ARNN(2, 1, 10, 10 , [16])</span>
+<span class="sd">    &gt;&gt;&gt; stab = get_scheduler(&#39;log_lin&#39;, model, track_n=30)</span>
+<span class="sd">    &gt;&gt;&gt; train_dat, val_dat = handler.give_torch_loader(10, &#39;training&#39;, rnn_window=10,</span>
+<span class="sd">                                                       shuffle=True)</span>
+<span class="sd">    &gt;&gt;&gt; opt = optim.Adam(model.parameters(), lr=1e-4)</span>
+<span class="sd">    &gt;&gt;&gt; crit = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; results = train_model(model=model, train_loader=train_dat, max_epochs=5,</span>
+<span class="sd">                              optimizer=opt, device=&#39;cpu&#39;, criterion=crit, stabelizer=stab,</span>
+<span class="sd">                              val_loader=val_dat, print_results=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(results[&#39;stabelizer&#39;])</span>
+
+
+<span class="sd">    Train an ARNN with Mean Variance Estimation (MVE)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.train_model import train_model</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.losses import HeteroscedasticNLL</span>
+<span class="sd">    &gt;&gt;&gt; import torch.optim as optim</span>
+<span class="sd">    &gt;&gt;&gt; mean_model = am.ARNN(2, 1, 10, 10 , [16])</span>
+<span class="sd">    &gt;&gt;&gt; model = am.SeparateMVEARNN(2, 1, 10, 10, mean_model, [16])</span>
+<span class="sd">    &gt;&gt;&gt; train_dat, val_dat = handler.give_torch_loader(10, &#39;training&#39;, rnn_window=10,</span>
+<span class="sd">                                                       shuffle=True)</span>
+<span class="sd">    &gt;&gt;&gt; opt = optim.Adam(model.parameters(), lr=1e-4)</span>
+<span class="sd">    &gt;&gt;&gt; crit = HeteroscedasticNLL()</span>
+<span class="sd">    &gt;&gt;&gt; results = train_model(model=model, train_loader=train_dat, max_epochs=5,</span>
+<span class="sd">                              optimizer=opt, device=&#39;cpu&#39;, criterion=crit, stabelizer=5e-3,</span>
+<span class="sd">                              val_loader=val_dat, print_results=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(results[&#39;val_loss&#39;])</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Train an RNN</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.recurrent_models as rm</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.train_model import train_model</span>
+<span class="sd">    &gt;&gt;&gt; import torch.optim as optim</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; model = rm.RNN_DNN(2, 1, 10, 16, 1)</span>
+<span class="sd">    &gt;&gt;&gt; train_dat = handler.give_list(10, &#39;training&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; opt = optim.Adam(model.parameters(), lr=1e-4)</span>
+<span class="sd">    &gt;&gt;&gt; crit = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; results = train_model(model=model, train_loader=train_dat, max_epochs=5,</span>
+<span class="sd">                              optimizer=opt, device=&#39;cpu&#39;, criterion=crit,</span>
+<span class="sd">                              val_loader=train_dat, print_results=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(results[&#39;val_loss&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">val_loader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">early_stopping</span><span class="p">(</span><span class="n">patience</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">early_stopping</span><span class="p">(</span><span class="n">patience</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="p">[],</span>
+               <span class="s1">&#39;val_loss&#39;</span><span class="p">:</span> <span class="p">[],</span>
+               <span class="s1">&#39;stability_score&#39;</span><span class="p">:</span> <span class="p">[],</span>
+               <span class="s1">&#39;stabelizer&#39;</span><span class="p">:</span> <span class="p">[]</span>
+               <span class="p">}</span>
+
+    <span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="c1"># check weather stabelizer is scheduled or float value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stabelizer</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">stabelizer</span> <span class="o">=</span> <span class="n">const_stab</span><span class="p">(</span><span class="n">stabelizer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stabelizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stabelizer</span> <span class="o">=</span> <span class="n">none_stab</span><span class="p">()</span>
+
+    <span class="n">Model_Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+    
+    <span class="c1"># Eval stability</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Model_Type</span> <span class="o">==</span> <span class="s1">&#39;AR&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">([</span><span class="n">stabelizer</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">]):</span>
+        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Stability_Criterion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        
+    <span class="c1"># Check if model is Bayesian (Bayesian Models need to be trained using the ELBO)</span>
+    <span class="n">train_crit</span> <span class="o">=</span> <span class="n">criterion</span>
+
+    <span class="c1"># Training Process</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">&lt;</span> <span class="n">max_epochs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">epoch</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="c1"># Training Step</span>
+        <span class="k">if</span> <span class="n">Model_Type</span> <span class="o">==</span> <span class="s1">&#39;AR&#39;</span><span class="p">:</span>
+            <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_AR_train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">train_crit</span><span class="p">,</span>
+                                  <span class="n">device</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">,</span> <span class="n">stabelizer</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Model_Type</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+            <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_RNN_train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">train_crit</span><span class="p">,</span>
+                                   <span class="n">device</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">,</span> <span class="n">stabelizer</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">,</span>
+                                   <span class="n">AR</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Model_Type</span> <span class="o">==</span> <span class="s1">&#39;AR_RNN&#39;</span><span class="p">:</span>
+            <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_RNN_train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">train_crit</span><span class="p">,</span>
+                                   <span class="n">device</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">,</span> <span class="n">stabelizer</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">,</span>
+                                   <span class="n">AR</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;invalid Model Type given. Possible Types are&quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;[&#39;Feed_Forward&#39;, &#39;AR&#39;, &#39;AR_Student_Forced&#39;, &#39;RNN&#39;, &#39;AR_RNN&#39;]&quot;</span><span class="p">)</span>
+
+        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_loss</span><span class="p">)</span>
+
+        <span class="c1"># Eval Val Loader</span>
+        <span class="k">if</span> <span class="n">val_loader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Model_Type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Feed_Forward&#39;</span><span class="p">,</span> <span class="s1">&#39;AR&#39;</span><span class="p">]:</span>
+                <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_ff_eval</span><span class="p">(</span><span class="n">val_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="c1"># elif Model_Type == &#39;AR_Student_Forced&#39;:</span>
+            <span class="c1">#    temp_loss = _ff_eval_batch(val_loader, model, criterion, device)</span>
+            <span class="k">elif</span> <span class="s1">&#39;RNN&#39;</span> <span class="ow">in</span> <span class="n">Model_Type</span><span class="p">:</span>
+                <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_RNN_eval</span><span class="p">(</span><span class="n">val_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">)</span>
+
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_loss</span><span class="p">)</span>
+
+        <span class="c1"># Eval stability</span>
+        <span class="k">if</span> <span class="n">Model_Type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AR&#39;</span><span class="p">,</span> <span class="s1">&#39;AR_Student_Forced&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">([</span><span class="n">stabelizer</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">]):</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Stability_Criterion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+        <span class="c1"># Print results if wanted</span>
+        <span class="k">if</span> <span class="n">print_results</span><span class="p">:</span>
+            <span class="n">_print_results</span><span class="p">(</span><span class="n">max_epochs</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="c1"># check early stopping</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">],</span> <span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">print_results</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Training Process finished by early stopping&#39;</span><span class="p">)</span>
+
+    <span class="c1"># load best parameter combination for network</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">_load_best_dict</span><span class="p">())</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="c1"># returns results if wanted</span>
+    <span class="k">if</span> <span class="n">give_results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stabelizer</span><span class="o">.</span><span class="n">track</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;stabelizer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stabelizer</span><span class="o">.</span><span class="n">stabs</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_AR_train</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span>
+              <span class="n">rel_perm</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stabelizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_wd</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Training for an Autoregressive Network</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloader : Dataloader</span>
+<span class="sd">        Training data.</span>
+<span class="sd">    model : Torch Neural Network</span>
+<span class="sd">        Network to train.</span>
+<span class="sd">    optimizer : torch.optim()</span>
+<span class="sd">        Optimizer for training Process.</span>
+<span class="sd">    criterion : torch Loss function</span>
+<span class="sd">        Criterion  e.g. nn.MSELoss()</span>
+<span class="sd">    device : torch.device</span>
+<span class="sd">        Device for computation.</span>
+<span class="sd">    rel_perm : float, optional</span>
+<span class="sd">        relative permutation applied to the input to prevent overfitting.</span>
+<span class="sd">        The default is 0.</span>
+<span class="sd">    stabelizer : float, optional</span>
+<span class="sd">        stability score for Model_Type &#39;AR&#39;. The default is None.</span>
+<span class="sd">    local_wd : float, optional</span>
+<span class="sd">        Applies a local weight decay on all weights that interact with the</span>
+<span class="sd">        recurrent input for Model_Type &#39;AR&#39;. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Torch.Tensor</span>
+<span class="sd">        Single entry tensor with loss</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">running_loss_train</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+        <span class="n">x_rec</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">_relative_permutation</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">x_rec</span> <span class="o">=</span> <span class="n">_relative_permutation</span><span class="p">(</span><span class="n">x_rec</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span>
+
+        <span class="n">stab</span> <span class="o">=</span> <span class="n">stabelizer</span><span class="o">.</span><span class="n">get_stab</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">stab</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">]):</span>
+            <span class="n">crit</span> <span class="o">=</span> <span class="n">Stability_Loss</span><span class="p">(</span><span class="n">criterion</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stab</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">crit</span> <span class="o">=</span> <span class="n">criterion</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">crit</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="n">running_loss_train</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">running_loss_train</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_RNN_train</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span>
+               <span class="n">rel_perm</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stabelizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local_wd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">AR</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Training for an Autoregressive Network</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloader : list of Dataloader (unshuffled)</span>
+<span class="sd">        Training data.</span>
+<span class="sd">    model : Torch Neural Network</span>
+<span class="sd">        Network to train.</span>
+<span class="sd">    optimizer : torch.optim()</span>
+<span class="sd">        Optimizer for training Process .</span>
+<span class="sd">    criterion : torch Loss function</span>
+<span class="sd">        Criterion  e.g. nn.MSELoss()</span>
+<span class="sd">    device : torch.device</span>
+<span class="sd">        Device for computation.</span>
+<span class="sd">    rel_perm : float, optional</span>
+<span class="sd">        relative permutation applied to the input to prevent overfitting.</span>
+<span class="sd">        The default is 0.</span>
+<span class="sd">    stabelizer : float, optional</span>
+<span class="sd">        stability score for Model_Type &#39;AR&#39;. The default is None.</span>
+<span class="sd">    local_wd : float, optional</span>
+<span class="sd">        Applies a local weight decay on all weights that interact with the</span>
+<span class="sd">        recurrent input for Model_Type &#39;AR&#39;. The default is None.</span>
+<span class="sd">    AR : bool, optional</span>
+<span class="sd">        True if recurrent model is autoregressive, default is False</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Torch.Tensor</span>
+<span class="sd">        Single entry tensor with loss</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">running_loss_train</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">,</span> <span class="s1">&#39;hidden_values&#39;</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">precomp_hidden_states</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">rl</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">AR</span><span class="p">:</span>
+                <span class="n">x_rec</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">_relative_permutation</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="n">x_rec</span> <span class="o">=</span> <span class="n">_relative_permutation</span><span class="p">(</span><span class="n">x_rec</span><span class="p">,</span> <span class="n">rel_perm</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+                
+            <span class="n">stab</span> <span class="o">=</span> <span class="n">stabelizer</span><span class="o">.</span><span class="n">get_stab</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">stab</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">]):</span>
+                <span class="n">crit</span> <span class="o">=</span> <span class="n">Stability_Loss</span><span class="p">(</span><span class="n">criterion</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stab</span><span class="p">,</span> <span class="n">local_wd</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">crit</span> <span class="o">=</span> <span class="n">criterion</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">crit</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+            
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">,</span> <span class="s1">&#39;hidden_values&#39;</span><span class="p">):</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">hidden_values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">hidden_values</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> 
+                   
+
+            <span class="n">rl</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        
+        <span class="n">running_loss_train</span> <span class="o">+=</span> <span class="n">rl</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">running_loss_train</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_RNN_eval</span><span class="p">(</span><span class="n">val_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluation for a Recurrent Neural Network</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloader : list of Dataloader (unshuffled)</span>
+<span class="sd">        Evaluation data.</span>
+<span class="sd">    model : Torch Neural Network</span>
+<span class="sd">        Network to train.</span>
+<span class="sd">    device : torch.device</span>
+<span class="sd">        Device for computation.</span>
+<span class="sd">    criterion : torch Loss function</span>
+<span class="sd">        Criterion e.g. nn.MSELoss()</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    running_loss_val : Torch.Tensor</span>
+<span class="sd">        Single entry tensor with loss</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vl</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">val_loader</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+        <span class="n">temp_loss</span> <span class="o">=</span> <span class="n">_ff_eval</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">vl</span> <span class="o">=</span> <span class="n">vl</span> <span class="o">+</span> <span class="n">temp_loss</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">vl</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ff_eval</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluation class for defined model classes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloader : Dataloader</span>
+<span class="sd">        Training data.</span>
+<span class="sd">    model : Torch Neural Network</span>
+<span class="sd">        Network to train.</span>
+<span class="sd">    criterion : torch Loss function</span>
+<span class="sd">        Criterion e.g. nn.MSELoss()</span>
+<span class="sd">    device : torch.device</span>
+<span class="sd">        Device for computation.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    running_loss_val : Torch.Tensor</span>
+<span class="sd">        Single entry tensor with loss</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">running_loss_val</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">if</span> <span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;Feed_Forward&#39;</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;AR&#39;</span><span class="p">:</span>
+            <span class="n">x_rec</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;AR_RNN&#39;</span><span class="p">:</span>
+            <span class="n">x_rec</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+
+        <span class="n">running_loss_val</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">running_loss_val</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="early_stopping">
+<a class="viewcode-back" href="../../train_model.html#softsensor.train_model.early_stopping">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">early_stopping</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Early Stopping funtion to prevent overfitting in the training process</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : pytorch Network</span>
+<span class="sd">        Model from which parameters are temporarily stored to keep best models</span>
+<span class="sd">    patience : int</span>
+<span class="sd">        Patience of the early stopping, precisely how many epochs without</span>
+<span class="sd">        an increase in performance are allowed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patience</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="early_stopping.call">
+<a class="viewcode-back" href="../../train_model.html#softsensor.train_model.early_stopping.call">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calling function, for given val_loss and model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        loss : list</span>
+<span class="sd">            list of val_loss, individual elements have to be torch dtype</span>
+<span class="sd">        model : pytorch Network</span>
+<span class="sd">            Network to store parameters from in case of improvement.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True to stop training, False to continue training.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">patience</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_dict</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="n">loss</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_dict</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="n">loss</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">loss</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">patience</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_min</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">loss</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">patience</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="n">temp_min</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function to store network parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : pytorch Network</span>
+<span class="sd">            Network to store parameters from in case of improvement.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_best_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading function to get best performing parameter combination</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        model_state_dict()</span>
+<span class="sd">            Best performing parameter combination to load into Network</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_print_results</span><span class="p">(</span><span class="n">max_e</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Printing function for training</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    max_e : int</span>
+<span class="sd">        maximum number of epochs to run.</span>
+<span class="sd">    train_loss : list</span>
+<span class="sd">        list of train_loss, individual elements have to be torch dtype</span>
+<span class="sd">    val_loss : list</span>
+<span class="sd">        list of val_loss, individual elements have to be torch dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">le</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">le</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%-60s</span><span class="s2">] </span><span class="si">%d%%</span><span class="s2">, epoch </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2"> SC: </span><span class="si">%f</span><span class="s2"> </span><span class="se">\r</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="nb">int</span><span class="p">((</span><span class="mi">60</span><span class="o">*</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="n">max_e</span><span class="p">)),</span> <span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="n">max_e</span><span class="p">),</span>
+                            <span class="n">e</span><span class="p">,</span> <span class="n">le</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%-60s</span><span class="s2">] </span><span class="si">%d%%</span><span class="s2">, epoch </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2"> </span><span class="se">\r</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="nb">int</span><span class="p">((</span><span class="mi">60</span><span class="o">*</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="n">max_e</span><span class="p">)),</span> <span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="n">max_e</span><span class="p">),</span>
+                            <span class="n">e</span><span class="p">,</span> <span class="n">le</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_relative_permutation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Permute input with gaussian noise</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : torch tensor</span>
+<span class="sd">        Tensor to be permuted.</span>
+<span class="sd">    sigma : float</span>
+<span class="sd">        realtive Std to permute input.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : torch tensor</span>
+<span class="sd">        permuted tensor.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">sigma</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">*</span><span class="n">scale</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">+</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

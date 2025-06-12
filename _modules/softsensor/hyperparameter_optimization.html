@@ -1,0 +1,1213 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.hyperparameter_optimization &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.hyperparameter_optimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.hyperparameter_optimization</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue May 10 11:00:36 2022</span>
+
+<span class="sd">@author: WET2RNG</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARNN</span><span class="p">,</span> <span class="n">SeparateMVEARNN</span><span class="p">,</span> <span class="n">DensityEstimationARNN</span><span class="p">,</span> <span class="n">QuantileARNN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.recurrent_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">AR_RNN</span><span class="p">,</span> <span class="n">RNN_DNN</span><span class="p">,</span> <span class="n">parr_RNN_DNN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.train_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.stab_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_scheduler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_batch</span><span class="p">,</span> <span class="n">_comp_ARNN_batch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.ensemble_wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncMCDropout</span><span class="p">,</span> <span class="n">AsyncMCDropoutMVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize_temperature</span><span class="p">,</span> <span class="n">TemperatureScaling</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.temporal_fusion_transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">TFT</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hyperopt</span><span class="w"> </span><span class="kn">import</span> <span class="n">fmin</span><span class="p">,</span> <span class="n">tpe</span><span class="p">,</span> <span class="n">STATUS_OK</span><span class="p">,</span> <span class="n">Trials</span>
+
+
+<div class="viewcode-block" id="random_search">
+<a class="viewcode-back" href="../../hyperparameter_optimization.html#softsensor.hyperparameter_optimization.random_search">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">random_search</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                <span class="n">parameters</span><span class="p">,</span> <span class="n">grid_params</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">reconfigure_criterion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">val_criterion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_prediction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s1">&#39;training&#39;</span><span class="p">,</span> <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    random search to efficiently optimize hyperparameters. </span>
+<span class="sd">    Returns parameters and best model for evaluation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the training and evaluation data</span>
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented</span>
+<span class="sd">        [&#39;ARNN&#39;, &#39;MCDO&#39;, &#39;MVE&#39;, &#39;Sep_MVE&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;,</span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;BNN&#39;, &#39;MVE_BNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    parameters : dict</span>
+<span class="sd">        dictionary of static parameters in the grid search.</span>
+<span class="sd">    grid_params : dict</span>
+<span class="sd">        dict of grid parameters with grid options as list or scipy stats function.</span>
+<span class="sd">        See examples:</span>
+<span class="sd">    max_iterations : int, optional</span>
+<span class="sd">        number of iterations. The default is 3</span>
+<span class="sd">    pretrained_model: str, optional</span>
+<span class="sd">        path to pretrained model to load as base model. The default is None</span>
+<span class="sd">    reconfigure_criterion: bool, optional</span>
+<span class="sd">        if True, the criterion is reconfigured with params from the grid. The default is False</span>
+<span class="sd">    val_criterion: nn.Loss function, optional</span>
+<span class="sd">        val_criterion to be used for validation instead of criterion. The default is None</span>
+<span class="sd">    val_prediction : bool, optional</span>
+<span class="sd">        if True, prediction on testing tracks in data_handle is used for</span>
+<span class="sd">        hyperparameter evaluation</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to run training on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    key : str, optional</span>
+<span class="sd">        &#39;training&#39; or &#39;short&#39;. Training uses whole dataloader, short just</span>
+<span class="sd">        subset for training. default is training</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        True prints results for every epoch. default is False</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result_df : pd.DataFrame</span>
+<span class="sd">        parameters and corrosponding results for each grid search step.</span>
+<span class="sd">    best_model : torch Model</span>
+<span class="sd">        best performing model.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Data Preprocessing</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t) ,</span>
+<span class="sd">             &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">             &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; list_of_df = [pd.DataFrame(d), pd.DataFrame(d)]</span>
+<span class="sd">    &gt;&gt;&gt; test_df = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t),</span>
+<span class="sd">                   &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">                   &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; test_df = [pd.DataFrame(test_df)]</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling(list_of_df, train_names=[&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="sd">                                   input_sensors=[&#39;sine_inp&#39;, &#39;cos_inp&#39;],</span>
+<span class="sd">                                   output_sensors=[&#39;out&#39;], fs=100,</span>
+<span class="sd">                                   test_dfs=test_df, test_names=[&#39;test&#39;])</span>
+
+<span class="sd">    Optimize an ARNN</span>
+
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import random_search</span>
+<span class="sd">    &gt;&gt;&gt; import scipy.stats as stats</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; grid_params = {&#39;lr&#39;: stats.loguniform(1e-4, 1e-1),</span>
+<span class="sd">                       &#39;optimizer&#39;: [&#39;Adam&#39;, &#39;SGD&#39;]}</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;ARNN&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 50,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; criterion = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; df, model = random_search(handler, criterion,</span>
+<span class="sd">                                  model_type, model_params, grid_params,</span>
+<span class="sd">                                  max_iterations=4, val_prediction=True)</span>
+<span class="sd">    run 1/4 finishes with loss 0.1794743835926056 and parameters {&#39;lr&#39;: 0.0009228490219458666, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 2/4 finishes with loss 0.16934655606746674 and parameters {&#39;lr&#39;: 0.00040497789386739904, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    run 3/4 finishes with loss 0.09789121896028519 and parameters {&#39;lr&#39;: 0.0033839123896820455, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 4/4 finishes with loss 0.0789249911904335 and parameters {&#39;lr&#39;: 0.00022746356317548106, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    </span>
+<span class="sd">    Optimize an ARNN with Mean Variance Estimation</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import grid_search</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.losses import DistributionalMSELoss</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;MVE&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 10,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        &#39;var_hidden_size&#39;: [8],</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; df, model = random_search(handler, DistributionalMSELoss(),</span>
+<span class="sd">                                  model_type, model_params, grid_params, max_iterations=4,</span>
+<span class="sd">                                  val_prediction=True, val_criterion=DistributionalMSELoss())</span>
+<span class="sd">    run 1/4 finishes with loss 0.11428132653236389 and parameters {&#39;lr&#39;: 0.00036427297324473465, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    run 2/4 finishes with loss 0.6519314646720886 and parameters {&#39;lr&#39;: 0.0023511068144571627, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    run 3/4 finishes with loss 0.14868338406085968 and parameters {&#39;lr&#39;: 0.0003292040157588834, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 4/4 finishes with loss 0.0994466096162796 and parameters {&#39;lr&#39;: 0.01498455784730249, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">):</span>
+        <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">grid_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid_params</span><span class="p">[</span><span class="n">entry</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">nd</span> <span class="o">=</span> <span class="p">{</span><span class="n">entry</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">grid_params</span><span class="p">[</span><span class="n">entry</span><span class="p">])}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nd</span> <span class="o">=</span> <span class="p">{</span><span class="n">entry</span><span class="p">:</span> <span class="n">grid_params</span><span class="p">[</span><span class="n">entry</span><span class="p">]</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()}</span>
+            <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">temp_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">nd</span><span class="p">}</span>
+
+        <span class="n">grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_dict</span><span class="p">)</span>
+
+    <span class="n">param_dict</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">gp</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="si">}</span><span class="s1"> started with parameters </span><span class="si">{</span><span class="n">gp</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span> <span class="o">=</span> <span class="n">_eval_grid_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span>
+                                                               <span class="n">pretrained_model</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="p">,</span> <span class="n">print_results</span><span class="p">,</span>
+                                                               <span class="n">calibration</span><span class="p">,</span> <span class="n">val_prediction</span><span class="p">,</span> <span class="n">val_criterion</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+        
+        <span class="c1"># Add parameters to list</span>
+        <span class="n">loss_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+        <span class="n">model_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">param_dict</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">results</span><span class="p">})</span>
+        <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="si">}</span><span class="s1"> finished with loss </span><span class="si">{</span><span class="n">val_loss</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span>
+              <span class="sa">f</span><span class="s1">&#39; and parameters </span><span class="si">{</span><span class="n">gp</span><span class="si">}</span><span class="s1">, time=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="si">}</span><span class="s1">s </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span>
+
+    <span class="c1"># return best model and results</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">param_dict</span><span class="p">)</span>
+    <span class="n">result_df</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_list</span>
+    <span class="n">best_model</span> <span class="o">=</span> <span class="n">model_list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">result_df</span><span class="p">,</span> <span class="n">best_model</span></div>
+
+
+
+<div class="viewcode-block" id="grid_search">
+<a class="viewcode-back" href="../../hyperparameter_optimization.html#softsensor.hyperparameter_optimization.grid_search">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">grid_search</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                <span class="n">parameters</span><span class="p">,</span> <span class="n">grid_params</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">val_criterion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_prediction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s1">&#39;training&#39;</span><span class="p">,</span> <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Grid search class to efficiently optimize hyperparameters. </span>
+<span class="sd">    Returns parameters and best model for evaluation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the training and evaluation data</span>
+
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented.</span>
+<span class="sd">        [&#39;ARNN&#39;, &#39;MCDO&#39;, &#39;MVE&#39;, &#39;Sep_MVE&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;,</span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;BNN&#39;, &#39;MVE_BNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    parameters : dict</span>
+<span class="sd">        dictionary of static parameters in the grid search.</span>
+<span class="sd">    grid_params : dict</span>
+<span class="sd">        dict of grid parameters with grid options as list.</span>
+<span class="sd">    pretrained_model: str, optional</span>
+<span class="sd">        path to pretrained model to load as base model. The default is None</span>
+<span class="sd">    reconfigure_criterion: bool, optional</span>
+<span class="sd">        if True, the criterion is reconfigured with params from the grid. The default is False</span>
+<span class="sd">    val_criterion: nn.Loss function, optional</span>
+<span class="sd">        val_criterion to be used for validation instead of criterion. The default is None</span>
+<span class="sd">    val_prediction : bool, optional</span>
+<span class="sd">        if True, prediction on testing tracks in data_hanlde is used for</span>
+<span class="sd">        hyperparameter evaluation</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to run training on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    key : str, optional</span>
+<span class="sd">        &#39;training&#39; or &#39;short&#39;. Training uses whole dataloader, short just</span>
+<span class="sd">        subset for training. default is training</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        True prints results for every epoch. default is False</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result_df : pd.DataFrame</span>
+<span class="sd">        parameters and corrosponding results for each grid search step.</span>
+<span class="sd">    best_model : torch Model</span>
+<span class="sd">        best performing model.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Data Preprocessing</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t) ,</span>
+<span class="sd">             &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">             &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; list_of_df = [pd.DataFrame(d), pd.DataFrame(d)]</span>
+<span class="sd">    &gt;&gt;&gt; test_df = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t),</span>
+<span class="sd">                   &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">                   &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; test_df = [pd.DataFrame(test_df)]</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling(list_of_df, train_names=[&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="sd">                                   input_sensors=[&#39;sine_inp&#39;, &#39;cos_inp&#39;],</span>
+<span class="sd">                                   output_sensors=[&#39;out&#39;], fs=100,</span>
+<span class="sd">                                   test_dfs=test_df, test_names=[&#39;test&#39;])</span>
+
+<span class="sd">    Optimize an ARNN</span>
+
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import grid_search</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; grid_params = {&#39;lr&#39;: [0.0001, 0.001],</span>
+<span class="sd">                       &#39;optimizer&#39;: [&#39;Adam&#39;, &#39;SGD&#39;]}</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;ARNN&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 50,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; criterion = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; df, model = grid_search(handler, criterion,</span>
+<span class="sd">                                model_type, model_params, grid_params,</span>
+<span class="sd">                                val_prediction=True)</span>
+<span class="sd">    run 1/4 finishes with loss 0.06058402732014656 and parameters {&#39;lr&#39;: 0.0001, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 2/4 finishes with loss 0.155076265335083 and parameters {&#39;lr&#39;: 0.0001, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    run 3/4 finishes with loss 0.14059486985206604 and parameters {&#39;lr&#39;: 0.001, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 4/4 finishes with loss 0.542301595211029 and parameters {&#39;lr&#39;: 0.001, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    </span>
+<span class="sd">    Optimize an ARNN with Mean Variance Estimation</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import grid_search</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.losses import DistributionalMSELoss, HeteroscedasticNLL</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;MVE&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 10,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        &#39;var_hidden_size&#39;: [8],</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; df, model = grid_search(handler, DistributionalMSELoss(),</span>
+<span class="sd">                                model_type, model_params, grid_params,</span>
+<span class="sd">                                val_prediction=True, val_criterion=HeteroscedasticNLL())</span>
+<span class="sd">    run 1/4 finishes with loss 0.07786498963832855 and parameters {&#39;lr&#39;: 0.0001, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 2/4 finishes with loss -0.11223804950714111 and parameters {&#39;lr&#39;: 0.0001, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+<span class="sd">    run 3/4 finishes with loss 0.06112978607416153 and parameters {&#39;lr&#39;: 0.001, &#39;optimizer&#39;: &#39;Adam&#39;}, time=0s</span>
+<span class="sd">    run 4/4 finishes with loss -0.05090484023094177 and parameters {&#39;lr&#39;: 0.001, &#39;optimizer&#39;: &#39;SGD&#39;}, time=0s</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ParameterGrid</span><span class="p">(</span><span class="n">grid_params</span><span class="p">))</span>
+
+    <span class="n">param_dict</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">gp</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="si">}</span><span class="s1"> started with parameters </span><span class="si">{</span><span class="n">gp</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span> <span class="o">=</span> <span class="n">_eval_grid_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span>
+                                                               <span class="n">pretrained_model</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="p">,</span>
+                                                               <span class="n">print_results</span><span class="p">,</span> <span class="n">calibration</span><span class="p">,</span> <span class="n">val_prediction</span><span class="p">,</span> <span class="n">val_criterion</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+        
+        
+        
+        <span class="c1"># Add parameters to list</span>
+        <span class="n">loss_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+        <span class="n">model_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">param_dict</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">results</span><span class="p">})</span>
+        <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="si">}</span><span class="s1"> finished with loss </span><span class="si">{</span><span class="n">val_loss</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span>
+              <span class="sa">f</span><span class="s1">&#39; and parameters </span><span class="si">{</span><span class="n">gp</span><span class="si">}</span><span class="s1">, time=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="si">}</span><span class="s1">s </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span>
+
+    <span class="c1"># return best model and results</span>
+    <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">param_dict</span><span class="p">)</span>
+    <span class="n">result_df</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_list</span>
+    <span class="n">best_model</span> <span class="o">=</span> <span class="n">model_list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">result_df</span><span class="p">,</span> <span class="n">best_model</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_eval_grid_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span>
+                      <span class="n">pretrained_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_prediction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">val_criterion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]):</span>
+
+    <span class="c1"># define data parameters</span>
+    <span class="n">list_dp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;window_size&#39;</span><span class="p">,</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="s1">&#39;rnn_window&#39;</span><span class="p">,</span> <span class="s1">&#39;forecast&#39;</span><span class="p">]</span>
+    <span class="n">data_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">list_dp</span><span class="p">))</span>
+    <span class="n">data_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data_params</span><span class="p">}</span>
+
+    <span class="c1"># define model and data</span>
+    <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">_def_model</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                                                <span class="n">params</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span>
+                                                <span class="n">data_params</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+     <span class="c1"># reconfigure criterion</span>
+    <span class="k">if</span> <span class="n">reconfigure_criterion</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">criterion</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">criterion_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">criterion</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">criterion_params</span><span class="p">)</span>
+
+    <span class="c1"># init optimizer</span>
+    <span class="k">if</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MVE_Student_Forced&quot;</span><span class="p">,</span> <span class="s2">&quot;QR_Student_Forced&quot;</span><span class="p">]:</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">_get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">DNN</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">_get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># train model</span>
+    <span class="n">model</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">_train_Network</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span>
+                                    <span class="n">criterion</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_results</span><span class="p">)</span>
+
+<span class="c1"># calibrate variance prediction</span>
+    <span class="k">if</span> <span class="n">calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">_calibrate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span><span class="p">,</span>
+                                <span class="n">calibration</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">.01</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="c1"># additional prediction to eval</span>
+    <span class="k">if</span> <span class="n">val_prediction</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">val_criterion</span><span class="p">:</span>
+            <span class="n">val_loss</span> <span class="o">=</span> <span class="n">_calc_pred_loss</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                                <span class="n">data_params</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">val_criterion</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_loss</span> <span class="o">=</span> <span class="n">_calc_pred_loss</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                                <span class="n">data_params</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">)</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="hyperopt_search">
+<a class="viewcode-back" href="../../hyperparameter_optimization.html#softsensor.hyperparameter_optimization.hyperopt_search">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hyperopt_search</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="p">,</span> <span class="n">grid_params</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">val_criterion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_prediction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;training&#39;</span><span class="p">,</span>
+                    <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hyperparameter optimization using bayesian optimization. Returns</span>
+<span class="sd">    parameters and best model for evaluation.</span>
+<span class="sd">    Algorithm:</span>
+<span class="sd">    https://www.researchgate.net/publication/216816964_Algorithms_for_Hyper-Parameter_Optimization</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the training and evaluation data</span>
+<span class="sd">    optimizer : str</span>
+<span class="sd">        Algorithm to use for training of the models possibilities are</span>
+<span class="sd">        [&#39;Adam&#39;, &#39;SGD&#39;].</span>
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented.</span>
+<span class="sd">        [&#39;ARNN&#39;, &#39;MCDO&#39;, &#39;MVE&#39;, &#39;Sep_MVE&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;,</span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;BNN&#39;, &#39;MVE_BNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    parameters : dict</span>
+<span class="sd">        dictionary of static parameters in the grid search.</span>
+<span class="sd">    grid_params : dict</span>
+<span class="sd">        dict of grid parameters with hyperopt distribution for each parameter.</span>
+<span class="sd">    max_iterations : int, optional</span>
+<span class="sd">        number of iterations. The default is 3</span>
+<span class="sd">    pretrained_model: str, optional</span>
+<span class="sd">        path to pretrained model to load as base model. The default is None</span>
+<span class="sd">    reconfigure_criterion: bool, optional</span>
+<span class="sd">        if True, the criterion is reconfigured with params from the grid. The default is False</span>
+<span class="sd">    val_criterion: nn.Loss function, optional</span>
+<span class="sd">        val_criterion to be used for validation instead of criterion. The default is None</span>
+<span class="sd">    val_prediction : bool, optional</span>
+<span class="sd">        if True, prediction on testing tracks in data_handle is used for</span>
+<span class="sd">        hyperparameter evaluation</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to run training on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    key : str, optional</span>
+<span class="sd">        &#39;training&#39; or &#39;short&#39;. Training uses whole dataloader, short just</span>
+<span class="sd">        subset for training. default is training</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        True prints results for every epoch. default is False</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result_df : pd.DataFrame</span>
+<span class="sd">        parameters and corresponding results for each grid search step.</span>
+<span class="sd">    best_model : torch Model</span>
+<span class="sd">        best performing model.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Data Preprocessing</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t) ,</span>
+<span class="sd">             &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">             &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; list_of_df = [pd.DataFrame(d), pd.DataFrame(d)]</span>
+<span class="sd">    &gt;&gt;&gt; test_df = {&#39;sine_inp&#39;: np.sin(2 * np.pi * 100 * t),</span>
+<span class="sd">                   &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">                   &#39;out&#39;: np.linspace(0, 1.0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; test_df = [pd.DataFrame(test_df)]</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling(list_of_df, train_names=[&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="sd">                                   input_sensors=[&#39;sine_inp&#39;, &#39;cos_inp&#39;],</span>
+<span class="sd">                                   output_sensors=[&#39;out&#39;], fs=100,</span>
+<span class="sd">                                   test_dfs=test_df, test_names=[&#39;test&#39;])</span>
+<span class="sd">    </span>
+
+<span class="sd">    Optimize an ARNN</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import hyperopt_search</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; from hyperopt import hp</span>
+<span class="sd">    &gt;&gt;&gt; grid_params = {&#39;lr&#39;: hp.uniform(&#39;lr&#39;, 1e-5, 1e-3),</span>
+<span class="sd">                       &#39;activation&#39;: hp.choice(&#39;actiavtion&#39;, [&#39;relu&#39;, &#39;sine&#39;])}</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;ARNN&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 50,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        &#39;optimizer&#39;: &#39;SGD&#39;</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; criterion = nn.MSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; df, model = hyperopt_search(handler, criterion, model_type, model_params,</span>
+<span class="sd">                                    grid_params, max_iterations=3,</span>
+<span class="sd">                                    val_prediction=True)</span>
+<span class="sd">    100%|██████████| 3/3 [00:00&lt;00:00, 10.76trial/s, best loss: 0.25191113352775574]</span>
+<span class="sd">    </span>
+
+<span class="sd">    Optimize an ARNN with Mean Variance Estimation</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.hyperparameter_optimization import grid_search</span>
+<span class="sd">    &gt;&gt;&gt; import torch.nn as nn</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.losses import DistributionalMSELoss</span>
+<span class="sd">    &gt;&gt;&gt; model_type = &#39;MVE_ARNN&#39;</span>
+<span class="sd">    &gt;&gt;&gt; grid_params = {&#39;lr&#39;: hp.uniform(&#39;lr&#39;, 1e-5, 1e-3),</span>
+<span class="sd">                       &#39;activation&#39;: hp.choice(&#39;actiavtion&#39;, [&#39;relu&#39;, &#39;sine&#39;])}</span>
+<span class="sd">    &gt;&gt;&gt; model_params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                        &#39;pred_size&#39;: 1,</span>
+<span class="sd">                        &#39;window_size&#39;: 10,</span>
+<span class="sd">                        &#39;rnn_window&#39;: 10,</span>
+<span class="sd">                        &#39;max_epochs&#39;: 3,</span>
+<span class="sd">                        &#39;patience&#39;: 3,</span>
+<span class="sd">                        &#39;hidden_size&#39;: [8],</span>
+<span class="sd">                        &#39;var_hidden_size&#39;: [8],</span>
+<span class="sd">                        &#39;optimizer&#39;: &#39;SGD&#39;</span>
+<span class="sd">                        }</span>
+<span class="sd">    &gt;&gt;&gt; criterion = DistributionalMSELoss()</span>
+<span class="sd">    &gt;&gt;&gt; df, model = hyperopt_search(handler, criterion, model_type, model_params,</span>
+<span class="sd">                                    grid_params, max_iterations=3,</span>
+<span class="sd">                                    val_prediction=True)</span>
+<span class="sd">    100%|██████████| 3/3 [00:00&lt;00:00,  7.42trial/s, best loss: -0.4127456843852997]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">train_class</span> <span class="o">=</span> <span class="n">train_hyperopt</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                                 <span class="n">parameters</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="p">,</span> <span class="n">val_criterion</span><span class="p">,</span>
+                                 <span class="n">val_prediction</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">print_results</span><span class="p">,</span> <span class="n">calibration</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="n">trials</span> <span class="o">=</span> <span class="n">Trials</span><span class="p">()</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">train_class</span><span class="o">.</span><span class="n">comp</span><span class="p">,</span>
+             <span class="n">space</span><span class="o">=</span><span class="n">grid_params</span><span class="p">,</span>
+             <span class="n">algo</span><span class="o">=</span><span class="n">tpe</span><span class="o">.</span><span class="n">suggest</span><span class="p">,</span>
+             <span class="n">max_evals</span><span class="o">=</span><span class="n">max_iterations</span><span class="p">,</span>
+             <span class="n">trials</span><span class="o">=</span><span class="n">trials</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trials</span><span class="p">])</span>
+    <span class="n">best_model</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;Model&#39;</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">])]</span>
+    <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Model&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">best_model</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calibrate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">val_tracks</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">.01</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
+    <span class="n">temps</span> <span class="o">=</span> <span class="n">optimize_temperature</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">val_tracks</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="p">)</span>
+    <span class="n">calibrated_model</span> <span class="o">=</span> <span class="n">TemperatureScaling</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">temps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">calibrated_model</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_def_dtype</span><span class="p">(</span><span class="n">model_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    changes the type of Parameters if needed</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model_params : dict</span>
+<span class="sd">        parameters</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model_params : dict</span>
+<span class="sd">        changed parameters.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">int_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;input_channels&#39;</span><span class="p">,</span> <span class="s1">&#39;pred_size&#39;</span><span class="p">,</span> <span class="s1">&#39;window_size&#39;</span><span class="p">,</span> <span class="s1">&#39;filters&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;kernel_size&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;pooling_size&#39;</span><span class="p">,</span> <span class="s1">&#39;rnn_window&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="s1">&#39;num_layers&#39;</span><span class="p">,</span> <span class="s1">&#39;blocks&#39;</span><span class="p">,</span> <span class="s1">&#39;oscillations&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;max_dilation&#39;</span><span class="p">,</span> <span class="s1">&#39;forecast&#39;</span><span class="p">,</span> <span class="s1">&#39;hidden_window&#39;</span><span class="p">,</span> <span class="s1">&#39;n_heads&#39;</span><span class="p">]</span>
+
+    <span class="n">temp_p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">model_params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">int_params</span><span class="p">))</span>
+    <span class="n">temp_p</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">model_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">temp_p</span><span class="p">}</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">model_params</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">temp_p</span><span class="p">}</span>
+    <span class="n">model_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="n">list_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hidden_size&#39;</span><span class="p">]</span>
+    <span class="n">temp_p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">model_params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">list_params</span><span class="p">))</span>
+    <span class="n">temp_p</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">model_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">temp_p</span><span class="p">}</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model_params</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">model_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">temp_p</span><span class="p">}</span>
+    <span class="n">model_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">temp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model_params</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_def_model</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data_params</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines Model, training loader and validation loader for training</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the trainign and evaluation data</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented</span>
+<span class="sd">        [&#39;ARNN&#39;, &#39;MCDO&#39;, &#39;MVE&#39;, &#39;Sep_MVE&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;,</span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;BNN&#39;, &#39;MVE_BNN&#39;, &#39;RNN&#39;].</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        parameters for model initialization.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to run training on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    key : str</span>
+<span class="sd">        &#39;training&#39; or &#39;short&#39;.</span>
+<span class="sd">    data_params: dict</span>
+<span class="sd">        dict that contains necessary data parameters for classes</span>
+<span class="sd">        data_handle.give_dataloader or data_handle.give_list</span>
+<span class="sd">    pretrained_model: str, optional</span>
+<span class="sd">        path to pretrained model to load as base model. The default is None</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model : torch neural Network</span>
+<span class="sd">    train_loader : DataLoader</span>
+<span class="sd">        or list of Dataloader for RNN Models</span>
+<span class="sd">    val_loader : DataLoader</span>
+<span class="sd">        or list of Dataloader for RNN Models</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># init model and data</span>
+    <span class="k">if</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;MCDO&#39;</span><span class="p">]:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SepMVE&#39;</span><span class="p">,</span> <span class="s1">&#39;MVE_MCDO&#39;</span><span class="p">]:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">mean_model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">SeparateMVEARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SeparateMVEARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">,</span> <span class="n">mean_model</span><span class="o">=</span><span class="n">mean_model</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;MVE_Student_Forced&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">mean_model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">SeparateMVEARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SeparateMVEARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">,</span> <span class="n">mean_model</span><span class="o">=</span><span class="n">mean_model</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span> <span class="n">pre_comp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1">#model.Type = &quot;AR_Student_Forced&quot;</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;QR&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">mean_model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">QuantileARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">QuantileARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">,</span> <span class="n">mean_model</span><span class="o">=</span><span class="n">mean_model</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;QR_Student_Forced&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">mean_model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">QuantileARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">QuantileARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">,</span> <span class="n">mean_model</span><span class="o">=</span><span class="n">mean_model</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span> <span class="n">pre_comp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1">#model.Type = &quot;AR_Student_Forced&quot;</span>
+        
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;MVE&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">DensityEstimationARNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DensityEstimationARNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_torch_loader</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">RNN_DNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">RNN_DNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                             <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;testing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                           <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;parr_RNN&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">parr_RNN_DNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">parr_RNN_DNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                             <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">window_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;testing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                           <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">window_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;TFT&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">TFT</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TFT</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                             <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">window_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;testing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span>
+                                           <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">window_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;AR_RNN&#39;</span><span class="p">:</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">AR_RNN</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AR_RNN</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span>        
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span> <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">val_loader</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;testing&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data_params</span><span class="p">,</span> <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1"> is not a valid model name&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pretrained_model</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">mean_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pretrained_model</span><span class="p">))</span>
+        <span class="c1">#model.load_state_dict(torch.load(pretrained_model)) # for DensityEstimationARNN models</span>
+
+    <span class="c1"># if model.Type == &quot;AR_Student_Forced&quot;:</span>
+    <span class="c1">#     train_loader, val_loader = data_handle.precompute_predictions(model.mean_model, data_params[&quot;batch_size&quot;])</span>
+    
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>   
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns model parameters from parameters and model signature</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signature : dict</span>
+<span class="sd">        model signature parameters.</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        dict of parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        returns parameters for model definition.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">model_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">model_params</span><span class="p">))</span>
+    <span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model_params</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">_def_dtype</span><span class="p">(</span><span class="n">model_params</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_train_Network</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span>
+                  <span class="n">criterion</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_results</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Training procedure for the different Models</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        dictionary of the training parameters.</span>
+<span class="sd">    model : torch neural Network</span>
+<span class="sd">    train_loader : DataLoader</span>
+<span class="sd">        or list of Dataloader for RNN Models</span>
+<span class="sd">    val_loader : DataLoader</span>
+<span class="sd">        or list of Dataloader for RNN Models</span>
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+<span class="sd">    opt : torch.optim</span>
+<span class="sd">        optimizer with trainable parameters of the model.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device for computation. The default is &#39;cpu&#39;.</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        Prints results if True in every epoch. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model</span>
+<span class="sd">        Trained Neural Network.</span>
+<span class="sd">    results</span>
+<span class="sd">        results as dict with &#39;loss&#39; as key</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Model_type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+
+    <span class="k">if</span> <span class="n">Model_type</span> <span class="o">==</span> <span class="s1">&#39;Feed_Forward&#39;</span><span class="p">:</span>
+        <span class="n">list_tp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max_epochs&#39;</span><span class="p">,</span> <span class="s1">&#39;patience&#39;</span><span class="p">,</span> <span class="s1">&#39;rel_perm&#39;</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">Model_type</span> <span class="o">==</span> <span class="s1">&#39;AR&#39;</span><span class="p">:</span> <span class="c1"># or Model_type == &#39;AR_Student_Forced&#39;:</span>
+        <span class="n">list_tp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max_epochs&#39;</span><span class="p">,</span> <span class="s1">&#39;patience&#39;</span><span class="p">,</span> <span class="s1">&#39;stabelizer&#39;</span><span class="p">,</span> <span class="s1">&#39;rel_perm&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;local_wd&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">Model_type</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+        <span class="n">list_tp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max_epochs&#39;</span><span class="p">,</span> <span class="s1">&#39;patience&#39;</span><span class="p">,</span> <span class="s1">&#39;rel_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;local_wd&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">Model_type</span> <span class="o">==</span> <span class="s1">&#39;AR_RNN&#39;</span><span class="p">:</span>
+        <span class="n">list_tp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max_epochs&#39;</span><span class="p">,</span> <span class="s1">&#39;patience&#39;</span><span class="p">,</span> <span class="s1">&#39;rel_perm&#39;</span><span class="p">,</span> <span class="s1">&#39;local_wd&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No valid model name given&#39;</span><span class="p">)</span>
+
+    <span class="n">train_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">list_tp</span><span class="p">))</span>
+    <span class="n">train_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">train_params</span><span class="p">}</span>
+    
+    <span class="k">if</span> <span class="s1">&#39;stab_method&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">list_stab_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;stab_method&#39;</span><span class="p">,</span> <span class="s1">&#39;s0&#39;</span><span class="p">,</span> <span class="s1">&#39;s1&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">]</span>
+        <span class="n">stab_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">list_stab_params</span><span class="p">))</span>
+        <span class="n">stab_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stab_params</span><span class="p">}</span>
+        <span class="n">stabelizer</span> <span class="o">=</span> <span class="n">get_scheduler</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">stab_params</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;stabelizer&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">stabelizer</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;stabelizer&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stabelizer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">val_loader</span><span class="o">=</span><span class="n">val_loader</span><span class="p">,</span> <span class="n">give_results</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">print_results</span><span class="o">=</span><span class="n">print_results</span><span class="p">,</span> <span class="n">stabelizer</span><span class="o">=</span><span class="n">stabelizer</span><span class="p">,</span> <span class="o">**</span><span class="n">train_params</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">_comp_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_pred_loss</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">model_Type</span><span class="p">,</span> <span class="n">data_params</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates loss from prediction</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the training and evaluation data</span>
+<span class="sd">    model : torch neural Network</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented:</span>
+<span class="sd">        [&#39;CNN_DNN&#39;, &#39;ARNN&#39;, &#39;Point&#39;, &#39;Point_MCDO&#39;, </span>
+<span class="sd">        &#39;MVE&#39;, &#39;MVE_ARNN&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;, </span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;Point_BNN&#39;, &#39;MVE_BNN&#39;, </span>
+<span class="sd">        &#39;MVE&#39;, &#39;Evidential_ARNN&#39;, &#39;CNN_ARNN&#39;, &#39;AR_CNN&#39;, &#39;AR_Freq_CNN&#39;, &#39;AR_RNN&#39;].</span>
+<span class="sd">    data_params : dict</span>
+<span class="sd">        model pull parameters from data handle.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device for computation. The default is &#39;cpu&#39;.</span>
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        validation loss for hyperparameter optimization.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># if &#39;AR&#39; in model_Type or (&#39;Point&#39; in model_Type):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;AR&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;AR_RNN&#39;</span><span class="p">):</span> <span class="c1"># or (model.Type == &#39;AR_Student_Forced&#39;):</span>
+        <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;rnn_window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span>
+        <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;window_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="c1"># if (&#39;ARNN&#39; in model_Type) or (&#39;AR&#39; in model_Type) or (&#39;Point&#39; in model_Type) or (&#39;MVE&#39; in model_Type) or (&#39;QR&#39; in model_Type):</span>
+    <span class="c1"># if (model.Type == &#39;AR&#39;) or (model.Type == &#39;AR_RNN&#39;):</span>
+
+    
+    <span class="k">if</span> <span class="n">model_Type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;parr_RNN&#39;</span><span class="p">,</span> <span class="s1">&#39;TFT&#39;</span><span class="p">]:</span>
+        <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;window_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">model_Type</span> <span class="o">==</span> <span class="s1">&#39;MCDO&#39;</span><span class="p">:</span>
+        <span class="n">eval_model</span> <span class="o">=</span> <span class="n">AsyncMCDropout</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model_Type</span> <span class="o">==</span> <span class="s1">&#39;MVE_MCDO&#39;</span><span class="p">:</span>
+        <span class="n">eval_model</span> <span class="o">=</span> <span class="n">AsyncMCDropoutMVE</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">eval_model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">comp_batch</span><span class="p">([</span><span class="n">eval_model</span><span class="p">],</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;pred&#39;</span><span class="p">],</span> <span class="n">device</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">eval_model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">eval_model</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+        <span class="n">pred_sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">_pred&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span> 
+        <span class="n">loss</span> <span class="o">=</span> <span class="p">[</span><span class="n">criterion</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">pred_sens</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">]</span>
+        
+    <span class="k">elif</span> <span class="n">eval_model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span> <span class="ow">or</span> <span class="n">eval_model</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+        <span class="n">pred_sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">_pred&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+        <span class="n">var_sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">_pred_var&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="p">[</span><span class="n">criterion</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">pred_sens</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var_sens</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">eval_model</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Quantile&#39;</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">out_sens</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">out_sens</span><span class="si">}</span><span class="s1">_median&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">eval_model</span><span class="o">.</span><span class="n">n_quantiles</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">out_sens</span><span class="si">}</span><span class="s1">_pred_lb</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">out_sens</span><span class="si">}</span><span class="s1">_pred_ub</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+            <span class="n">loss_temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">criterion</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">out_sens</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">]</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">loss_temp</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;unknown prediction type&#39;</span><span class="p">)</span>
+    
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">loss</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">train_hyperopt</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Hyperparameter optimization</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_handle : Meas Handling class</span>
+<span class="sd">        used for getting the training and evaluation data</span>
+<span class="sd">    criterion : nn.Loss function</span>
+<span class="sd">        Loss function e.g. nn.MSELoss()</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Describing the Model Type: currently implemented:</span>
+<span class="sd">        [&#39;CNN_DNN&#39;, &#39;ARNN&#39;, &#39;Point&#39;, &#39;Point_MCDO&#39;, </span>
+<span class="sd">        &#39;MVE&#39;, &#39;MVE_ARNN&#39;, &#39;MVE_MCDO&#39;, &#39;MVE_Student_Forced&#39;, </span>
+<span class="sd">        &#39;QR&#39;, &#39;QR_Student_Forced&#39;, &#39;Point_BNN&#39;, &#39;MVE_BNN&#39;, </span>
+<span class="sd">        &#39;MVE&#39;, &#39;Evidential_ARNN&#39;, &#39;CNN_ARNN&#39;, &#39;AR_CNN&#39;, &#39;AR_Freq_CNN&#39;, &#39;AR_RNN&#39;].</span>
+<span class="sd">    parameters : dict</span>
+<span class="sd">        dictionary of static parameters in the grid search.</span>
+<span class="sd">    pretrained_model: str, optional</span>
+<span class="sd">        path to pretrained model to load as base model. The default is None</span>
+<span class="sd">    reconfigure_criterion: bool, optional</span>
+<span class="sd">        if True, the criterion is reconfigured with params from the grid. The default is False</span>
+<span class="sd">    val_criterion: nn.Loss function, optional</span>
+<span class="sd">        val_criterion to be used for validation instead of criterion. The default is None</span>
+<span class="sd">    val_prediction : torch dataloader, optional</span>
+<span class="sd">        list of dataloaders for prediction as an alternative to simple</span>
+<span class="sd">        validation loss from the training. The default is None.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to run training on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    key : str, optional</span>
+<span class="sd">        &#39;training&#39; or &#39;short&#39;. Training uses whole dataloader, short just</span>
+<span class="sd">        subset for training</span>
+<span class="sd">    print_results : bool, optional</span>
+<span class="sd">        True prints results for every epoch</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                 <span class="n">parameters</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">,</span> <span class="n">reconfigure_criterion</span><span class="p">,</span>
+                 <span class="n">val_criterion</span><span class="p">,</span> <span class="n">val_prediction</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">print_results</span><span class="p">,</span>
+                 <span class="n">calibration</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span> <span class="o">=</span> <span class="n">data_handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pretrained_model</span> <span class="o">=</span> <span class="n">pretrained_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconfigure_criterion</span> <span class="o">=</span> <span class="n">reconfigure_criterion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_criterion</span> <span class="o">=</span> <span class="n">val_criterion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_prediction</span> <span class="o">=</span> <span class="n">val_prediction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_results</span> <span class="o">=</span> <span class="n">print_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration</span> <span class="o">=</span> <span class="n">calibration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        compute Hyperparameter optimization with specific grid params</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gp : dict</span>
+<span class="sd">            dict of grid parameters with grid options as list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            results including loss and parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">gp</span><span class="p">}</span>
+        <span class="n">list_dp</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;window_size&#39;</span><span class="p">,</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="s1">&#39;rnn_window&#39;</span><span class="p">,</span> <span class="s1">&#39;forecast&#39;</span><span class="p">]</span>
+        <span class="n">data_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">list_dp</span><span class="p">))</span>
+        <span class="n">data_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data_params</span><span class="p">}</span>
+        <span class="n">data_params</span> <span class="o">=</span> <span class="n">_def_dtype</span><span class="p">(</span><span class="n">data_params</span><span class="p">)</span>
+
+        <span class="c1"># define model and data</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span> <span class="o">=</span> <span class="n">_def_model</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">data_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pretrained_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)</span>
+
+        <span class="c1"># reconfigure criterion</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconfigure_criterion</span><span class="p">:</span>
+            <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+            <span class="n">criterion_params</span> <span class="o">=</span> <span class="n">_get_model_params</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">criterion_params</span><span class="p">)</span>
+
+        <span class="c1"># init optimizer</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MVE_Student_Forced&quot;</span><span class="p">,</span> <span class="s2">&quot;QR_Student_Forced&quot;</span><span class="p">]:</span>
+            <span class="n">opt</span> <span class="o">=</span> <span class="n">_get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">DNN</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">opt</span> <span class="o">=</span> <span class="n">_get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># train model</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">_train_Network</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span>
+                                       <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">print_results</span><span class="p">)</span>
+        
+        <span class="c1"># calibrate variance prediction</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">_calibrate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">calibration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">.01</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+
+        <span class="c1"># additional prediction to eval</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_prediction</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_criterion</span><span class="p">:</span>
+                <span class="n">val_loss</span> <span class="o">=</span> <span class="n">_calc_pred_loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+                                      <span class="n">data_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_criterion</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">val_loss</span> <span class="o">=</span> <span class="n">_calc_pred_loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+                                      <span class="n">data_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">)</span>
+
+            <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_loss</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="n">_def_dtype</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">STATUS_OK</span><span class="p">,</span>
+                <span class="s1">&#39;Model&#39;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">params</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">results</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns optimizer with parameters</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : torch neural network with parameters</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        list of params.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.optim</span>
+<span class="sd">        Optimizer for subsequent training.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Adam&#39;</span><span class="p">:</span>
+        <span class="n">adam_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="s1">&#39;weight_decay&#39;</span><span class="p">]</span>
+        <span class="n">list_of_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">adam_params</span><span class="p">))</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">list_of_params</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="o">**</span><span class="n">init_params</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SGD&#39;</span><span class="p">:</span>
+        <span class="n">adam_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="s1">&#39;momentum&#39;</span><span class="p">,</span> <span class="s1">&#39;dampening&#39;</span><span class="p">,</span> <span class="s1">&#39;weight_decay&#39;</span><span class="p">]</span>
+        <span class="n">list_of_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">adam_params</span><span class="p">))</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">list_of_params</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="o">**</span><span class="n">init_params</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_comp_results</span><span class="p">(</span><span class="n">struct</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns results according to dict</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    struct : dict</span>
+<span class="sd">        dict of results from train_model.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : dict</span>
+<span class="sd">        results including loss and stability score if defined.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">struct</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">struct</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">struct</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">])}</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">struct</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">struct</span><span class="p">[</span><span class="s1">&#39;stability_score&#39;</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">struct</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">results</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;stabelize score&#39;</span><span class="p">:</span> <span class="n">sc</span><span class="p">}}</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">results</span><span class="p">,</span> <span class="o">**</span><span class="n">struct</span><span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

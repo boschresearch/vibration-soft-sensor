@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.calibration &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.calibration</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.calibration</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize_scalar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">_prediction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.recurrent_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">_pred_lstm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_batch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">ece</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_optimize_scale_factor</span><span class="p">(</span>
+    <span class="n">mean</span><span class="p">,</span>
+    <span class="n">var</span><span class="p">,</span>
+    <span class="n">targets</span><span class="p">,</span>
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">ece</span><span class="p">,</span>
+    <span class="n">worst_cal</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">optimizer_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Optimizes the calibration temperature for a single output on the prediction and targets</span>
+<span class="sd">    </span>
+<span class="sd">    Uses Brent&#39;s method (https://en.wikipedia.org/wiki/Brent%27s_method) for black-box optimization</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : torch.tensor</span>
+<span class="sd">        mean prediction of the uncalibrated model</span>
+<span class="sd">    var : torch.tensor</span>
+<span class="sd">        var prediction of the uncalibrated model</span>
+<span class="sd">    targets : torch.tensor</span>
+<span class="sd">        ground truth of the dataset</span>
+<span class="sd">    criterion: function with inputs (mean, targets, var), optional</span>
+<span class="sd">        criterion to evaluate for optimization. The default is ECE</span>
+<span class="sd">    worst_cal: float, optional</span>
+<span class="sd">        worst score for criterion. The default is 0.5 (worst ECE)</span>
+<span class="sd">    optimizer_bounds: (float, float), optional</span>
+<span class="sd">        lower bound and higher bound for temperature value. The default is (0.01, 2)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    opt_ratio: float</span>
+<span class="sd">        Scaling factor that is used for calibration of the predictive std</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">obj</span><span class="p">(</span><span class="n">ratio</span><span class="p">):</span>
+        <span class="c1"># If ratio is 0, return worst-possible calibration metric</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">worst_cal</span>
+        
+        <span class="n">curr_cal</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">ratio</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">var</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">curr_cal</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">optimizer_bounds</span><span class="p">)</span>
+    <span class="n">opt_ratio</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimization did not succeed&quot;</span><span class="p">)</span>
+        <span class="n">original_cal</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+        <span class="n">ratio_cal</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">opt_ratio</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">var</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ratio_cal</span> <span class="o">&gt;</span> <span class="n">original_cal</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;No better calibration found, no recalibration performed and returning original uncertainties&quot;</span>
+            <span class="p">)</span>
+            <span class="n">opt_ratio</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">opt_ratio</span>
+
+
+<div class="viewcode-block" id="optimize_temperature">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.optimize_temperature">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">optimize_temperature</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">val_tracks</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">ece</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">worst_cal</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">.01</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Optimizes the calibration temperature for each output on the calibration set</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model to calibrate</span>
+<span class="sd">    calibration_loader : List[Dataloader]</span>
+<span class="sd">        dataset to fit the scaling factor</span>
+<span class="sd">    criterion: function with inputs (mean, targets, var), optional</span>
+<span class="sd">        criterion to evaluate for optimization. The default is ECE</span>
+<span class="sd">    worst_cal: float, optional</span>
+<span class="sd">        worst score for criterion. The default is 0.5 (worst ECE)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    temperature: torch.tensor[float], shape=[model.pred_size]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_outputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span>
+    <span class="n">cal_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([])</span>
+    <span class="n">cal_var</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([])</span>
+    <span class="n">cal_targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([])</span>
+    
+    <span class="n">dfs</span> <span class="o">=</span> <span class="n">comp_batch</span><span class="p">([</span><span class="n">model</span><span class="p">],</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">val_tracks</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">:</span>
+        <span class="n">mean_sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">_model&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+        <span class="n">cal_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">cal_mean</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">mean_sens</span><span class="p">]))],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">var_sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">_model_var&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+        <span class="n">cal_var</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">cal_var</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">var_sens</span><span class="p">]))],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">sens</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+        <span class="n">cal_targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">cal_targets</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">sens</span><span class="p">]))],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+    <span class="c1"># Determine calibration temparature</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="p">[</span><span class="n">_optimize_scale_factor</span><span class="p">(</span><span class="n">cal_mean</span><span class="p">[:,</span> <span class="n">output</span><span class="p">],</span> <span class="n">cal_var</span><span class="p">[:,</span> <span class="n">output</span><span class="p">],</span>
+                                         <span class="n">cal_targets</span><span class="p">[:,</span> <span class="n">output</span><span class="p">],</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">worst_cal</span><span class="p">,</span> <span class="n">optimizer_bounds</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TemperatureScaling">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TemperatureScaling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper class for uncertainty models that applies temperature scaling after prediction</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model that is used for prediction</span>
+<span class="sd">    temperature : tensor[float]</span>
+<span class="sd">        factors for std scaling (squared for)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Define Model</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models</span>
+<span class="sd">    &gt;&gt;&gt; from softsensor.calibration import TemperatureScaling</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = softsensor.autoreg_models.DensityEstimationARNN(2, 1, 10, 10, [16, 8])</span>
+<span class="sd">    &gt;&gt;&gt; temps = torch.tensor([.5])</span>
+<span class="sd">    &gt;&gt;&gt; scaled_model = TemperatureScaling(m, temps)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; output = scaled_model(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(output[0].shape) # mean</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; print(output[1].shape) # new var</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    </span>
+<span class="sd">    Define Data</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                   [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+
+<span class="sd">    Check model prediction scaled and unscaled</span>
+
+<span class="sd">    &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                   rnn_window=10, batch_size=1)</span>
+
+<span class="sd">    &gt;&gt;&gt; mean, var = m.prediction(loader[0])</span>
+<span class="sd">    &gt;&gt;&gt; print(var[0][:5]*0.25)</span>
+<span class="sd">    tensor([0.1769, 0.1831, 0.1769, 0.1770, 0.1798])</span>
+<span class="sd">    &gt;&gt;&gt; mean, var_scaled = scaled_model.prediction(loader[0])</span>
+<span class="sd">    &gt;&gt;&gt; print(var[0][:5])</span>
+<span class="sd">    tensor([0.1769, 0.1831, 0.1769, 0.1770, 0.1798])</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span>
+        <span class="k">try</span><span class="p">:</span> <span class="c1"># needed for computation of stability score</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">activation</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c1"># for models that do not have an activation function</span>
+            <span class="k">pass</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Ensemble</span>
+        
+<div class="viewcode-block" id="TemperatureScaling.forward">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to propagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : input arguments </span>
+<span class="sd">            (need to be the same as the Point model in __init__() needs)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1">#var = [torch.ones([mean.shape[0], 1, mean.shape[2]]) * v for v in self.homoscedastic_var]</span>
+        <span class="n">temps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">square</span><span class="p">()[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temps</span><span class="p">):</span>
+            <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">*</span><span class="n">v</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+
+<div class="viewcode-block" id="TemperatureScaling.forward_sens">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling.forward_sens">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_sens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to propagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : input arguments </span>
+<span class="sd">            (need to be the same as the Point model in __init__() needs)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward_sens</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1">#var = [torch.ones([mean.shape[0], 1, mean.shape[2]]) * v for v in self.homoscedastic_var]</span>
+        <span class="n">temps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">square</span><span class="p">()[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temps</span><span class="p">):</span>
+            <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">*</span><span class="n">v</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+
+<div class="viewcode-block" id="TemperatureScaling.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="TemperatureScaling.get_recurrent_weights">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling.get_recurrent_weights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recurrent_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that returns the weight that effect the Recurrent input of the</span>
+<span class="sd">        underlying Network (mean network)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        recurrent_weights : list of weight Tensors</span>
+<span class="sd">            List of the Weights that effect the Recurrent input of the Network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TemperatureScaling.prediction">
+<a class="viewcode-back" href="../../calibration.html#softsensor.calibration.TemperatureScaling.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if loss_ft=None:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor])</span>
+<span class="sd">                tuple of Torch Tensor of same length as input and var</span>
+<span class="sd">        if loss_ft=torch loss funciton:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor], loss)</span>
+<span class="sd">                tuple of Torch Tensor of same length as input, var and loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">precomp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">precomp_hidden_states</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_pred_lstm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">_pred_lstm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

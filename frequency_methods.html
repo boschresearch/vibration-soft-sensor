@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Visualization Methods" href="visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">FDS</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.frequency_methods.FDS.calculate_fds"><code class="docutils literal notranslate"><span class="pre">FDS.calculate_fds()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.frequency_methods.FDS.calculate_psd"><code class="docutils literal notranslate"><span class="pre">FDS.calculate_psd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.calculate_coherence"><code class="docutils literal notranslate"><span class="pre">calculate_coherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.get_amplitude"><code class="docutils literal notranslate"><span class="pre">get_amplitude()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.get_phase"><code class="docutils literal notranslate"><span class="pre">get_phase()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.interpolate_log_series"><code class="docutils literal notranslate"><span class="pre">interpolate_log_series()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.psd_moment"><code class="docutils literal notranslate"><span class="pre">psd_moment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.psd_parameters_from_moments"><code class="docutils literal notranslate"><span class="pre">psd_parameters_from_moments()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.psd_smoothing"><code class="docutils literal notranslate"><span class="pre">psd_smoothing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.psd_statistics"><code class="docutils literal notranslate"><span class="pre">psd_statistics()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.reshape_stpsd"><code class="docutils literal notranslate"><span class="pre">reshape_stpsd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softsensor.frequency_methods.scale_PSD"><code class="docutils literal notranslate"><span class="pre">scale_PSD()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/frequency_methods.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <hr class="docutils" />
+<dl class="py class" id="module-softsensor.frequency_methods">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.FDS">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">FDS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'disp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#FDS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.FDS" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.FDS.calculate_fds">
+<span class="sig-name descname"><span class="pre">calculate_fds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#FDS.calculate_fds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.FDS.calculate_fds" title="Link to this definition"></a></dt>
+<dd><p>Calculate the Fatigue Damage Spectrum (FDS) from the Power Spectral
+Density (PSD). According to the formula in the paper:
+<a class="reference external" href="https://http://www.vibrationdata.com/tutorials_alt/fatigue_damage_spectra.pdf">https://http://www.vibrationdata.com/tutorials_alt/fatigue_damage_spectra.pdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>psd</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.0)"><em>pandas.Series</em></a>) – The power spectral density data. The index should represent
+the frequency values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The calculated FDS values with the same index as the input PSD and
+a modified name indicating the response type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.0)">pandas.Series</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The method modifies the PSD based on the response type (‘vel’ for
+velocity or ‘acc’ for acceleration).</p></li>
+<li><dl class="simple">
+<dt>The FDS calculation involves several parameters:</dt><dd><ul>
+<li><p>self.duration: Duration of the signal.</p></li>
+<li><p>self.K, self.b, self.C, self.Q: Constants used in the FDS
+calculation.</p></li>
+<li><p>gamma: Gamma function from the scipy library.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>If self.scaled is True, the FDS is scaled by the integral of the FDS
+over the frequency range.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.FDS.calculate_psd">
+<span class="sig-name descname"><span class="pre">calculate_psd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#FDS.calculate_psd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.FDS.calculate_psd" title="Link to this definition"></a></dt>
+<dd><p>Calculate the Power Spectral Density (PSD) for a given Fatigue Damage
+Spectrum (FDS).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fds</strong> (<em>array-like</em>) – The Fatigue Damage Spectrum (FDS) values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas Series containing the calculated PSD values, indexed by
+the same index as <cite>self.psd</cite> and named with the original name
+appended with “_PSD_” and the response type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The PSD is calculated for a displacement-based FDS.</p></li>
+<li><dl class="simple">
+<dt>The PSD is rescaled based on the response type:</dt><dd><ul>
+<li><p>If <cite>self.response_type</cite> is “vel”, the PSD is divided by
+(2 * np.pi * f)^2.</p></li>
+<li><p>If <cite>self.response_type</cite> is “acc”, the PSD is divided by
+(2 * np.pi * f)^4.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.calculate_coherence">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">calculate_coherence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nperseg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#calculate_coherence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.calculate_coherence" title="Link to this definition"></a></dt>
+<dd><p>Calculate the coherence between all input and all output sensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df1</strong> (<em>pd.DataFrame</em>) – DataFrame containing the first set of signals.</p></li>
+<li><p><strong>df2</strong> (<em>pd.DataFrame</em>) – DataFrame containing the second set of signals.</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Sampling frequency. Default is None.</p></li>
+<li><p><strong>nperseg</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Length of each segment for the coherence calculation.
+The default is 2048.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame containing the coherence values with frequency as the index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.get_amplitude">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">get_amplitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_stft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method=&lt;function</span> <span class="pre">max&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_axis=-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#get_amplitude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.get_amplitude" title="Link to this definition"></a></dt>
+<dd><p>Calculate the amplitude of the complex Short-Time Fourier Transform (STFT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sft</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The Short-Time Fourier Transform object from scipy.signal.</p></li>
+<li><p><strong>complex_stft</strong> (<em>ndarray</em>) – The complex STFT array.</p></li>
+<li><p><strong>method</strong> (<em>function</em><em>, </em><em>optional</em>) – The method to apply along time axis. The default is np.max.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> or </em><em>ndarray</em><em>, </em><em>optional</em>) – The column labels for the resulting DataFrame.</p></li>
+<li><p><strong>t_axis</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The time axis in the STFT array. The default is -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>amplitude</strong> (<em>DataFrame</em>) – The amplitude of the complex STFT.</p></li>
+<li><p><strong>max_idx</strong> (<em>ndarray</em>) – The indices of the maximum values in the complex STFT.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.get_phase">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">get_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_stft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#get_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.get_phase" title="Link to this definition"></a></dt>
+<dd><p>Calculate the phase of the complex STFT at the given maximum index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sft</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The Short-Time Fourier Transform object.</p></li>
+<li><p><strong>complex_stft</strong> (<em>ndarray</em>) – The complex STFT matrix.</p></li>
+<li><p><strong>max_idx</strong> (<em>ndarray</em>) – The maximum index to take along the last axis of the complex STFT matrix.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Column names for the resulting DataFrame.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>phase</strong> – DataFrame containing the phase values of the complex STFT.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.interpolate_log_series">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">interpolate_log_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#interpolate_log_series"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.interpolate_log_series" title="Link to this definition"></a></dt>
+<dd><p>Interpolate the log values of a series based on the log values of a new index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>series</strong> (<em>pd.Series</em>) – The input series.</p></li>
+<li><p><strong>new_index</strong> (<em>pd.Index</em>) – The new index.</p></li>
+<li><p><strong>left</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Value to return for x &lt; xp[0]. The default is 0.</p></li>
+<li><p><strong>right</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Value to return for x &gt; xp[-1]. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The interpolated log series.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.psd_moment">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">psd_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_moment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#psd_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.psd_moment" title="Link to this definition"></a></dt>
+<dd><p>calculate the moment of a given psd</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psd_df</strong> (<em>DataFrame</em>) – index is the corresponding frequency</p></li>
+<li><p><strong>n_moment</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – nth moment. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>df</strong> – DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.psd_parameters_from_moments">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">psd_parameters_from_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd_stats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#psd_parameters_from_moments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.psd_parameters_from_moments" title="Link to this definition"></a></dt>
+<dd><p>Calculate various parameters from the power spectral density (PSD) moments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>psd_stats</strong> (<em>DataFrame</em>) – DataFrame containing PSD moments.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>stats_df</strong> – DataFrame containing calculated parameters including RMS, v_0_plus,
+v_p, and irregularity_factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.psd_smoothing">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">psd_smoothing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#psd_smoothing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.psd_smoothing" title="Link to this definition"></a></dt>
+<dd><p>smoothing of PSD using convolution in frequency domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psd_df</strong> (<em>DataFrame</em>) – Raw PSD</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – number of frequency points for window function. The default is 16.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>smooth_df</strong> – smoothed psd.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.psd_statistics">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">psd_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_moments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#psd_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.psd_statistics" title="Link to this definition"></a></dt>
+<dd><p>Calculate statistics of Power Spectral Density (PSD) data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psd_df</strong> (<em>DataFrame</em>) – Input DataFrame containing PSD data.</p></li>
+<li><p><strong>n_moments</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Number of moments to calculate. The default is 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame containing the calculated PSD statistics.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#UserWarning" title="(in Python v3.13)"><strong>UserWarning</strong></a> – If n_moments is less than or equal to 4, it is set to 5.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.reshape_stpsd">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">reshape_stpsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stpsd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#reshape_stpsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.reshape_stpsd" title="Link to this definition"></a></dt>
+<dd><p>Reshapes the Short-Time Power Spectral Density (STPSD) array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stpsd</strong> (<em>ndarray</em>) – The input STPSD array.</p></li>
+<li><p><strong>windows_new</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The desired number of windows.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The reshaped STPSD array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.frequency_methods.scale_PSD">
+<span class="sig-prename descclassname"><span class="pre">softsensor.frequency_methods.</span></span><span class="sig-name descname"><span class="pre">scale_PSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_original</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/frequency_methods.html#scale_PSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.frequency_methods.scale_PSD" title="Link to this definition"></a></dt>
+<dd><p>scaling PSD to new test duration time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psd</strong> (<em>DataFrame</em>) – The power spectral density to scale</p></li>
+<li><p><strong>t_original</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Original time of the PSD</p></li>
+<li><p><strong>t_new</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – time new of the PSD. The default is 60.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – SN slope. The default is 8.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>PSD_scaled</strong> – new scaled PSDs as Series</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="Visualization Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

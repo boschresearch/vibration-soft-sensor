@@ -1,0 +1,4 @@
+{
+    "path": "../../tutorials/01_linear_models.ipynb",
+	"extra-media": ["../../tutorials/data"]
+}

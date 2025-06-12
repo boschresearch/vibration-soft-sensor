@@ -1,0 +1,800 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.ensemble_wrappers &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.ensemble_wrappers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.ensemble_wrappers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">_async_prediction</span><span class="p">,</span> <span class="n">_prediction</span>
+
+
+<div class="viewcode-block" id="SyncEnsemble">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SyncEnsemble</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Sync ensemble wrapper for point prediction models.</span>
+<span class="sd">        All ensemble models have the same recurrent state at each point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model that is used for prediction</span>
+<span class="sd">    ensemble_weights : list[torch state_dict]</span>
+<span class="sd">        weights of the individual base models</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.ensemble_wrappers as ew</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = []</span>
+<span class="sd">    &gt;&gt;&gt; for i in range(5):</span>
+<span class="sd">    &gt;&gt;&gt;     m_temp = am.ARNN(2, 1, 10, 10, [16, 8])</span>
+<span class="sd">    &gt;&gt;&gt;     m.append(m_temp.state_dict())</span>
+<span class="sd">    &gt;&gt;&gt; ensemble = ew.SyncEnsemble(am.ARNN(2, 1, 10, 10, [16, 8]), m)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; out = ensemble.estimate_uncertainty_mean_std(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[0]) # Mean</span>
+<span class="sd">    &gt;&gt;&gt; print(out[1]) # Std</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">ensemble_weights</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">activation</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span> <span class="o">=</span> <span class="n">ensemble_weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s1">&#39;AR&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="s1">&#39;Point&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SyncEnsemble.load_and_fire">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble.load_and_fire">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_and_fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the state_dict of a base model and computes forward</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        weights : torch state_dict</span>
+<span class="sd">            Weights of a base model</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pred: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pred</span></div>
+
+
+<div class="viewcode-block" id="SyncEnsemble.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean prediction and epistemic uncertainty of the ensemble for one step</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (mean, std)</span>
+<span class="sd">            mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+
+<span class="sd">            std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">load_and_fire</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span><span class="p">]</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="SyncEnsemble.forward_sens">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble.forward_sens">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_sens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean prediction and epistemic uncertainty of the ensemble for one step,</span>
+<span class="sd">        but only with one input tensor that is already concatenated to allow for</span>
+<span class="sd">        gradient-based sensitivity analysis</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation that is already concatenated,</span>
+<span class="sd">            shape=[batch size, external channels*window_size + pred_size*rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (mean, std)</span>
+<span class="sd">            mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+
+<span class="sd">            std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward_sens</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+            <span class="n">preds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+        
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SyncEnsemble.get_recurrent_weights">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble.get_recurrent_weights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recurrent_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that returns the weight that effect the Recurrent input of the</span>
+<span class="sd">        underlying Network (mean network)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        recurrent_weights : list of weight Tensors</span>
+<span class="sd">            List of the Weights that effect the Recurrent input of the Network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span></div>
+
+        
+<div class="viewcode-block" id="SyncEnsemble.prediction">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if comp_sens is False:</span>
+<span class="sd">        torch.Tensor : Tensor of same langth as input, containing the predictions.</span>
+<span class="sd">        if comp_sens is True:</span>
+<span class="sd">            (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.</span>
+<span class="sd">            Key is the prediction type, value is the sensitivity tensor.</span>
+<span class="sd">                </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Based on the Example from initialisation</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">        &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">        &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                       [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">        &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                       rnn_window=10, batch_size=1)</span>
+<span class="sd">        &gt;&gt;&gt; pred = ensemble.prediction(loader[0]) # Prediction of Mean and Variance</span>
+<span class="sd">        &gt;&gt;&gt; print(pred.shape)</span>
+<span class="sd">        torch.Size([2, 1, 101])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="AsyncEnsemble">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncEnsemble">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncEnsemble</span><span class="p">(</span><span class="n">SyncEnsemble</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Async ensemble wrapper for point prediction models.</span>
+<span class="sd">    Ensemble members predict the entire time series independently.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model that is used for prediction</span>
+<span class="sd">    ensemble_weights : list[torch state_dict]</span>
+<span class="sd">        weights of the individual base models</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.ensemble_wrappers as ew</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = []</span>
+<span class="sd">    &gt;&gt;&gt; for i in range(5):</span>
+<span class="sd">    &gt;&gt;&gt;     m_temp = am.ARNN(2, 1, 10, 10, [16, 8])</span>
+<span class="sd">    &gt;&gt;&gt;     m.append(m_temp.state_dict())</span>
+<span class="sd">    &gt;&gt;&gt; ensemble = ew.AsyncEnsemble(am.ARNN(2, 1, 10, 10, [16, 8]), m)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; out = ensemble.estimate_uncertainty_mean_std(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[0]) # Mean</span>
+<span class="sd">    &gt;&gt;&gt; print(out[1]) # Std</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AsyncEnsemble.prediction">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncEnsemble.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if comp_sens is False:</span>
+<span class="sd">        torch.Tensor : Tensor of same langth as input, containing the predictions.</span>
+<span class="sd">        if comp_sens is True:</span>
+<span class="sd">            (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.</span>
+<span class="sd">            Key is the prediction type, value is the sensitivity tensor.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Based on the Example from initialisation</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">        &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">        &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                       [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">        &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                       rnn_window=10, batch_size=1)</span>
+<span class="sd">        &gt;&gt;&gt; pred = ensemble.prediction(loader[0]) # Prediction of Mean and Variance</span>
+<span class="sd">        &gt;&gt;&gt; print(pred[0].shape)</span>
+<span class="sd">        torch.Size([1, 101])</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_async_prediction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span>
+                                 <span class="n">ensemble_weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="AsyncMVEEnsemble">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMVEEnsemble">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncMVEEnsemble</span><span class="p">(</span><span class="n">AsyncEnsemble</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Async ensemble wrapper for MVE models</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model that is used for prediction</span>
+<span class="sd">    ensemble_weights : list[torch state_dict]</span>
+<span class="sd">        weights of the individual base models</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.ensemble_wrappers as ew</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                  &#39;pred_size&#39;: 1,</span>
+<span class="sd">                  &#39;window_size&#39;: 10,</span>
+<span class="sd">                  &#39;rnn_window&#39;: 10}</span>
+<span class="sd">    &gt;&gt;&gt; m = []</span>
+<span class="sd">    &gt;&gt;&gt; for i in range(5):</span>
+<span class="sd">    &gt;&gt;&gt;     mean_model = am.ARNN(**params, hidden_size=[16, 8])</span>
+<span class="sd">    &gt;&gt;&gt;     m_temp = am.SeparateMVEARNN(**params,mean_model=mean_model,</span>
+<span class="sd">                                        var_hidden_size=[16, 8])</span>
+<span class="sd">    &gt;&gt;&gt;     m.append(m_temp.state_dict())</span>
+<span class="sd">    &gt;&gt;&gt; ensemble = ew.AsyncMVEEnsemble(m_temp, m)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; out = ensemble.estimate_uncertainty_mean_stds(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(len(out))</span>
+<span class="sd">    3</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">ensemble_weights</span><span class="p">):</span>
+        <span class="n">AsyncEnsemble</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">ensemble_weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="s1">&#39;Mean_Var&#39;</span>
+    
+<div class="viewcode-block" id="AsyncMVEEnsemble.estimate_uncertainty_mean_stds">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMVEEnsemble.estimate_uncertainty_mean_stds">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_stds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean prediction and uncertainty of the ensemble for one step</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (mean, aleatoric std, epistemic std)</span>
+<span class="sd">            mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+
+<span class="sd">            std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">load_and_fire</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span><span class="p">]</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">])</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">])</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">epist_var</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">square</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">-</span> <span class="n">mean</span><span class="o">.</span><span class="n">square</span><span class="p">()</span> <span class="c1"># corresponds to Var(X) = E[X^2] - E[X]^2</span>
+        <span class="n">aleat_var</span> <span class="o">=</span> <span class="nb">vars</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">epist_var</span><span class="p">,</span> <span class="n">aleat_var</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AsyncMVEEnsemble.prediction">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMVEEnsemble.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        reduce: bool, optional</span>
+<span class="sd">            Whether the combined uncertainty or both uncertainties should be returned. The default is True.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if comp_sens is False:</span>
+<span class="sd">        torch.Tensor : Tensor of same langth as input, containing the predictions.</span>
+<span class="sd">        if comp_sens is True:</span>
+<span class="sd">            (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.</span>
+<span class="sd">            Key of that dict is the prediction type (str), value is the sensitivity tensor.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Based on the Example from initialisation</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">        &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">        &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                       [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">        &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                       rnn_window=10, batch_size=1)</span>
+<span class="sd">        &gt;&gt;&gt; pred = ensemble.prediction(loader[0], reduce=False) # Prediction of Mean and Variance</span>
+<span class="sd">        &gt;&gt;&gt; print(pred[0].shape) # Mean</span>
+<span class="sd">        &gt;&gt;&gt; print(pred[1].shape) # aletoric Variance </span>
+<span class="sd">        &gt;&gt;&gt; print(pred[2].shape) # epistemic Variance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_async_prediction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="n">reduce</span><span class="p">,</span>
+                                 <span class="n">ensemble_weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_weights</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="AsyncMCDropout">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropout">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncMCDropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Async MCDO wrapper for probabilistic point prediction models</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        probabilistic model that is used for prediction </span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        amount of samples to draw for monte carlo estimation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.ensemble_wrappers as ew</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = am.ARNN(2, 1, 10, 10, [16, 8], dropout=.5, concrete_dropout=True)</span>
+<span class="sd">    &gt;&gt;&gt; ensemble = ew.AsyncMCDropout(m, n_samples=10)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; out = ensemble.estimate_uncertainty_mean_std(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[0].shape) # Mean</span>
+<span class="sd">    &gt;&gt;&gt; print(out[1].shape) # Std</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span> 
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="AsyncMCDropout.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropout.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean prediction and epistemic uncertainty of the ensemble for one step</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (mean, std)</span>
+<span class="sd">            mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+
+<span class="sd">            std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AsyncMCDropout.prediction">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropout.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if loss_ft=None:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor])</span>
+<span class="sd">                tuple of Torch Tensor of same length as input and variances</span>
+<span class="sd">        if loss_ft=torch loss function:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor], loss)</span>
+<span class="sd">                tuple of Torch Tensor of same length as input, variances and loss</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">        &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">        &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                       [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">        &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                       rnn_window=10, batch_size=1)</span>
+<span class="sd">        &gt;&gt;&gt; pred = ensemble.prediction(loader[0]) # Prediction of Mean and Variance</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_async_prediction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)</span></div>
+</div>
+
+        
+<div class="viewcode-block" id="AsyncMCDropoutMVE">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropoutMVE">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncMCDropoutMVE</span><span class="p">(</span><span class="n">AsyncMCDropout</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Async MCDO wrapper for MVE models</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        probabilistic model that is used for prediction </span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        amount of samples to draw for monte carlo estimation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models as am</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.ensemble_wrappers as ew</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; params = {&#39;input_channels&#39;: 2,</span>
+<span class="sd">                  &#39;pred_size&#39;: 1,</span>
+<span class="sd">                  &#39;window_size&#39;: 10,</span>
+<span class="sd">                  &#39;rnn_window&#39;: 10}</span>
+<span class="sd">    &gt;&gt;&gt; mean_model = am.ARNN(**params, hidden_size=[16, 8],</span>
+<span class="sd">                             dropout=.5, concrete_dropout=True)</span>
+<span class="sd">    &gt;&gt;&gt; m = am.SeparateMVEARNN(**params,mean_model=mean_model,</span>
+<span class="sd">                               var_hidden_size=[16, 8])</span>
+<span class="sd">    &gt;&gt;&gt; ensemble = ew.AsyncMCDropoutMVE(m, n_samples=10)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; out = ensemble.estimate_uncertainty_mean_stds(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(len(out))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="n">AsyncMCDropout</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="s1">&#39;Mean_Var&#39;</span>
+    
+<div class="viewcode-block" id="AsyncMCDropoutMVE.estimate_uncertainty_mean_stds">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropoutMVE.estimate_uncertainty_mean_stds">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_stds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the mean prediction and uncertainty of the ensemble for one step</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (mean, aleatoric std, epistemic std)</span>
+<span class="sd">            mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+
+<span class="sd">            std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">                shape=[batch size, pred_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">])</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">preds</span><span class="p">])</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">epist_var</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">square</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">-</span> <span class="n">mean</span><span class="o">.</span><span class="n">square</span><span class="p">()</span> <span class="c1"># corresponds to Var(X) = E[X^2] - E[X]^2</span>
+        <span class="n">aleat_var</span> <span class="o">=</span> <span class="nb">vars</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">epist_var</span><span class="p">,</span> <span class="n">aleat_var</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AsyncMCDropoutMVE.prediction">
+<a class="viewcode-back" href="../../ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropoutMVE.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        reduce: bool, optional</span>
+<span class="sd">            Whether the combined uncertainty or both uncertainties should be returned. The default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if loss_ft=None:</span>
+<span class="sd">            (torch.Tensor, torch.Tensor) if reduce else (torch.Tensor, torch.Tensor, torch.Tensor)</span>
+<span class="sd">                tuple of Torch Tensor of same length as input (prediction, uncertainties)</span>
+<span class="sd">                where uncertainties = aleatoric_var + epistemic_var if reduce else (aleatoric_var, epistemic_var)</span>
+<span class="sd">        if loss_ft=torch.loss:</span>
+<span class="sd">            ((torch.Tensor, torch.Tensor), float) if reduce else ((torch.Tensor, torch.Tensor, torch.Tensor), float)</span>
+<span class="sd">                adds the computed loss as a second output ((prediction, uncertainties), loss)</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">        &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">        &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">                 &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">        &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                       [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">        &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                       rnn_window=10, batch_size=1)</span>
+<span class="sd">        &gt;&gt;&gt; pred = ensemble.prediction(loader[0], reduce=False) # Prediction of Mean and Variance</span>
+<span class="sd">        &gt;&gt;&gt; print(pred[0].shape) # Mean</span>
+<span class="sd">        &gt;&gt;&gt; print(pred[1].shape) # aletoric Variance </span>
+<span class="sd">        &gt;&gt;&gt; print(pred[2].shape) # epistemic Variance</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_async_prediction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">reduce</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

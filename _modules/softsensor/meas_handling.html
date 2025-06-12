@@ -1,0 +1,897 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.meas_handling &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.meas_handling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.meas_handling</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon May 31 13:08:01 2021</span>
+
+<span class="sd">@author: WET2RNG</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConcatDataset</span><span class="p">,</span> <span class="n">random_split</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Subset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylife.stress.timesignal</span><span class="w"> </span><span class="kn">import</span> <span class="n">butter_bandpass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpolate</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlidingWindow</span>
+
+
+<div class="viewcode-block" id="Meas_handling">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Meas_handling</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measurement handling class that can be used for the</span>
+<span class="sd">    whole data preprocessing</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    train_dfs : List of pd.DataFrames</span>
+<span class="sd">        List of pd.DataFrame for every Measurement used as Training data</span>
+<span class="sd">        for subsequent models.</span>
+<span class="sd">    train_names : List of str</span>
+<span class="sd">        List of Track Names corresponding to the train_dfs. Need to have the</span>
+<span class="sd">        same length as train_dfs</span>
+<span class="sd">    input_sensors : List of str</span>
+<span class="sd">        Input sensors for the subsequent models, The order of the str defines</span>
+<span class="sd">        the order in which the data is present inside the loader</span>
+<span class="sd">    output_sensors : List of str</span>
+<span class="sd">        Output sensors for the subsequent models, The order of of the str</span>
+<span class="sd">        defines the order in which the data is present inside the loader</span>
+<span class="sd">    fs : int</span>
+<span class="sd">        sample frequency.</span>
+<span class="sd">    test_dfs : List of pd.DataFrames, optional</span>
+<span class="sd">        List of pd.DataFrame for every Measurement used as Testing data</span>
+<span class="sd">        for subsequent models. The default is None</span>
+<span class="sd">    test_names : List of str, optional</span>
+<span class="sd">        List of Track Names corresponding to the test_dfs. Need to have the</span>
+<span class="sd">        same length as test_dfs. The default is None</span>
+<span class="sd">    pre_comp_cols : List of str, optional</span>
+<span class="sd">        Defines wheather and which a precomputed solution is in the dataset.</span>
+<span class="sd">        Precomputed solutions might be helpfull in certain training tasks</span>
+<span class="sd">        The default is None</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    Define a Measurment Handling class</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 10001)</span>
+<span class="sd">    &gt;&gt;&gt; xlow = np.sin(2 * np.pi * 100 * t)</span>
+<span class="sd">    &gt;&gt;&gt; xhigh = 0.2 * np.sin(2 * np.pi * 3000 * t)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;sine_inp&#39;: xlow + .1 * xhigh,</span>
+<span class="sd">             &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">             &#39;out&#39;: np.linspace(0, 1.0, 10001)}</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 10001)</span>
+<span class="sd">    &gt;&gt;&gt; test_df = {&#39;sine_inp&#39;: 10*xlow + .1 * xhigh,</span>
+<span class="sd">                   &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="sd">                   &#39;out&#39;: np.linspace(0, 1.0, 10001)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t), pd.DataFrame(d, index=t)],</span>
+<span class="sd">                                [&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="sd">                                [&#39;sine_inp&#39;, &#39;cos_inp&#39;], [&#39;out&#39;], 10000,</span>
+<span class="sd">                                [pd.DataFrame(test_df, index=t)], [&#39;test&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">train_dfs</span><span class="p">,</span>
+        <span class="n">train_names</span><span class="p">,</span>
+        <span class="n">input_sensors</span><span class="p">,</span>
+        <span class="n">output_sensors</span><span class="p">,</span>
+        <span class="n">fs</span><span class="p">,</span>
+        <span class="n">test_dfs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">test_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_comp_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_names</span> <span class="o">=</span> <span class="n">train_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_names</span> <span class="o">=</span> <span class="n">test_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">=</span> <span class="n">input_sensors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span> <span class="o">=</span> <span class="n">output_sensors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_comp_cols</span> <span class="o">=</span> <span class="n">pre_comp_cols</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="n">train_dfs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">test_dfs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Scaled</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># check that input is valid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_input</span><span class="p">(</span><span class="n">train_dfs</span><span class="p">,</span> <span class="n">train_names</span><span class="p">,</span> <span class="n">input_sensors</span> <span class="o">+</span> <span class="n">output_sensors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">test_dfs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">test_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_input</span><span class="p">(</span><span class="n">test_dfs</span><span class="p">,</span> <span class="n">test_names</span><span class="p">,</span> <span class="n">input_sensors</span> <span class="o">+</span> <span class="n">output_sensors</span><span class="p">)</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">train_names</span> <span class="o">+</span> <span class="n">test_names</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">train_names</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_naming</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Meas_handling.Scale">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.Scale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaler</span><span class="o">=</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">predef_scaler</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scale the Data. The scaler is fitted only on the traindata. Afterwards</span>
+<span class="sd">        train and testdata is transformed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scaler : sklearn.preprocessing scaler, optional</span>
+<span class="sd">            The default is StandardScaler().</span>
+<span class="sd">        predef_scaler : bool, optional</span>
+<span class="sd">            if True, scaler needs to be fitted already and will be used to</span>
+<span class="sd">            scale data. This might come in handy if the data used for scaling</span>
+<span class="sd">            is no longer available or special scaling procedures are required</span>
+<span class="sd">            The default is False</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        Based on the Example from class initialisation</span>
+
+<span class="sd">        &gt;&gt;&gt; df = handler.give_dataframe(&#39;sine1&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(np.var(df[&#39;sine_inp&#39;].values))</span>
+<span class="sd">        &gt;&gt;&gt; handler.Scale()</span>
+<span class="sd">        &gt;&gt;&gt; print(np.var(df[&#39;sine_inp&#39;].values))</span>
+<span class="sd">        1.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">predef_scaler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="n">scaler</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Scaled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.Resample">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.Resample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Resample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resample self.train_df and self.test_df to fs using Fourier method</span>
+<span class="sd">        along the given axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fs : float or int</span>
+<span class="sd">            fs to resample data to.</span>
+<span class="sd">        kind : str</span>
+<span class="sd">            Specifies the kind of interpolation as a string or as an integer</span>
+<span class="sd">            specifying the order of the spline interpolator to use. The string</span>
+<span class="sd">            has to be one of ‘linear’, ‘nearest’, ‘nearest-up’, ‘zero’,</span>
+<span class="sd">            ‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’, or ‘next’. ‘zero’,</span>
+<span class="sd">            ‘slinear’, ‘quadratic’ and ‘cubic’ refer to a spline interpolation</span>
+<span class="sd">            of zeroth, first, second or third order; ‘previous’ and ‘next’</span>
+<span class="sd">            simply return the previous or next value of the point; ‘nearest-up’</span>
+<span class="sd">            nd ‘nearest’ differ when interpolating half-integers</span>
+<span class="sd">            (e.g. 0.5, 1.5) in that ‘nearest-up’ rounds up and ‘nearest’</span>
+<span class="sd">            down. Default is ‘linear’. see interpolate.interp1d docu</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">):</span>
+            <span class="n">new_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+            <span class="n">new_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])(</span><span class="n">new_t</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">new_t</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">):</span>
+                <span class="n">new_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+                <span class="n">new_data</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">col</span><span class="p">:</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])(</span><span class="n">new_t</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span>
+                <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">new_t</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.Filter">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.Filter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_lim</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to bandpass Filter the Sensor data</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        freq_lim : (low_cut, high cut)</span>
+<span class="sd">            Defining the low and high cut for bandpass filtering</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        Based on the Example from class initialisation,</span>
+<span class="sd">        Result should be roughly zero</span>
+
+<span class="sd">        &gt;&gt;&gt; handler.Filter(freq_lim=(10, 700))</span>
+<span class="sd">        &gt;&gt;&gt; filtered_sine = handler.train_df[0][&#39;sine_inp&#39;].values</span>
+<span class="sd">        &gt;&gt;&gt; dev = xlow - filtered_sine</span>
+<span class="sd">        &gt;&gt;&gt; print(np.mean(dev))</span>
+<span class="sd">        0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">butter_bandpass</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freq_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">butter_bandpass</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">freq_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freq_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.fade_in">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.fade_in">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fade_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="n">window_type</span><span class="o">=</span><span class="s2">&quot;hanning&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply the defined window to the train and test data to fade in.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_type: str</span>
+<span class="sd">            Defining the window function type.</span>
+<span class="sd">            Supported window types are: hanning, hamming, blackman, bartlette</span>
+<span class="sd">        window_length : int</span>
+<span class="sd">            Defining the window length of the half window.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -------</span>
+<span class="sd">        Based on the Example from class initialisation,</span>
+<span class="sd">        Result should be roughly zero</span>
+
+<span class="sd">        &gt;&gt;&gt; print(handler.test_df[0][&#39;cos_inp&#39;][0])</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &gt;&gt;&gt; handler.fade_in(10)</span>
+<span class="sd">        &gt;&gt;&gt; print(handler.test_df[0][&#39;cos_inp&#39;][0])</span>
+<span class="sd">        0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span>
+            <span class="p">]</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_window</span><span class="p">(</span><span class="n">window_type</span><span class="p">,</span> <span class="n">window_length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># use only the half window</span>
+        <span class="n">window_in</span> <span class="o">=</span> <span class="n">window</span><span class="p">[:</span><span class="n">window_length</span><span class="p">]</span>
+        <span class="n">window_out</span> <span class="o">=</span> <span class="n">window</span><span class="p">[:</span><span class="o">-</span><span class="n">window_length</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">window_length</span><span class="p">,</span> <span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span>
+                <span class="p">:</span><span class="n">window_length</span><span class="p">,</span> <span class="n">columns</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">window_in</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># self.train_df[i].iloc[-window_length:, columns] = df.iloc[-window_length:, columns].mul(window_out, axis=0)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">window_length</span><span class="p">,</span> <span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">window_length</span><span class="p">,</span> <span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">window_in</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+            <span class="c1"># elf.test_df[i].iloc[-window_length:, columns] = np.array(df.iloc[-window_length:, columns].mul(window_out, axis=0))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_window</span><span class="p">(</span><span class="n">window_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to return a discrete window function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_type: str</span>
+<span class="sd">            Defining the window function type.</span>
+<span class="sd">            Supported window types are: Hanning, Hamming, Blackman</span>
+<span class="sd">        window_length : int</span>
+<span class="sd">            Defining the window length of the window.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Output: np.ndarray</span>
+<span class="sd">            Returns the discrete window function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">window_type</span> <span class="o">=</span> <span class="n">window_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">window_type</span> <span class="o">==</span> <span class="s2">&quot;hanning&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">window_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">window_type</span> <span class="o">==</span> <span class="s2">&quot;hamming&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hamming</span><span class="p">(</span><span class="n">window_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">window_type</span> <span class="o">==</span> <span class="s2">&quot;blackman&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">blackman</span><span class="p">(</span><span class="n">window_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">window_type</span> <span class="o">==</span> <span class="s2">&quot;bartlett&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">bartlett</span><span class="p">(</span><span class="n">window_length</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Unsupported window type: </span><span class="si">{</span><span class="n">window_type</span><span class="si">}</span><span class="s1">! Use the default window type &quot;Hanning&quot;&#39;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">window_length</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Meas_handling.give_torch_loader">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.give_torch_loader">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_torch_loader</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">,</span>
+        <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;training&quot;</span><span class="p">,</span>
+        <span class="n">train_ratio</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">rnn_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pre_comp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives back a torch dataloader for training, evaluation or testing</span>
+<span class="sd">        purpose</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_size : int</span>
+<span class="sd">            Window size for input and output series.</span>
+<span class="sd">        keyword : str, optional</span>
+<span class="sd">            possibilities are &#39;training&#39;, &#39;testing&#39;, &#39;short&#39; or [&#39;Name&#39;].</span>
+<span class="sd">            &#39;training&#39; gives a training and validation dataloader using</span>
+<span class="sd">            all training data.</span>
+<span class="sd">            &#39;testing&#39; gives a single dataloader using all test data.</span>
+<span class="sd">            &#39;short&#39; gives a training loader with 5000 samples and a</span>
+<span class="sd">            validation loader with 1000 samples.</span>
+<span class="sd">            [&#39;Name&#39;], list of names, names must be present in either</span>
+<span class="sd">            train_names or test_names</span>
+<span class="sd">            The default is &#39;training&#39;.</span>
+<span class="sd">        train_ratio : float, optional</span>
+<span class="sd">            only needed for keyword &#39;training&#39;. Defines the ration of training</span>
+<span class="sd">            data compared to validation data. The default is .8.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batchsize for the dataloader. The default is 32.</span>
+<span class="sd">        rnn_window : int, optional</span>
+<span class="sd">            Window size of the recurrent window. The default is None.</span>
+<span class="sd">        shuffle : bool, optional</span>
+<span class="sd">            Loader is shuffled or not. The default is False.</span>
+<span class="sd">        Add_zeros : bool, optional</span>
+<span class="sd">            only needed if rnn_window is False, Adds zeros to the beginning of</span>
+<span class="sd">            the time series. The default is True</span>
+<span class="sd">        forecast : int, optional</span>
+<span class="sd">            forcasting horizon</span>
+<span class="sd">        pre_comp : bool, optional</span>
+<span class="sd">            using precomputed solution or not. The default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.dataloader</span>
+<span class="sd">            one dataloader if train_ratio  = 1, otherwise two dataloaders for</span>
+<span class="sd">            training and validation</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get data from keyword</span>
+        <span class="k">if</span> <span class="n">keyword</span> <span class="o">==</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span>
+            <span class="n">set_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_Datasets</span><span class="p">(</span>
+                <span class="n">window_size</span><span class="p">,</span>
+                <span class="s2">&quot;training&quot;</span><span class="p">,</span>
+                <span class="n">rnn_window</span><span class="p">,</span>
+                <span class="n">Add_zeros</span><span class="p">,</span>
+                <span class="n">forecast</span><span class="p">,</span>
+                <span class="n">full_ds</span><span class="p">,</span>
+                <span class="n">pre_comp</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">set_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_Datasets</span><span class="p">(</span>
+                <span class="n">window_size</span><span class="p">,</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">rnn_window</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span> <span class="n">full_ds</span><span class="p">,</span> <span class="n">pre_comp</span>
+            <span class="p">)</span>
+
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">ConcatDataset</span><span class="p">(</span><span class="n">set_list</span><span class="p">)</span>
+
+        <span class="c1"># Define data loaders</span>
+        <span class="k">if</span> <span class="n">keyword</span> <span class="o">==</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_dataset</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="p">,</span>
+                <span class="n">train_ratio</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">shuffle</span><span class="p">,</span>
+                <span class="n">short</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_dataset</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="p">,</span> <span class="n">train_ratio</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">short</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split_dataset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">short</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal class to split a given dataset in training and evaluation sets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset : torch.utils.data.Dataset</span>
+<span class="sd">            dataset to split.</span>
+<span class="sd">        ratio : float. (0, 1]</span>
+<span class="sd">            ratio to split dataset in training and validation.</span>
+<span class="sd">            ratio = 1: dataset isn&#39;t split at all</span>
+<span class="sd">            ratio &lt; 1: dataset is split with ratio as the percentage of data</span>
+<span class="sd">            in the first loader</span>
+<span class="sd">        batch_size : int</span>
+<span class="sd">            Batchsize for the dataloader.</span>
+<span class="sd">        shuffle : bool</span>
+<span class="sd">            Loader is shuffled or not.</span>
+<span class="sd">        short : bool, optional</span>
+<span class="sd">            gives back a short dataloader with 500 samples for training and</span>
+<span class="sd">            1000 for validation. The default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.dataloader</span>
+<span class="sd">            one dataloader if train_ratio  = 1, otherwise two dataloaders for</span>
+<span class="sd">            training and validation</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ratio</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">length_of_set</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+                <span class="n">train_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">val_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">_samples</span> <span class="o">=</span> <span class="n">length_of_set</span> <span class="o">-</span> <span class="n">train_samples</span> <span class="o">-</span> <span class="n">val_samples</span>
+                <span class="n">train_set</span><span class="p">,</span> <span class="n">val_set</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span>
+                    <span class="n">dataset</span><span class="p">,</span> <span class="p">(</span><span class="n">train_samples</span><span class="p">,</span> <span class="n">val_samples</span><span class="p">,</span> <span class="n">_samples</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">train_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length_of_set</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span>
+                <span class="n">val_samples</span> <span class="o">=</span> <span class="n">length_of_set</span> <span class="o">-</span> <span class="n">train_samples</span>
+                <span class="n">train_set</span><span class="p">,</span> <span class="n">val_set</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="p">(</span><span class="n">train_samples</span><span class="p">,</span> <span class="n">val_samples</span><span class="p">))</span>
+
+            <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span>
+            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+                <span class="n">dataset</span> <span class="o">=</span> <span class="n">Subset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">train_loader</span>
+
+<div class="viewcode-block" id="Meas_handling.give_list">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.give_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">,</span>
+        <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">rnn_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives List of DataLoader</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_size : int</span>
+<span class="sd">            Window size for input and output series.</span>
+<span class="sd">        keyword : str, optional</span>
+<span class="sd">            possibilities are &#39;training&#39;, &#39;testing&#39;, &#39;short&#39; or [Name].</span>
+<span class="sd">            &#39;training&#39; gives a training and validation dataloader using</span>
+<span class="sd">            all training data.</span>
+<span class="sd">            &#39;testing&#39; gives a single dataloader using all test data.</span>
+<span class="sd">            &#39;short&#39; gives a training loader with 5000 samples and a</span>
+<span class="sd">            validation loader with 1000 samples.</span>
+<span class="sd">            [Name], gives back a unshuffled loader corresponding to the track</span>
+<span class="sd">            name define in init</span>
+<span class="sd">            The default is &#39;training&#39;.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batchsize for the dataloader. The default is 32.</span>
+<span class="sd">        Add_zeros : bool, optional</span>
+<span class="sd">            Appends zeros at the beginning for Autoregressive models.</span>
+<span class="sd">            The default is False.</span>
+<span class="sd">        rnn_window : int, optional</span>
+<span class="sd">            Window size of the recurrent window. The default is None.</span>
+<span class="sd">        forecast : int, optional</span>
+<span class="sd">            forecasting horizon</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list_loader : list of torch.dataloader</span>
+<span class="sd">            list of dataloaders with individual Measurements.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">set_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_Datasets</span><span class="p">(</span>
+            <span class="n">window_size</span><span class="p">,</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">rnn_window</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span> <span class="n">full_ds</span>
+        <span class="p">)</span>
+
+        <span class="n">list_loader</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">set_list</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">list_loader</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.give_Datasets">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.give_Datasets">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_Datasets</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">,</span>
+        <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;training&quot;</span><span class="p">,</span>
+        <span class="n">rnn_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">full_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pre_comp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives List of DataSets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_size : int</span>
+<span class="sd">            Window size for input and output series.</span>
+<span class="sd">        keyword : str, optional</span>
+<span class="sd">            possibilities are &#39;training&#39;, &#39;testing&#39;, &#39;short&#39; or [Name].</span>
+<span class="sd">            &#39;training&#39; gives a training and validation dataloader using</span>
+<span class="sd">            all training data.</span>
+<span class="sd">            &#39;testing&#39; gives a single dataloader using all test data.</span>
+<span class="sd">            &#39;short&#39; gives a training loader with 5000 samples and a</span>
+<span class="sd">            validation loader with 1000 samples.</span>
+<span class="sd">            [Name], gives back a unshuffled loader corresponding to the track</span>
+<span class="sd">            name define in init</span>
+<span class="sd">            The default is &#39;training&#39;.</span>
+<span class="sd">        Add_zeros : bool, optional</span>
+<span class="sd">            Appends zeros at the beginning for Autoregressive models.</span>
+<span class="sd">            The default is False.</span>
+<span class="sd">        rnn_window : int, optional</span>
+<span class="sd">            Window size of the recurrent window. The default is None.</span>
+<span class="sd">        forecast : int, optional</span>
+<span class="sd">            forcasting horizon</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set_list : list of SlidingWindow Datasets</span>
+<span class="sd">            list of Datsets with individual Measurements.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">keyword</span> <span class="o">==</span> <span class="s2">&quot;testing&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">:</span>
+                <span class="n">temp_df</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_names</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;keyword testing given, but no test_df is &quot;</span> <span class="o">+</span> <span class="s2">&quot;defined&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">keyword</span> <span class="o">==</span> <span class="s2">&quot;training&quot;</span><span class="p">:</span>
+            <span class="n">temp_df</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_names</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_df</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyword</span><span class="p">]</span>
+        <span class="n">set_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">pre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_comp_cols</span> <span class="k">if</span> <span class="n">pre_comp</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">temp_df</span><span class="p">:</span>
+            <span class="n">set_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">SlidingWindow</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">window_size</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">output_sensors</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input_sensors</span><span class="p">,</span>
+                    <span class="n">Add_zeros</span><span class="p">,</span>
+                    <span class="n">rnn_window</span><span class="p">,</span>
+                    <span class="n">forecast</span><span class="p">,</span>
+                    <span class="n">full_ds</span><span class="p">,</span>
+                    <span class="n">pre</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">set_list</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.give_dataframes">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.give_dataframes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_dataframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list f dataframes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keywords : list of str or &#39;training&#39; or &#39;testing&#39;</span>
+<span class="sd">            rdefines which dataframes will be returned.</span>
+<span class="sd">            list of str return list of same length with dataframes</span>
+<span class="sd">            &#39;training&#39; or &#39;testing&#39; return list of dfs in training / testing</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dfs : list of dfs</span>
+<span class="sd">            List of Dataframes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">keywords</span> <span class="o">==</span> <span class="s2">&quot;testing&quot;</span><span class="p">:</span>
+            <span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_names</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">keywords</span> <span class="o">==</span> <span class="s2">&quot;training&quot;</span><span class="p">:</span>
+            <span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_names</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dfs</span></div>
+
+
+<div class="viewcode-block" id="Meas_handling.give_dataframe">
+<a class="viewcode-back" href="../../meas_handling.html#softsensor.meas_handling.Meas_handling.give_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives back Dataframe corresponding to the specific name</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Name : str</span>
+<span class="sd">            String that matches train or test name defined in init.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            DataFrame that corresponds to the given Name.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span><span class="p">,</span> <span class="n">Train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_idx</span><span class="p">(</span><span class="n">Name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Train</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives index of df name in df list</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Name : str</span>
+<span class="sd">            Name of the df the index is needed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        idx : int</span>
+<span class="sd">            index in df list.</span>
+<span class="sd">        train : bool</span>
+<span class="sd">            True if name is in training names, False if in test names.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_names</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">train</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">train</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_names</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">train</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">train</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not in train_names or test_names&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">name_list</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal class to check whether the input is valid for preprocessing.</span>
+<span class="sd">        Checks whether:</span>
+<span class="sd">            df_list is a list of pd.DataFrames</span>
+<span class="sd">            names_list is a list of str with the same length as df_list</span>
+<span class="sd">            columns is a list of str</span>
+<span class="sd">            all columns are present in all DataFrames</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_list : list</span>
+<span class="sd">            valid input is a list of pandas DataFrames</span>
+<span class="sd">        name_list : list</span>
+<span class="sd">            valid input is a list of str with the same length as df_list.</span>
+<span class="sd">        columns : list</span>
+<span class="sd">            valid input is a list of str with column names.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            raises Error if one of the conditions is not met.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check list of dfs</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all list entries are pd.DataFrame&quot;</span> <span class="o">+</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;columns are not present in all&quot;</span> <span class="o">+</span> <span class="s2">&quot; dataframes&quot;</span>
+                        <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Entry is not a list&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check list of names</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">name_list</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Entry is not a list&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;not all list entries are type str&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check if ist have same length</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of lists does not match&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_naming</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal class to check for duplicated names. Duplication can lead to</span>
+<span class="sd">        problems when specific Measurements need to be accessed</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        names : list of str</span>
+<span class="sd">            list of str to check for duplication.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Warning</span>
+<span class="sd">            if there are duplicated names, a warning is raised.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span>
+                <span class="s2">&quot;there are dublicated names in train_names and/or&quot;</span> <span class="o">+</span> <span class="s2">&quot;test_names&quot;</span>
+            <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vibration-soft-sensor &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="Softsensor documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">vibration-soft-sensor   <!-- omit in toc --></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents  <!-- omit in toc --></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#content">Content</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-components">Core Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-tools">Analysis Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-handling">Data Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensitivity-analysis">Sensitivity Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-for-development">Installation for Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maintainers">Maintainers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">vibration-soft-sensor   <!-- omit in toc --></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vibration-soft-sensor">
+<h1>vibration-soft-sensor   <!-- omit in toc --><a class="headerlink" href="#vibration-soft-sensor" title="Link to this heading"></a></h1>
+<p>A general toolbox for the development of vibrational softsensors. You can find a lot of functionality for data  preprocessing, model training and evaluation for linear and non linear methods.
+We have also adapt the general approach to a variety of signal types.</p>
+<p>The main paper <em>Stabilised Auto-Regressive Neural Networks (S-Arnns) for Data Driven Prediction of Forced Nonlinear Systems</em> can be found on http://dx.doi.org/10.2139/ssrn.4720155.</p>
+<section id="table-of-contents">
+<h2>Table of Contents  <!-- omit in toc --><a class="headerlink" href="#table-of-contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#content"><span class="std std-ref">Content</span></a></p></li>
+<li><p><a class="reference internal" href="#installation"><span class="std std-ref">Installation</span></a></p></li>
+<li><p><a class="reference internal" href="#maintainers"><span class="std std-ref">Maintainers</span></a></p></li>
+<li><p><a class="reference internal" href="#license"><span class="std std-ref">License</span></a></p></li>
+<li><p>3rd Party Licenses</p></li>
+</ul>
+<p><a name="content"></a></p>
+</section>
+<section id="content">
+<h2>Content<a class="headerlink" href="#content" title="Link to this heading"></a></h2>
+<p>The vibration-soft-sensor library provides comprehensive tools for analyzing vibration data and building soft sensors. Key components include:</p>
+<section id="core-components">
+<h3>Core Components<a class="headerlink" href="#core-components" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Model Types</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">autoreg_models</span></code>: Autoregressive models including ARNN</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recurrent_models</span></code>: Recurrent neural networks for time series prediction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linear_methods</span></code>: Transfer function and other linear methods</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model</span></code>: Base model implementations (LSTM, CNN)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arx</span></code>: Tools for ARX modeling with sliding window approaches</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="analysis-tools">
+<h3>Analysis Tools<a class="headerlink" href="#analysis-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">frequency_methods</span></code>: Frequency domain analysis including FDS (Fatigue Damage Spectrum)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visualization</span></code>: Extensive plotting utilities for sensitivity analysis and model evaluation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eval_tools</span></code>: Model evaluation and error computation functionalities</p></li>
+</ul>
+</section>
+<section id="data-handling">
+<h3>Data Handling<a class="headerlink" href="#data-handling" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_gen</span></code>: Simulated data generation with various excitation signals (sine, sweep, white noise)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meas_handling</span></code>: Measurement data preprocessing, including filtering</p></li>
+</ul>
+</section>
+<section id="advanced-features">
+<h3>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stab_scheduler</span></code>: Stability scoring and schedulers for neural networks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">losses</span></code>: Custom loss functions including PSD-based losses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ensemble_wrappers</span></code>: Ensemble model implementations (Sync/AsyncEnsemble)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hyperparameter_optimization</span></code>: Tools for optimizing model parameters</p></li>
+</ul>
+</section>
+<section id="sensitivity-analysis">
+<h3>Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading"></a></h3>
+<p>The library offers multiple sensitivity analysis methods:</p>
+<ul class="simple">
+<li><p>Gradient-based methods</p></li>
+<li><p>SmoothGrad</p></li>
+<li><p>Integrated gradients</p></li>
+<li><p>Perturbation analysis</p></li>
+<li><p>Uncertainty quantification</p></li>
+</ul>
+<p><a name="installation"></a></p>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>softsensor
+
+<span class="c1"># Using poetry</span>
+poetry<span class="w"> </span>add<span class="w"> </span>softsensor
+
+<span class="c1"># Using uv</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>softsensor
+</pre></div>
+</div>
+<section id="installation-for-development">
+<h3>Installation for Development<a class="headerlink" href="#installation-for-development" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/boschresearch/vibration-soft-sensor.git
+<span class="nb">cd</span><span class="w"> </span>vibration-soft-sensor
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create virtual local environment</span>
+
+<span class="c1"># Using conda</span>
+conda<span class="w"> </span>create<span class="w"> </span>-p<span class="w"> </span>./.venv
+conda<span class="w"> </span>activate<span class="w"> </span>./.venv
+
+<span class="c1"># Using poetry</span>
+poetry<span class="w"> </span>env
+poetry<span class="w"> </span>shell
+
+<span class="c1"># Using uv</span>
+uv<span class="w"> </span>venv<span class="w"> </span>.venv
+.venv/bin/activate
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># install development dependencies</span>
+<span class="c1"># Using pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+
+<span class="c1"># Using poetry</span>
+poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="w"> </span>dev
+
+<span class="c1"># Using uv</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+<p><a name="maintainers"></a></p>
+</section>
+<section id="maintainers">
+<h3>Maintainers<a class="headerlink" href="#maintainers" title="Link to this heading"></a></h3>
+<p>Tobias Westmeier: <a class="reference external" href="mailto:tobias&#46;westmeier&#37;&#52;&#48;iee&#46;fraunhofer&#46;de">tobias<span>&#46;</span>westmeier<span>&#64;</span>iee<span>&#46;</span>fraunhofer<span>&#46;</span>de</a></p>
+<p>Daniel Kreuter: <a class="reference external" href="mailto:danielchristopher&#46;kreuter&#37;&#52;&#48;de&#46;bosch&#46;com">danielchristopher<span>&#46;</span>kreuter<span>&#64;</span>de<span>&#46;</span>bosch<span>&#46;</span>com</a></p>
+<p><a name="license"></a></p>
+</section>
+<section id="license">
+<h3>License<a class="headerlink" href="#license" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">softsensor</span></code> is open-sourced under the Apache-2.0 license. See the
+<a class="reference internal" href="#LICENSE"><span class="xref myst">LICENSE</span></a> file for details.</p>
+<p>For a list of other open source components included in pyLife, see the
+file <a class="reference internal" href="#3rd-party-licenses.txt"><span class="xref myst">3rd-party-licenses.txt</span></a>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Softsensor documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,955 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.metrics &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.metrics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.metrics</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">r2_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">rv_histogram</span><span class="p">,</span> <span class="n">rv_continuous</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">CubicSpline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylife.stress.timesignal</span><span class="w"> </span><span class="kn">import</span> <span class="n">psd_df</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.frequency_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">psd_moment</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Methods to compute metrics with the same argument structure as nn.GaussianNLLLoss()</span>
+
+<span class="sd">For a description of the provided uncertainty metrics refer to</span>
+<span class="sd">&quot;Uncertainty Quantification for Traffic Forecasting: A Unified Approach&quot;</span>
+<span class="sd">[Qian et al. 2022 https://arxiv.org/abs/2208.05875]</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="rmse">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.rmse">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rmse</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Root Mean Square Error (RMSE)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rmse: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="mae">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.mae">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mae</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mean Absolute Error (MAE)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mae: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">L1Loss</span><span class="p">()(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="r2">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.r2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">r2</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;R2 score</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r2: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pearson">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.pearson">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pearson</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pearson correlation coefficient</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pearson: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="nll">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.nll">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nll</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian Negative Log Likelihood Loss (NLL)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nll: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">GaussianNLLLoss</span><span class="p">()(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="nll_statistic">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.nll_statistic">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nll_statistic</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian Negative Log Likelihood (rather than the score of the optimization objective)</span>
+<span class="sd">       We mainly report the NLL loss as its minimization is equivalent to NLL minimization but add this metric for comparability</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nll: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gaussians</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">gaussians</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="rmv">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.rmv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rmv</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Root Mean Variance (RMV) measures the sharpness of the uncertainty distributions</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sharpness: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">var</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="heteroscedasticity">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.heteroscedasticity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">heteroscedasticity</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Heteroscedasticity of uncertainty estimate as std of std</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    heteroscedasticity: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="crps">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.crps">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crps</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The negatively oriented continuous ranked probability score for Gaussians.</span>
+
+<span class="sd">    Computes CRPS for held out data (y_true) given predictive uncertainty with mean</span>
+<span class="sd">    (y_pred) and standard-deviation (y_std). Each test point is given equal weight</span>
+<span class="sd">    in the overall score over the test set.</span>
+
+<span class="sd">    Negatively oriented means a smaller value is more desirable.</span>
+
+<span class="sd">    Adapted from https://github.com/uncertainty-toolbox/uncertainty-toolbox</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    crps: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">y_standardized</span> <span class="o">=</span> <span class="p">(</span><span class="n">targets</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
+    <span class="n">term_1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">term_2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">y_standardized</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">term_3</span> <span class="o">=</span> <span class="n">y_standardized</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">y_standardized</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">crps_list</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">std</span> <span class="o">*</span> <span class="p">(</span><span class="n">term_1</span> <span class="o">-</span> <span class="n">term_2</span> <span class="o">-</span> <span class="n">term_3</span><span class="p">)</span>
+    <span class="n">crps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">crps_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">crps</span></div>
+
+
+
+<div class="viewcode-block" id="picp">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.picp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">picp</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">1.96</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prediction Interval Coverage Probability (PICP) measures the coverage of a specific PI</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Z-score for the specific quantile, the default is 1.96 (95% interval)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pi_coverage: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">-</span> <span class="n">z</span> <span class="o">*</span> <span class="n">std</span>
+    <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">std</span>
+
+    <span class="n">pi_coverage</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">lower_bound</span> <span class="o">&lt;=</span> <span class="n">targets</span><span class="p">,</span> <span class="n">targets</span> <span class="o">&lt;=</span> <span class="n">upper_bound</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">int</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pi_coverage</span></div>
+
+
+
+<div class="viewcode-block" id="mpiw">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.mpiw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mpiw</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">1.96</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mean Prediction Interval Width (MPIW) measures the width of a specific PI</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+<span class="sd">    z: float, optional</span>
+<span class="sd">        Z-score for the specific quantile, the default is 1.96 (95% interval)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pi_width: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">-</span> <span class="n">z</span> <span class="o">*</span> <span class="n">std</span>
+    <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">std</span>
+
+    <span class="n">pi_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_bound</span> <span class="o">-</span> <span class="n">lower_bound</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pi_width</span></div>
+
+
+
+<div class="viewcode-block" id="ece">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.ece">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ece</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">quantiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expected Calibration Error (ECE) measures the mean absolute calibration error of multiple PICPs</span>
+
+<span class="sd">    See &quot;Accurate Uncertainties for Deep Learning Using Calibrated Regression&quot;</span>
+<span class="sd">    [Kuleshov et al. 2018 https://arxiv.org/abs/1807.00263]</span>
+
+<span class="sd">    See https://stackoverflow.com/questions/20864847/probability-to-z-score-and-vice-versa</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu: torch.Tensor</span>
+<span class="sd">        Predicted means</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Target values</span>
+<span class="sd">    var: torch.Tensor</span>
+<span class="sd">        Predicted variances</span>
+<span class="sd">    quantiles: list[x], x in (0,1)</span>
+<span class="sd">        Quantiles to evaluate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pi_width: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">quantiles</span><span class="p">]</span>
+    <span class="n">picp_scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">picp</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">z_scores</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">L1Loss</span><span class="p">()(</span><span class="n">picp_scores</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">quantiles</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="log_area_error">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.log_area_error">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_area_error</span><span class="p">(</span><span class="n">psd_original</span><span class="p">,</span> <span class="n">psd_targets</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">psd_original</span> <span class="o">=</span> <span class="n">psd_original</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">psd_targets</span> <span class="o">=</span> <span class="n">psd_targets</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">log_original</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">psd_original</span><span class="p">)</span>
+    <span class="n">log_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">psd_targets</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">log_original</span> <span class="o">-</span> <span class="n">log_targets</span><span class="p">)</span>
+
+    <span class="n">log_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">log_f</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">area</span><span class="p">))</span></div>
+
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def compute_metrics(model, test_loader, metric_names=None):</span>
+<span class="sd">    &quot;&quot;&quot;Compute the mean metric scores of a model on the test set</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function reduces scores across test tracks and variables.</span>
+<span class="sd">        Use eval_tools.comp_metrics if you want to compute scores for individual output sensors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: Uncertainty model</span>
+<span class="sd">        Model to evaluate</span>
+<span class="sd">    test_loader: list[Dataloader]</span>
+<span class="sd">        Test dataset</span>
+<span class="sd">    metric_names: list[string], optional</span>
+<span class="sd">        Must be a subset of uncertainty metrics:</span>
+<span class="sd">        [&quot;RMSE&quot;, &quot;MAE&quot;, &quot;R2&quot;, &quot;Corr&quot;, &quot;NLL&quot;, &quot;RMV&quot;, &quot;CRPS&quot;, &quot;Het&quot;, &quot;PICP&quot;, &quot;MPIW&quot;, &quot;ECE&quot;]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_scores: dict[str, float]</span>
+<span class="sd">    &quot;&quot;&quot; </span>
+<span class="sd">    uncertainty_metrics = {</span>
+<span class="sd">        &quot;RMSE&quot;: rmse,</span>
+<span class="sd">        &quot;MAE&quot;: mae,</span>
+<span class="sd">        &quot;R2&quot;: r2,</span>
+<span class="sd">        &quot;Corr&quot;: pearson,</span>
+<span class="sd">        &quot;NLL&quot;: nll, </span>
+<span class="sd">        &quot;RMV&quot;: rmv,</span>
+<span class="sd">        &quot;CRPS&quot;: crps,</span>
+<span class="sd">        &quot;Het&quot;: heteroscedasticity,</span>
+<span class="sd">        &quot;PICP&quot;: picp,</span>
+<span class="sd">        &quot;MPIW&quot;: mpiw,</span>
+<span class="sd">        &quot;ECE&quot;: ece,</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    if metric_names:</span>
+<span class="sd">        uncertainty_metrics = {k: v for k, v in uncertainty_metrics.items() if k in metric_names}</span>
+<span class="sd">    </span>
+<span class="sd">    scores = defaultdict(list)</span>
+<span class="sd">    for track in test_loader:</span>
+<span class="sd">        mean, var = model.prediction(track)</span>
+<span class="sd">        targets = torch.tensor([[data[1][0][i][0] for data in track] for i in range(mean.shape[0])])</span>
+<span class="sd">    </span>
+<span class="sd">        for name, metric in uncertainty_metrics.items():</span>
+<span class="sd">            scores[name].append(metric(mean, targets, var))</span>
+<span class="sd">            </span>
+<span class="sd">    mean_scores = {k: np.mean(v)  for k, v in scores.items()}</span>
+<span class="sd">    return mean_scores</span>
+
+<span class="sd">def compute_eval_metrics(model, test_loader):</span>
+<span class="sd">    &quot;&quot;&quot;Wrapper of compute metrics that focuses on the most important metrics</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: Uncertainty model</span>
+<span class="sd">        Model to evaluate</span>
+<span class="sd">    test_loader: list[Dataloader]</span>
+<span class="sd">        Test dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_scores: dict[str, float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    metric_names = [&quot;RMSE&quot;, &quot;NLL&quot;, &quot;ECE&quot;, &quot;Het&quot;]</span>
+<span class="sd">    return compute_metrics(model, test_loader, metric_names)</span>
+
+<span class="sd">def compare_models(models, model_names, test_loader):</span>
+<span class="sd">    &quot;&quot;&quot;Compare multiple models on the same test set</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    models: list[Uncertainty model]</span>
+<span class="sd">        Models to evaluate</span>
+<span class="sd">    model_names: list[string]</span>
+<span class="sd">        Identifier of the models</span>
+<span class="sd">    test_loader: list[Dataloader]</span>
+<span class="sd">        Test dataset</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df: pd.Dataframe</span>
+<span class="sd">        Scores as rows and model names as columns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    ds = [compute_metrics(model, test_loader) for model in models]</span>
+<span class="sd">    df = pd.DataFrame(ds, index=model_names).T    </span>
+<span class="sd">    return df</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="quantile_ece">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.quantile_ece">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">quantile_ece</span><span class="p">(</span>
+    <span class="n">predicted_quantiles</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">expected_quantiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expected Calibration Error (ECE) measures the mean absolute calibration error of multiple PICPs</span>
+
+<span class="sd">    See &quot;Accurate Uncertainties for Deep Learning Using Calibrated Regression&quot;</span>
+<span class="sd">    [Kuleshov et al. 2018 https://arxiv.org/abs/1807.00263]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    predicted_quantiles: list[torch.Tensor]</span>
+<span class="sd">        Expected to be of the form [median, lb0, ub0, lb1, ub1, ...]</span>
+<span class="sd">    targets: torch.Tensor</span>
+<span class="sd">        Ground truth for median</span>
+<span class="sd">    expected_quantiles: Quantiles to evaluate</span>
+<span class="sd">        Expected to be of the form [lb0, lb1, ..., median, ..., ub1, ub0]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pi_width: torch.Tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_quantiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expected_quantiles</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">num_quantiles</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">predicted_quantiles</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">num_quantiles</span>
+    <span class="n">picp_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">predicted_quantiles</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">predicted_quantiles</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="n">picp_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">lb</span> <span class="o">&lt;=</span> <span class="n">targets</span><span class="p">,</span> <span class="n">targets</span> <span class="o">&lt;=</span> <span class="n">ub</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">picp_scores</span> <span class="o">=</span> <span class="n">picp_scores</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">L1Loss</span><span class="p">()(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">picp_scores</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">expected_quantiles</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="compute_quantile_metrics">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.compute_quantile_metrics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_quantile_metrics</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">test_loader</span><span class="p">,</span>
+    <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span>
+    <span class="n">expected_quantiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute metrics that are compatible with quantile models</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: QuantileNARX</span>
+<span class="sd">        Quantile model to evaluate</span>
+<span class="sd">    test_loader: list[Dataloader]</span>
+<span class="sd">        Test dataset</span>
+<span class="sd">    output_names: list[str], optional</span>
+<span class="sd">        Output sensors to consider. The default is [&quot;x&quot;]</span>
+<span class="sd">    expected_quantiles: list[float]</span>
+<span class="sd">        Quantiles to evaluate</span>
+<span class="sd">        Expected to be of the form [lb0, lb1, ..., median, ..., ub1, ub0]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_scores: dict[str, float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">:</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">output_names</span><span class="p">):</span>
+            <span class="n">predidcted_quantiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pred</span><span class="p">]</span>
+            <span class="n">median</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">predidcted_quantiles</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">track</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;R2&quot;</span><span class="p">,</span> <span class="s2">&quot;Corr&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">rmse</span><span class="p">,</span> <span class="n">mae</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">pearson</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="n">scores</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">median</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">var</span><span class="p">))</span>
+
+            <span class="n">scores</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">_PICP&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">lb</span> <span class="o">&lt;=</span> <span class="n">targets</span><span class="p">,</span> <span class="n">targets</span> <span class="o">&lt;=</span> <span class="n">ub</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">scores</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">_MPIW&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+            <span class="n">scores</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">_ECE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">quantile_ece</span><span class="p">(</span><span class="n">predidcted_quantiles</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">expected_quantiles</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="n">mean_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">return</span> <span class="n">mean_scores</span></div>
+
+
+
+<div class="viewcode-block" id="wf_distribution">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.wf_distribution">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">wf_distribution</span><span class="p">(</span><span class="n">rv_continuous</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">norm_psd_cumsum</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cdf_interpolator</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="n">norm_psd_cumsum</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdf_interpolator</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">distribution</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">distribution</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_ppf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">distribution</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="distance_calc">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.distance_calc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">distance_calc</span><span class="p">(</span><span class="n">inverse_cdf</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">w_distance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">inverse_cdf</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">inverse_cdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col1</span> <span class="ow">in</span> <span class="n">inverse_cdf</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">col2</span> <span class="ow">in</span> <span class="n">inverse_cdf</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># if col1 != col2:</span>
+            <span class="n">wstf_act</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span>
+                <span class="p">((</span><span class="n">inverse_cdf</span><span class="p">[</span><span class="n">col1</span><span class="p">]</span> <span class="o">-</span> <span class="n">inverse_cdf</span><span class="p">[</span><span class="n">col2</span><span class="p">])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+                <span class="o">**</span> <span class="n">p</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">inverse_cdf</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
+            <span class="n">w_distance</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">]</span> <span class="o">=</span> <span class="n">wstf_act</span>
+    <span class="k">return</span> <span class="n">w_distance</span></div>
+
+
+
+<div class="viewcode-block" id="WassersteinDistance">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WassersteinDistance</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    WassersteinDistance class to calculate the Wasserstein distance and the wasserstein Fourier distance.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        data (pd.DataFrame): The input data as a pandas DataFrame.</span>
+<span class="sd">        weights_u (pd.DataFrame): The weights associated with the data as a pandas DataFrame.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        sort_data: Sort the data and weights in ascending order.</span>
+<span class="sd">        weighted_hist: Calculate the weighted histogram of the data.</span>
+<span class="sd">        pdf: Calculate the probability density function of the data.</span>
+<span class="sd">        cdf: Calculate the cumulative density function of the data.</span>
+<span class="sd">        inverse_cdf: Calculate the inverse cumulative density function of the data.</span>
+<span class="sd">        wasserstein_distance_p: Calculate the p-th Wasserstein distance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sorted_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_data</span><span class="p">()</span>
+
+        <span class="n">nfft</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">nperseg</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weighted_hist</span><span class="p">(</span><span class="n">nfft</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="n">nperseg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WassersteinDistance.sort_data">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.sort_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sort_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sorts the data and weights based on the values in the data.</span>
+
+<span class="sd">        This method sorts the data and weights along the first axis (rows) based on the values in the data.</span>
+<span class="sd">        It returns the sorted indices, sorted data, and sorted weights.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - sorted_indices (numpy.ndarray): The indices that would sort the data.</span>
+<span class="sd">                - sorted_data (pandas.DataFrame): The data sorted according to the sorted indices.</span>
+<span class="sd">                - sorted_weights (pandas.DataFrame): The weights sorted according to the sorted indices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">sorted_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">sorted_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">sorted_weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">sorted_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">sorted_indices</span><span class="p">,</span> <span class="n">sorted_data</span><span class="p">,</span> <span class="n">sorted_weights</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.weighted_hist">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.weighted_hist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nfft</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="mi">2048</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute weighted histograms for each column in the data.</span>
+
+<span class="sd">        This method calculates the weighted histogram for each column in the</span>
+<span class="sd">        dataset using the specified number of bins. The weights for each column</span>
+<span class="sd">        are used to compute the histogram. The resulting histograms are stored</span>
+<span class="sd">        in the `self.hist` attribute, and the corresponding probability</span>
+<span class="sd">        distributions are stored in the `self.distribution` attribute.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        bins (int): The number of bins to use for the histogram. Default is 100.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">        self.hist (dict): A dictionary where keys are column names and values</span>
+<span class="sd">                          are tuples containing the histogram values and bin edges.</span>
+<span class="sd">        self.distribution (dict): A dictionary where keys are column names and</span>
+<span class="sd">                                  values are `rv_histogram` objects representing</span>
+<span class="sd">                                  the probability distributions of the histograms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">col</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">rv_histogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+
+        <span class="n">psd_dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">psd</span> <span class="o">=</span> <span class="n">psd_df</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">nfft</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="n">nperseg</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+            <span class="n">psd</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">psd</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">round</span><span class="p">(</span>
+                <span class="mi">4</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">psd</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">]))))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">)</span>
+
+            <span class="n">psd_dic</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">psd</span>
+        <span class="n">psd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">psd_dic</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">psd</span> <span class="o">=</span> <span class="n">psd</span><span class="p">[</span><span class="n">psd</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">moment_0</span> <span class="o">=</span> <span class="n">psd_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">psd</span><span class="p">,</span> <span class="n">n_moment</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">psd</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">())</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">psd</span> <span class="o">/</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">values</span>
+        <span class="p">)</span>  <span class="c1"># scaled to frequency delta and area</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wsfourier_distribution</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">col</span><span class="p">:</span> <span class="n">wf_distribution</span><span class="p">(</span>
+                <span class="n">ind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">b</span><span class="o">=</span><span class="n">ind</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.pdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">_calc_pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">},</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.cdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">_calc_cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">},</span>
+            <span class="n">x</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.inverse_cdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.inverse_cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">_calc_ppf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.wsf_pdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.wsf_pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wsf_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">_calc_pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wsfourier_distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span>
+            <span class="p">},</span>
+            <span class="c1"># index=pd.Index(np.exp(x), name=&quot;freq&quot;),</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;freq&quot;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.wsf_cdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.wsf_cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wsf_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPSD</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="c1"># x = np.log(</span>
+        <span class="c1">#     np.logspace(</span>
+        <span class="c1">#         np.log(self.NPSD.index.min()),</span>
+        <span class="c1">#         np.log(self.NPSD.index.max()),</span>
+        <span class="c1">#         base=np.e,</span>
+        <span class="c1">#         num=n_points,</span>
+        <span class="c1">#     )</span>
+        <span class="c1"># )</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">_calc_cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wsfourier_distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span>
+            <span class="p">},</span>
+            <span class="c1"># index=pd.Index(np.exp(x), name=&quot;freq&quot;),</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;freq&quot;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.wsf_inverse_cdf">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.wsf_inverse_cdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wsf_inverse_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">_calc_ppf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wsfourier_distribution</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span>
+            <span class="p">},</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="p">)</span>  <span class="c1"># .apply(np.exp)</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.wasserstein_distance_p">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.wasserstein_distance_p">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wasserstein_distance_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the Wasserstein distance (p-th order) based on the inverse cumulative distribution function (CDF).</span>
+
+<span class="sd">        This method calculates the Wasserstein distance, a measure of the distance between two probability distributions,</span>
+<span class="sd">        using the inverse CDF of the distribution. The distance is computed for a specified order `p`.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            p (int, optional): The order of the Wasserstein distance. Defaults to 1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The computed Wasserstein distance of order `p`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inverse_cdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">w_distance</span> <span class="o">=</span> <span class="n">distance_calc</span><span class="p">(</span><span class="n">inverse_cdf</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w_distance</span></div>
+
+
+<div class="viewcode-block" id="WassersteinDistance.wasserstein_fourier_distance">
+<a class="viewcode-back" href="../../metrics.html#softsensor.metrics.WassersteinDistance.wasserstein_fourier_distance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wasserstein_fourier_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the Wasserstein Fourier distance for the given data.</span>
+
+<span class="sd">        This method calculates the Wasserstein Fourier distance by first obtaining</span>
+<span class="sd">        the inverse cumulative distribution function (CDF) using the normalized power spectral density and then computing the distance using the specified metric.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            p (int, optional): The order of the norm used in the distance calculation.</span>
+<span class="sd">                Defaults to 2.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The computed Wasserstein Fourier distance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inverse_cdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wsf_inverse_cdf</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="n">wsf_distance</span> <span class="o">=</span> <span class="n">distance_calc</span><span class="p">(</span><span class="n">inverse_cdf</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wsf_distance</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

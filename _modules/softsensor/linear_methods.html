@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.linear_methods &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.linear_methods</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.linear_methods</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Fri Mar  4 13:04:39 2022</span>
+
+<span class="sd">@author: Daniel Kreuter</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">csd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">la</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShortTimeFFT</span><span class="p">,</span> <span class="n">get_window</span>
+
+
+<div class="viewcode-block" id="tf">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">tf</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    linear methods based on FFT and short term FFT</span>
+<span class="sd">    Calculate the linear MiMo Transferfunction similar to Matlab tfestimate:</span>
+<span class="sd">    https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    NFFT : int</span>
+<span class="sd">        Length of the fft. The default ist 512.</span>
+<span class="sd">    fs : int</span>
+<span class="sd">        sample frequency. The default ist 1024.</span>
+<span class="sd">    no_overlap : int</span>
+<span class="sd">        Points overlapping. If None, than it is defined by no_overlap = np.fix(0.67 * NFFT)</span>
+<span class="sd">        The default is None.</span>
+<span class="sd">    spectrum_type : str:</span>
+<span class="sd">        &#39;spectrum&#39; or &#39;psd&#39;. The default is &#39;spectrum&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Computing the linear transfer function of a linear system with white noise</span>
+<span class="sd">    excitation</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.linear_methods as lm</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 100, 1000)</span>
+<span class="sd">    &gt;&gt;&gt; params = {&#39;D&#39;: 0.05, &#39;c_nlin&#39;: 0}</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.white_noise(time)</span>
+<span class="sd">    &gt;&gt;&gt; df = dg.get_academic_data(time, Model=&#39;Duffing&#39;, F=F, params=params)</span>
+<span class="sd">    &gt;&gt;&gt; model = lm.tf(NFFT=512, fs=fs, no_overlap=256)</span>
+<span class="sd">    &gt;&gt;&gt; model.fit([df], [&#39;F(t)&#39;], [&#39;x&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; output = model.prediction(df, [&#39;x&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(df.index, df[&#39;x&#39;], label=&#39;original&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(df.index, output, label=&#39;prediciton&#39;)</span>
+
+<span class="sd">    .. image:: C:/Users/wet2rng/Desktop/Coding/SoftSensor/doc/img/lienar_tf.png</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">hop</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">spectrum_type</span><span class="o">=</span><span class="s2">&quot;spectrum&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s2">&quot;TF&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hop</span> <span class="o">=</span> <span class="n">hop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_type</span> <span class="o">=</span> <span class="n">spectrum_type</span>
+        <span class="c1"># Short-Time Fourier Transformation Object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">get_window</span><span class="p">(</span><span class="s2">&quot;hann&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">STFT</span> <span class="o">=</span> <span class="n">ShortTimeFFT</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span>
+            <span class="n">hop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop</span><span class="p">,</span>
+            <span class="n">fs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+            <span class="n">scale_to</span><span class="o">=</span><span class="s2">&quot;magnitude&quot;</span> <span class="k">if</span> <span class="n">spectrum_type</span> <span class="o">==</span> <span class="s2">&quot;spectrum&quot;</span> <span class="k">else</span> <span class="s2">&quot;psd&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="tf.fit">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">inp_sens</span><span class="p">,</span> <span class="n">out_sens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit linear TF to list of dfs by taking the mean transfer function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df_list : list of pd.DataFrame</span>
+<span class="sd">            list of training Files.</span>
+<span class="sd">        inp_sens : list of str</span>
+<span class="sd">            input sensors.</span>
+<span class="sd">        out_sens : list of str</span>
+<span class="sd">            output sensors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inp_sens</span> <span class="o">=</span> <span class="n">inp_sens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_sens</span> <span class="o">=</span> <span class="n">out_sens</span>
+
+        <span class="n">tf_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+            <span class="n">tf</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf_mimo</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inp_sens</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_sens</span><span class="p">])</span>
+            <span class="n">tf_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">tf_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">freq</span></div>
+
+
+<div class="viewcode-block" id="tf.prediction">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict test_df</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        test_df : pd.DataFrame</span>
+<span class="sd">            dtaFrame for the precition, needs columns that have the same name</span>
+<span class="sd">            as in fit.</span>
+<span class="sd">        columns : list of str, optional</span>
+<span class="sd">            names for the prediction. The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ts_pred : pd.DataFrame</span>
+<span class="sd">            returns dataframe with linear_TF prediction as column.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_sfft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sfft</span><span class="p">(</span><span class="n">test_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inp_sens</span><span class="p">])</span>
+        <span class="n">out_sfft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">out_sfft</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ts_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isfft</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">out_sfft</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">boundary</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts_pred</span> <span class="o">=</span> <span class="n">ts_pred</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">),</span> <span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ts_pred</span> <span class="o">=</span> <span class="n">ts_pred</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">),</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">ts_pred</span></div>
+
+
+<div class="viewcode-block" id="tf.sfft">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf.sfft">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sfft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the short term fast Fourier transformation (stft) for each input column of the</span>
+<span class="sd">        DataFrame</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts : pd.DataFrame</span>
+<span class="sd">            pandas data frame.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        STFT : array</span>
+<span class="sd">            The Fourier transformed signal.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">signal_len</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">Zxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+
+        <span class="n">Zxx</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Zxx</span>  <span class="c1"># one sided spectrum !!!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">f</span>
+        <span class="k">return</span> <span class="n">Zxx</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_rayleigh_ampl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Zxx</span><span class="p">):</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+        <span class="n">ampl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Zxx</span><span class="p">)</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">Zxx</span><span class="p">)</span>
+        <span class="n">ampl_rayleigh</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">rayleigh</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">ampl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ampl_rayleigh</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span>
+
+<div class="viewcode-block" id="tf.isfft">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf.isfft">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isfft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Zxx</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ampl_dist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the inverse Fourier transformation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Zxx : Array,</span>
+<span class="sd">            Fourier transformed signal.</span>
+<span class="sd">        columns : list of col names, optional</span>
+<span class="sd">            Column names of the output df. The default is None.</span>
+<span class="sd">        ampl_dist : None, str, optional</span>
+<span class="sd">            if STFT is a PSD, you can define the amplitude distribution with a Raleigh or mixed distribution.</span>
+<span class="sd">            Options are *None*, *&#39;rayleigh&#39;* or *&#39;mixed&#39;*.</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TS_IFFT : TYPE</span>
+<span class="sd">            DESCRIPTION.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ampl_dist</span> <span class="o">==</span> <span class="s2">&quot;rayleigh&quot;</span><span class="p">:</span>
+            <span class="n">Zxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rayleigh_ampl</span><span class="p">(</span><span class="n">Zxx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ampl_dist</span> <span class="o">==</span> <span class="s2">&quot;mixed&quot;</span><span class="p">:</span>
+            <span class="n">Zxx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">Zxx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rayleigh_ampl</span><span class="p">(</span><span class="n">Zxx</span><span class="p">))</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">istft</span><span class="p">(</span>
+            <span class="mf">0.5</span> <span class="o">*</span> <span class="n">Zxx</span>
+        <span class="p">)</span>  <span class="c1"># Rescaling  with 0.5: We have stored the stft with factor 2</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">out</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                        <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_len</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_len</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="tf.tf_mimo">
+<a class="viewcode-back" href="../../linear_methods.html#softsensor.linear_methods.tf.tf_mimo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tf_mimo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp_df</span><span class="p">,</span> <span class="n">out_df</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ToDo: replace with scipy.signal.csd</span>
+<span class="sd">        Calculate the linear MiMo Transferfunction similar to Matlab tfestimate:</span>
+<span class="sd">        https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp_df: pandas DataFrame</span>
+<span class="sd">            input x(t) (index is time stamp),</span>
+<span class="sd">        out_df: pandas DataFrame</span>
+<span class="sd">            output y(t) (index is time stamp),</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tf: numpy array</span>
+<span class="sd">            transfer function of shape (freq steps,no of out signals,</span>
+<span class="sd">                                        no of input signal), complex</span>
+<span class="sd">        f: numpy array</span>
+<span class="sd">        corresponding frequency array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">csd_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">csd_tot_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp_df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">colin</span> <span class="ow">in</span> <span class="n">inp_df</span><span class="p">:</span>
+            <span class="n">oo</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ii_in</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">colout</span> <span class="ow">in</span> <span class="n">out_df</span><span class="p">:</span>
+                <span class="n">freq</span><span class="p">,</span> <span class="n">csd_akt</span> <span class="o">=</span> <span class="n">csd</span><span class="p">(</span>
+                    <span class="n">inp_df</span><span class="p">[</span><span class="n">colin</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                    <span class="n">out_df</span><span class="p">[</span><span class="n">colout</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                    <span class="n">nfft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span><span class="p">,</span>
+                    <span class="n">fs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+                    <span class="n">nperseg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span><span class="p">,</span>
+                    <span class="n">detrend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">noverlap</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop</span><span class="p">),</span>
+                <span class="p">)</span>  <span class="c1"># with hanning window</span>
+                <span class="n">csd_tot</span><span class="p">[:,</span> <span class="n">oo</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">csd_akt</span>
+                <span class="n">oo</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">colin_psd</span> <span class="ow">in</span> <span class="n">inp_df</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">csd_in</span> <span class="o">=</span> <span class="n">csd</span><span class="p">(</span>
+                    <span class="n">inp_df</span><span class="p">[</span><span class="n">colin</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                    <span class="n">inp_df</span><span class="p">[</span><span class="n">colin_psd</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                    <span class="n">nfft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span><span class="p">,</span>
+                    <span class="n">fs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+                    <span class="n">nperseg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span><span class="p">,</span>
+                    <span class="n">detrend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">noverlap</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop</span><span class="p">),</span>
+                <span class="p">)</span>  <span class="c1"># with hanning window</span>
+                <span class="n">csd_tot_in</span><span class="p">[:,</span> <span class="n">ii_in</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">csd_in</span>
+                <span class="n">ii_in</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">csd_tot_in_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">csd_tot_in</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STFT</span><span class="o">.</span><span class="n">mfft</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">csd_tot_in_inv</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">la</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">csd_tot_in</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
+        <span class="k">return</span> <span class="n">csd_tot</span> <span class="o">@</span> <span class="n">csd_tot_in_inv</span><span class="p">,</span> <span class="n">freq</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

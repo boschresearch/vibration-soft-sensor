@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linear Virtual Sensors &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Autoregressive Neural Networks" href="02_ARNN.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Linear Virtual Sensors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Loading-Data">Loading Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Plot-the-Data">Plot the Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-Preprocessing">Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Define-Model">Define Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Model-Evaluation">Model Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="02_ARNN.html">Autoregressive Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_RNN.html">Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_hyperopt.html">Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_Hybrid_Models.html">Hybrid Virtual Sensors</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Linear Virtual Sensors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/01_linear_models.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Linear-Virtual-Sensors">
+<h1>Linear Virtual Sensors<a class="headerlink" href="#Linear-Virtual-Sensors" title="Link to this heading"></a></h1>
+<p>In this tutorial we will use linear approaches for virtual sensors to calculate the system response of an ESP System with external force from a shaker. The tutorial provides an introduction to virtual sensors for dynamic systems and focusses on applying linear approaches. More complex models are discussed in the other two tutorials on Autoregressive Neural Networks <code class="docutils literal notranslate"><span class="pre">ARNN.ipynb</span></code> and Recurrent Neural Networks <code class="docutils literal notranslate"><span class="pre">RNN.ipynb</span></code>.</p>
+<section id="Loading-Data">
+<h2>Loading Data<a class="headerlink" href="#Loading-Data" title="Link to this heading"></a></h2>
+<p>In a first step we load the already measured data and convert them into <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code>. Our example Data consists of three individually Measured datasets. To load the data properly we need information about the specific sensors. In our case the sensor names are straight forward:</p>
+<ul class="simple">
+<li><p>input_1-9 as our 9 input signals</p></li>
+<li><p>output_1-3 as out 3 output signals</p></li>
+</ul>
+<p>Furthermore, (if not given as <code class="docutils literal notranslate"><span class="pre">time</span></code> in the mat file) we need the corrosponsing sampling rate <code class="docutils literal notranslate"><span class="pre">fs</span></code> of the data.In our case:</p>
+<ul class="simple">
+<li><p>fs=50000</p></li>
+</ul>
+<p>Fixing the sampling rate will raise an Attention Message. We save the individual Measurments in a list of <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="kn">import</span> <span class="n">Meas_handling</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.arx</span><span class="w"> </span><span class="kn">import</span> <span class="n">ARX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.linear_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">tf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_pred</span><span class="p">,</span> <span class="n">comp_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+<span class="n">input_sensors</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;input_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="n">output_sensors</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;output_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
+
+<span class="n">file_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span> <span class="k">if</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+<span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Plot-the-Data">
+<h2>Plot the Data<a class="headerlink" href="#Plot-the-Data" title="Link to this heading"></a></h2>
+<p>Before we start with the actual preprocessing we want to plot the given data to get a feeling for the properties. These are high-frequency acceleration data recorded on a shaker. For convenience, we just plot the first entry of our list of DataFrames.</p>
+<p><img alt="" class="no-scaled-link" src="tutorials/img/Mehrachspruefstand.jpg" style="width: 600px;" />.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">subplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([&lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;,
+       &lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;,
+       &lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;,
+       &lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;,
+       &lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;,
+       &lt;Axes: xlabel=&#39;time&#39;&gt;, &lt;Axes: xlabel=&#39;time&#39;&gt;], dtype=object)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_linear_models_4_1.png" src="../_images/tutorials_01_linear_models_4_1.png" />
+</div>
+</div>
+</section>
+<section id="Data-Preprocessing">
+<h2>Data Preprocessing<a class="headerlink" href="#Data-Preprocessing" title="Link to this heading"></a></h2>
+<p>When looking at the data, the high range in which the accelerations move is striking. For many machine learning models, preprocessing is therefore necessary. Our toolbox uses the class <code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code> for the entire preprocessing. <code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code> is used to transform the data into a normally distributed range. Furthermore, the entire frequency range is not relevant for our analysis. Therefore, we sample the data from 50000 Hz to 10000 Hz and then filter between 90 and 4000 Hz.</p>
+<p>Furthermore, we split the data in training and evaluation data. We use the first two Measurments as training and the last one as evaluation</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">())</span>
+
+<span class="n">data_handle</span> <span class="o">=</span> <span class="n">Meas_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">file_names</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">input_sensors</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span>
+                            <span class="n">df_list</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">file_names</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">freq_lim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span>
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">freq_lim</span><span class="p">)</span>
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Define-Model">
+<h2>Define Model<a class="headerlink" href="#Define-Model" title="Link to this heading"></a></h2>
+<p>We define two different Models in our example. First we define an Autoregressive Model with exogenious input (ARX) to approximate the functional dependency between input and output as linear combinations. The model is autoregressive as it feeds back in the past outputs into the equation, leading to:</p>
+<p><span class="math notranslate nohighlight">\(y_i(t+1) = \mathbf{a} \cdot \mathbf{x}_i(t, ..., t-o_x) + \mathbf{b} \cdot \mathbf{y}_i(t, ..., t-o_y))\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{a}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{b}\)</span> define the different weights for each input as linear combinations, t the time step and <span class="math notranslate nohighlight">\(o_x, o_y\)</span> the number of past time steps to include in the computation.</p>
+<p>We define our ARX model with order = [10, 10] leading to the past 10 time steps of input and output to be included in the computation. The <code class="docutils literal notranslate"><span class="pre">ARX.fit</span></code> function takes a list of <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code> as well as the input aud output sensor names as input. We can access the <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code> in our <code class="docutils literal notranslate"><span class="pre">data_handle</span></code> by simply using the internal variable <code class="docutils literal notranslate"><span class="pre">train_df</span></code> which returns a list of DataFrames for training. (<code class="docutils literal notranslate"><span class="pre">test_df</span></code> would return a list of DataFrames for testing)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">arx</span> <span class="o">=</span> <span class="n">ARX</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">arx</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_handle</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">input_sensors</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\textbf{Congratulation!!!}\)</span> You now have developed your first virtual sensor for acceleration Measurements</p>
+<p>The ARX is a purely time domain model and is used in a multitude of use cases with different signal types. Since our datasets are acceleration measurements, we define a second linear approach in the frequency domain, namely the linear Transfer function.</p>
+<p>Setting up the model is quite simple as is takes no input variables. The linear_TF fit function takes a list of <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code> as well as the input aud output sensor names as input. Furthermore, we need to define a window size and sampling rate for the Fourier transformation conducted in out model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tf_class</span> <span class="o">=</span> <span class="n">tf</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">hop</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">tf_class</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_handle</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">input_sensors</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\textbf{Congratulation!!!}\)</span> You now have developted your second virtual sensor for acceleration Measurments</p>
+</section>
+<section id="Model-Evaluation">
+<h2>Model Evaluation<a class="headerlink" href="#Model-Evaluation" title="Link to this heading"></a></h2>
+<p>To Evaluate our model on testing data we use the predefined functions <code class="docutils literal notranslate"><span class="pre">comp_pred</span></code>, which computes the prediction for a defined track in the data_handle class. As track we choose our testing track, which can be accessed using the internal variable <code class="docutils literal notranslate"><span class="pre">test_names</span></code>. Furthermore we compute</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">track</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">arx</span><span class="p">,</span> <span class="n">tf_class</span><span class="p">]</span>
+<span class="n">pred_df</span> <span class="o">=</span> <span class="n">comp_pred</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;output_1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">pred_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;output_1&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mf">1.02</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_linear_models_13_1.png" src="../_images/tutorials_01_linear_models_13_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_linear_models_13_2.png" src="../_images/tutorials_01_linear_models_13_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">error</span> <span class="o">=</span> <span class="n">comp_error</span><span class="p">(</span><span class="n">pred_df</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARX&#39;</span><span class="p">,</span> <span class="s1">&#39;TF&#39;</span><span class="p">],</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;MSE&#39;</span><span class="p">],</span> <span class="n">freq_range</span><span class="o">=</span><span class="n">freq_lim</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MSE&#39;</span><span class="p">]:</span>
+    <span class="n">error</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_linear_models_14_0.png" src="../_images/tutorials_01_linear_models_14_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="02_ARNN.html" class="btn btn-neutral float-right" title="Autoregressive Neural Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

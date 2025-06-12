@@ -1,0 +1,955 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.recurrent_models &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.recurrent_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.recurrent_models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Wed May 18 19:52:41 2022</span>
+
+<span class="sd">@author: WET2RNG</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.autograd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats.qmc</span><span class="w"> </span><span class="kn">import</span> <span class="n">LatinHypercube</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">_LSTM</span><span class="p">,</span> <span class="n">_GRU</span><span class="p">,</span> <span class="n">_RNN</span><span class="p">,</span> <span class="n">Feed_ForwardNN</span><span class="p">,</span> <span class="n">_filter_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensitivityMethods</span><span class="p">,</span> <span class="n">_prediction</span><span class="p">,</span> <span class="n">_comp_sensitivity</span><span class="p">,</span> <span class="n">_check_sens_params_pred</span><span class="p">,</span> <span class="n">_random_subset_sens_indices</span>
+
+
+<div class="viewcode-block" id="AR_RNN">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AR_RNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Autoregressive Recurrent Network that utilises the past outputs in</span>
+<span class="sd">    combination with hidden cells</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_channels : int</span>
+<span class="sd">        Number of input channels</span>
+<span class="sd">    pred_size : int</span>
+<span class="sd">        Number of predicted values</span>
+<span class="sd">    window_size : int</span>
+<span class="sd">        Size of the sliding window applied to the time series</span>
+<span class="sd">    rnn_window : int</span>
+<span class="sd">        Window Size of the Recurent Connection</span>
+<span class="sd">    blocks : int</span>
+<span class="sd">        Number of parallel recurrent blocks.</span>
+<span class="sd">    num_layers : int</span>
+<span class="sd">        nunmber of recurernt blocks.(depth of the recurretn part)</span>
+<span class="sd">    blocktype : str, optional</span>
+<span class="sd">        blocktype, options are: &#39;RNN&#39;, &#39;GRU&#39; and &#39;LSTM&#39;. The default is &#39;LSTM&#39;.</span>
+<span class="sd">    hidden_size : list of int or None, optional</span>
+<span class="sd">        List gives the size of hidden units. The default is None.</span>
+<span class="sd">    activation : str, optional</span>
+<span class="sd">        Activation function to activate the feature space.</span>
+<span class="sd">        The default is &#39;relu&#39;.</span>
+<span class="sd">    bias : bool, optional</span>
+<span class="sd">        If True, bias weights are used. The default is True.</span>
+<span class="sd">    dropout : float [0,1], optional</span>
+<span class="sd">        Adds dropout layers after each Linear Layer. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.recurrent_models</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = softsensor.recurrent_models.AR_RNN(2, 1, 10, 10, 16, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(m)</span>
+<span class="sd">    AR_RNN(</span>
+<span class="sd">      (RecBlock): _LSTM(</span>
+<span class="sd">        (lstm): LSTM(30, 16, batch_first=True)</span>
+<span class="sd">      )</span>
+<span class="sd">      (DNN): Feed_ForwardNN(</span>
+<span class="sd">        (DNN): Sequential(</span>
+<span class="sd">          (0): Linear(in_features=16, out_features=1, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">      )</span>
+<span class="sd">    )</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; output = m(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(output.shape)</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">pred_size</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">rnn_window</span><span class="p">,</span>
+                 <span class="n">blocks</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="o">=</span><span class="s1">&#39;LSTM&#39;</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">Pred_Type</span><span class="o">=</span><span class="s1">&#39;Point&#39;</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">_filter_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">pred_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocktype</span> <span class="o">=</span> <span class="n">blocktype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s1">&#39;AR_RNN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">Pred_Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid Pred_Type given!&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Define Long-short Term Memory Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span> <span class="o">=</span> <span class="n">_get_rnn_block</span><span class="p">(</span>
+            <span class="n">window_size</span><span class="o">*</span><span class="n">input_channels</span> <span class="o">+</span> <span class="n">rnn_window</span><span class="o">*</span><span class="n">pred_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+
+        <span class="c1"># Define Linear Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span> <span class="o">=</span> <span class="n">Feed_ForwardNN</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">pred_size</span><span class="o">*</span><span class="n">forecast</span><span class="o">*</span><span class="n">preds</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span>
+                                  <span class="n">activation</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AR_RNN.forward">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to propagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        x_rec : torch.tensor, dtype=torch.float</span>
+<span class="sd">            Recurrent Input for forward Propagation.</span>
+<span class="sd">            shape=[batch size, pred_size, rnn_window]</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. Needed because of the storage of the hidden</span>
+<span class="sd">            cells. The default is &#39;cpu&#39;.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size, forecast]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_rec</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x_rec</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">hidden_std</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">hidden_std</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+    
+<div class="viewcode-block" id="AR_RNN.forward_sens">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN.forward_sens">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_sens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to propagate through the network, but only with one input tensor</span>
+<span class="sd">        that is already concatenated to allow for gradient-based sensitivity analysis</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, flatten_size]</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. Needed because of the storage of the hidden</span>
+<span class="sd">            cells. The default is &#39;cpu&#39;.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size, forecast]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">hidden_std</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">hidden_std</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+    
+<div class="viewcode-block" id="AR_RNN.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">x_rec</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="AR_RNN.prediction">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if comp_sens is False:</span>
+<span class="sd">        torch.Tensor : Tensor of same langth as input, containing the predictions.</span>
+<span class="sd">        if comp_sens is True:</span>
+<span class="sd">            (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.</span>
+<span class="sd">            Key is the prediction type, value is the sensitivity tensor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+        <span class="n">comp_sens</span><span class="p">,</span> <span class="n">random_samples</span> <span class="o">=</span> <span class="n">_check_sens_params_RNN</span><span class="p">(</span><span class="n">sens_params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">pred_result</span> <span class="o">=</span> <span class="n">_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">random_samples</span><span class="p">:</span>
+                <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">pred_result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred</span><span class="p">,</span> <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">pred_result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sens_dict</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">sens_dict</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">random_samples</span> \
+                    <span class="k">else</span> <span class="p">((</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">sens_dict</span><span class="p">,</span> <span class="n">sens_uq</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="AR_RNN.get_recurrent_weights">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.AR_RNN.get_recurrent_weights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recurrent_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that returns the weight that effect the Recurrent input of the</span>
+<span class="sd">        Network</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        recurrent_weights : list of weight Tensors</span>
+<span class="sd">            List of the Weights that effect the Recurren input of the Network.</span>
+<span class="sd">            </span>
+<span class="sd">            </span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        Based on the example in the introduction</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; rec_w = m.get_recurrent_weights()</span>
+<span class="sd">        &gt;&gt;&gt; print(rec_w[0].shape)</span>
+<span class="sd">        torch.Size([64, 16])</span>
+<span class="sd">        &gt;&gt;&gt; print(rec_w[1].shape)</span>
+<span class="sd">        torch.Size([64, 10])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rec_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocktype</span> <span class="o">==</span> <span class="s1">&#39;GRU&#39;</span><span class="p">:</span>
+            <span class="n">rec_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">gru</span><span class="o">.</span><span class="n">weight_ih_l0</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocktype</span> <span class="o">==</span> <span class="s1">&#39;LSTM&#39;</span><span class="p">:</span>
+            <span class="n">rec_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">weight_ih_l0</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">rec_weights</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RNN_DNN">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RNN_DNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recurrent Network that utilises a hidden state</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_channels : int</span>
+<span class="sd">        Number of input channels</span>
+<span class="sd">    pred_size : int</span>
+<span class="sd">        Number of predicted values</span>
+<span class="sd">    window_size : int</span>
+<span class="sd">        Size of the sliding window applied to the time series</span>
+<span class="sd">    blocks : int</span>
+<span class="sd">        Number of parallel recurrent blocks.</span>
+<span class="sd">    num_layers : int</span>
+<span class="sd">        nunmber of recurernt blocks.(depth of the recurretn part)</span>
+<span class="sd">    blocktype : str, optional</span>
+<span class="sd">        blocktype, options are: &#39;RNN&#39;, &#39;GRU&#39; and &#39;LSTM&#39;. The default is &#39;LSTM&#39;.</span>
+<span class="sd">    hidden_size : list of int or None, optional</span>
+<span class="sd">        List gives the size of hidden units. The default is None.</span>
+<span class="sd">    activation : str, optional</span>
+<span class="sd">        Activation function to activate the feature space.</span>
+<span class="sd">        The default is &#39;relu&#39;.</span>
+<span class="sd">    bias : bool, optional</span>
+<span class="sd">        If True, bias weights are used. The default is True.</span>
+<span class="sd">    dropout : float [0,1], optional</span>
+<span class="sd">        Adds dropout layers after each Linear Layer. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.recurrent_models</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = softsensor.recurrent_models.RNN_DNN(2, 1, 10, 16, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(m)</span>
+<span class="sd">    RNN_DNN(</span>
+<span class="sd">      (RecBlock): _LSTM(</span>
+<span class="sd">        (lstm): LSTM(20, 16, batch_first=True)</span>
+<span class="sd">      )</span>
+<span class="sd">      (DNN): Feed_ForwardNN(</span>
+<span class="sd">        (DNN): Sequential(</span>
+<span class="sd">          (0): Linear(in_features=16, out_features=1, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">      )</span>
+<span class="sd">    )</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; output = m(input)</span>
+<span class="sd">    &gt;&gt;&gt; print(output.shape)</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                   [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="sd">    &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                   batch_size=32, Add_zeros=True)</span>
+<span class="sd">    &gt;&gt;&gt; pred = m.prediction(loader[0])</span>
+<span class="sd">    &gt;&gt;&gt; print(pred.shape)</span>
+<span class="sd">    torch.Size([1, 101])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">pred_size</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span>
+                 <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="o">=</span><span class="s1">&#39;LSTM&#39;</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">Pred_Type</span><span class="o">=</span><span class="s1">&#39;Point&#39;</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">_filter_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">pred_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precomp</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s1">&#39;RNN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">Pred_Type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No valid Pred_Type given&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Define Long-short Term Memory Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span> <span class="o">=</span> <span class="n">_get_rnn_block</span><span class="p">(</span><span class="n">window_size</span><span class="o">*</span><span class="n">input_channels</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span>
+                                       <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+
+        <span class="c1"># Define Linear Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span> <span class="o">=</span> <span class="n">Feed_ForwardNN</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">pred_size</span><span class="o">*</span><span class="n">forecast</span><span class="o">*</span><span class="n">preds</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span>
+                                  <span class="n">activation</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RNN_DNN.forward">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to probagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. Needed because of the storage of the hidden</span>
+<span class="sd">            cells. The default is &#39;cpu&#39;.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size, forecast]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">hidden_std</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">hidden_std</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+    
+<div class="viewcode-block" id="RNN_DNN.forward_sens">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN.forward_sens">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_sens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="RNN_DNN.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RNN_DNN.prediction">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">        sens_params : dict, optional</span>
+<span class="sd">            Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">            Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">            Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">            Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">            Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">            (If not a multiple of the model&#39;s forecast, the number will be rounded up to the next multiple.)</span>
+<span class="sd">            The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if comp_sens is False:</span>
+<span class="sd">        torch.Tensor : Tensor of same langth as input, containing the predictions.</span>
+<span class="sd">        if comp_sens is True:</span>
+<span class="sd">            (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.</span>
+<span class="sd">            Key is the prediction type, value is the sensitivity tensor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+        <span class="n">comp_sens</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_check_sens_params_RNN</span><span class="p">(</span><span class="n">sens_params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">pred</span><span class="p">,</span> <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">_pred_lstm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="n">sens_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">_pred_lstm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pred</span><span class="p">,</span> <span class="n">sensitivity</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pred</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">sensitivity</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="RNN_DNN.get_recurrent_weights">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.RNN_DNN.get_recurrent_weights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recurrent_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that returns the weight that effect the Recurrent input of the</span>
+<span class="sd">        Network</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        recurrent_weights : list of weight Tensors</span>
+<span class="sd">            List of the Weights that effect the Recurren input of the Network.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        Based on the example in the introduction</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; rec_w = m.get_recurrent_weights()</span>
+<span class="sd">        &gt;&gt;&gt; print(rec_w[0].shape)</span>
+<span class="sd">        torch.Size([64, 16])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span></div>
+</div>
+
+
+<div class="viewcode-block" id="parr_RNN_DNN">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.parr_RNN_DNN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">parr_RNN_DNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">pred_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">hidden_window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">blocktype</span><span class="o">=</span><span class="s1">&#39;LSTM&#39;</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Pred_Type</span><span class="o">=</span><span class="s1">&#39;Point&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">_filter_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">pred_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_window</span> <span class="o">=</span> <span class="n">hidden_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precomp</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s1">&#39;RNN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">Pred_Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span> 
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="c1"># Define Long-short Term Memory Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span> <span class="o">=</span> <span class="n">_parallel_RNN</span><span class="p">(</span><span class="n">input_channels</span><span class="p">,</span> <span class="n">pred_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">hidden_window</span><span class="p">,</span>
+                                      <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span>
+                                      <span class="n">forecast</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">precomp_hidden_states</span><span class="p">()</span>
+
+            
+        <span class="c1"># Define Linear Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DNN</span> <span class="o">=</span> <span class="n">Feed_ForwardNN</span><span class="p">(</span><span class="n">blocks</span><span class="o">*</span><span class="n">hidden_window</span><span class="p">,</span> <span class="n">pred_size</span><span class="o">*</span><span class="n">forecast</span><span class="o">*</span><span class="n">preds</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span>
+                                  <span class="n">activation</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="parr_RNN_DNN.forward">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.parr_RNN_DNN.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DNN</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">hidden_std</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[:,:,:,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">hidden_std</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+
+<div class="viewcode-block" id="parr_RNN_DNN.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.parr_RNN_DNN.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parr_RNN_DNN.prediction">
+<a class="viewcode-back" href="../../recurrent_models.html#softsensor.recurrent_models.parr_RNN_DNN.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">precomp_hidden_states</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_pred_lstm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+</div>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_parallel_RNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">pred_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">hidden_window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">blocktype</span><span class="o">=</span><span class="s1">&#39;LSTM&#39;</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Pred_Type</span><span class="o">=</span><span class="s1">&#39;Point&#39;</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">_filter_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">pred_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_window</span> <span class="o">=</span> <span class="n">hidden_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s1">&#39;RNN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="n">Pred_Type</span>
+
+        <span class="c1"># Define Long-short Term Memory Network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span> <span class="o">=</span> <span class="n">_get_rnn_block</span><span class="p">(</span><span class="n">input_channels</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span>
+                                      <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">precomp_hidden_states</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to probagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : torch.tensor dtype=torch.float</span>
+<span class="sd">            Input tensor for forward propagation,</span>
+<span class="sd">            shape=[batch size, external channels, window_size]</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. Needed because of the storage of the hidden</span>
+<span class="sd">            cells. The default is &#39;cpu&#39;.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span><span class="p">,</span> <span class="n">inp</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">dnn_inp</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_window</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="o">-</span><span class="n">inp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dnn_inp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span><span class="p">[</span><span class="n">start</span><span class="p">:,</span> <span class="p">:])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dnn_inp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">,</span> <span class="p">:])</span> 
+            
+        
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">dnn_inp</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inp</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="o">.</span><span class="n">init_hidden</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">precomp_hidden_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_window</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">input_channels</span><span class="p">,</span>
+                          <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RecBlock</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">helpers</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_rnn_block</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">blocktype</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return Recurrent block from model class</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_size : int</span>
+<span class="sd">        Input size of the block</span>
+<span class="sd">    blocks : int</span>
+<span class="sd">        Number of parallel recurrent blocks.</span>
+<span class="sd">    num_layers : int</span>
+<span class="sd">        number of recurrent blocks.(depth of the recurretn part)</span>
+<span class="sd">    blocktype : str, optional</span>
+<span class="sd">        blocktype, options are: &#39;RNN&#39;, &#39;GRU&#39; and &#39;LSTM&#39;. The default is &#39;LSTM&#39;.</span>
+<span class="sd">    bias : bool, optional</span>
+<span class="sd">        If True, bias weights are used. The default is True.</span>
+<span class="sd">    dropout : float [0,1], optional</span>
+<span class="sd">        Adds dropout layers after each Linear Layer. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nn.Module</span>
+<span class="sd">        Recurrent block that will be used in the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">blocktype</span> <span class="o">==</span> <span class="s1">&#39;LSTM&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_LSTM</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">blocks</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+                    <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">blocktype</span> <span class="o">==</span> <span class="s1">&#39;GRU&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_GRU</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">blocks</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+                   <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">blocktype</span> <span class="o">==</span> <span class="s1">&#39;RNN&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_RNN</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">blocks</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+                   <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_sens_params_RNN</span><span class="p">(</span><span class="n">sens_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the sensitivity parameters for AR_RNN and RNN_DNN models for validity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sens_params : dict</span>
+<span class="sd">        Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    comp_sens : bool</span>
+<span class="sd">        Boolean that defines whether sensitivity analysis is computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sens_params</span><span class="p">:</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comp&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">random_samples</span> <span class="o">=</span> <span class="n">sens_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;random_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">comp_sens</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">random_samples</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">comp_sens</span><span class="p">,</span> <span class="n">random_samples</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pred_lstm</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">sens_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prediction of a whole Time Series</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataloader : Dataloader</span>
+<span class="sd">        Dataloader to predict output</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        device to compute on. The default is &#39;cpu&#39;.</span>
+<span class="sd">    sens_params : dict, optional</span>
+<span class="sd">        Dictionary that contains the parameters for the sensitivity analysis.</span>
+<span class="sd">        Key &#39;method&#39; defines the method for sensitivity analysis: &#39;gradient&#39; or &#39;perturbation&#39;.</span>
+<span class="sd">        Key &#39;comp&#39; defines whether gradients are computed for sensitivity analysis.</span>
+<span class="sd">        Key &#39;plot&#39; defines whether the results of the sensitivity analysis are visualized.</span>
+<span class="sd">        Key &#39;verbose&#39; defines whether the information about the sensitivity analysis is printed.</span>
+<span class="sd">        Key &#39;sens_length&#39; defines the number of randomly sampled subset of timesteps for the analysis.</span>
+<span class="sd">        (If not a multiple of the model&#39;s forecast*batch_size, the number will be</span>
+<span class="sd">        rounded to the closest multiple.)</span>
+<span class="sd">        The default is None, i.e. no sensitivity analysis is computed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    if loss_ft=None:</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Torch Tensor of same langth as input</span>
+<span class="sd">    if loss_ft=torch loss funciton:</span>
+<span class="sd">        (torch.Tensor, loss)</span>
+<span class="sd">            tuple of Torch Tensor of same langth as input and loss</span>
+<span class="sd">    if comp_gradients=True:</span>
+<span class="sd">        (torch.Tensor, sensitivity dict)</span>
+<span class="sd">            tuple of Torch Tensor of same langth as input and sensitivity dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span>
+    <span class="n">prediction_type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Pred_Type</span>
+    <span class="k">if</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+        <span class="n">num_outputs</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+        <span class="n">num_outputs</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">num_outputs</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">original_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">original_out</span> <span class="o">=</span> <span class="n">original_out</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="n">checks</span> <span class="o">=</span> <span class="n">_check_sens_params_pred</span><span class="p">(</span><span class="n">sens_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sens_params</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">comp_sens</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">sens_length</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">correlated</span> <span class="o">=</span> <span class="n">checks</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">comp_sens</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="n">checks</span> <span class="c1"># False</span>
+
+    <span class="c1"># Initialise 3D tensor for sensitivity analysis</span>
+    <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+        <span class="n">flatten_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="o">*</span><span class="n">model</span><span class="o">.</span><span class="n">input_channels</span>
+        <span class="n">num_timesteps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="o">*</span><span class="n">fc</span>
+        <span class="n">loader_length</span> <span class="o">=</span> <span class="n">num_timesteps</span> <span class="o">-</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">subclass</span><span class="o">.</span><span class="n">add_zero</span>
+        <span class="n">sens_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">sens_length</span><span class="p">:</span>
+            <span class="n">num_timesteps</span><span class="p">,</span> <span class="n">sens_indices</span> <span class="o">=</span> <span class="n">_random_subset_sens_indices</span><span class="p">(</span><span class="n">sens_length</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">)</span>
+        
+        <span class="n">sens_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="n">flatten_size</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span><span class="p">:</span>
+            <span class="n">sens_var</span> <span class="o">=</span> <span class="n">sens_mean</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shape of sensitivity tensor: </span><span class="si">{</span><span class="n">sens_mean</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start </span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">-based Sensitivity Analysis...&#39;</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">dataloader</span><span class="p">):</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># get batch size from inputs</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Prepare input for model to allow autograd computing gradients of outputs w.r.t. inputs</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward_sens</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s1">&#39;Mean_Var&#39;</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">comp_sens</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sens_indices</span><span class="p">:</span>
+            <span class="n">sens_temp</span> <span class="o">=</span> <span class="n">_comp_sensitivity</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">correlated</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+                <span class="n">sens_mean</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">bs</span><span class="o">*</span><span class="n">fc</span><span class="p">],</span> <span class="n">sens_var</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">bs</span><span class="o">*</span><span class="n">fc</span><span class="p">]</span> <span class="o">=</span> <span class="n">sens_temp</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sens_mean</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">bs</span><span class="o">*</span><span class="n">fc</span><span class="p">]</span> <span class="o">=</span> <span class="n">sens_temp</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="n">bs</span><span class="o">*</span><span class="n">fc</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">prediction</span><span class="p">,</span> <span class="n">pred</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">original_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">original_out</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">pred_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">cut_zeros</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">subclass</span><span class="o">.</span><span class="n">add_zero</span>
+    <span class="k">if</span> <span class="n">cut_zeros</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="n">cut_zeros</span><span class="p">]</span>
+        <span class="n">original_out</span> <span class="o">=</span> <span class="n">original_out</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">cut_zeros</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    
+    <span class="c1"># shape = [num_outputs, pred_size, len(dataset)] = [num_outputs, pred_size, forecast*len(dataloader)]</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">original_out</span> <span class="o">=</span> <span class="n">original_out</span><span class="p">[:,</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+    
+    <span class="k">if</span> <span class="n">comp_sens</span><span class="p">:</span>
+        <span class="n">sens_mean</span> <span class="o">=</span> <span class="n">sens_mean</span><span class="p">[:</span><span class="n">loader_length</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prediction_type</span> <span class="o">==</span> <span class="s2">&quot;Mean_Var&quot;</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">Ensemble</span><span class="p">:</span>
+            <span class="n">sens_var</span> <span class="o">=</span> <span class="n">sens_var</span><span class="p">[:</span><span class="n">loader_length</span><span class="p">]</span>
+            <span class="n">sensitivity_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Mean&#39;</span><span class="p">:</span> <span class="n">sens_mean</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="s1">&#39;Aleatoric_UQ&#39;</span><span class="p">:</span> <span class="n">sens_var</span><span class="o">.</span><span class="n">cpu</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sensitivity_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Point&#39;</span><span class="p">:</span> <span class="n">sens_mean</span><span class="o">.</span><span class="n">cpu</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">-based Sensitivity Analysis completed!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+        <span class="k">return</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">sensitivity_dict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prediction</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

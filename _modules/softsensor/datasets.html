@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.datasets &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.datasets</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.datasets</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Feb 27 18:16:57 2023</span>
+
+<span class="sd">The methods and classes considered define the type of data set used. They are</span>
+<span class="sd">Sliding Windows over the individual time series out of pd.DataFrames</span>
+<span class="sd">@author: Tobias Westmeier CR/AMP4</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+
+
+<div class="viewcode-block" id="SlidingWindow">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.SlidingWindow">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SlidingWindow</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize a sliding window class from a pandas Dataframe in</span>
+<span class="sd">    torch.utils.Dataset format with a tuple of input and output data</span>
+<span class="sd">    The dataframe is split into individual tensors with a length of windowsize</span>
+<span class="sd">    and width if len(input_columns) using a sliding window approach for the</span>
+<span class="sd">    input data</span>
+<span class="sd">    if rnn_window is used, two tensors are generated for each time step, where</span>
+<span class="sd">    the additional tensor defines the past output data with length of</span>
+<span class="sd">    rnn_window and width of len(output_columns)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        pandas DataFrame with named columns and time dependent data.</span>
+<span class="sd">    windowsize : int</span>
+<span class="sd">        sliding window length.</span>
+<span class="sd">    output_columns : list of str</span>
+<span class="sd">        list of columns used for output.</span>
+<span class="sd">    input_columns : list of str</span>
+<span class="sd">        list of columns used for input.</span>
+<span class="sd">    Add_zeros : TYPE, optional</span>
+<span class="sd">        Adds zeros at the beginning of the time series to generate a dataset</span>
+<span class="sd">        with as many inputs as the length of the windowsize.</span>
+<span class="sd">        The default is False.</span>
+<span class="sd">    rnn_window : int, optional</span>
+<span class="sd">        use an additional sliding window as input in which the past output</span>
+<span class="sd">        values are saved. The default is None.</span>
+<span class="sd">    pre_comp : list of str, optional</span>
+<span class="sd">        precomputed solution for models with student forcing used for second</span>
+<span class="sd">        input instead of output columns. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The use of a recurrent time window (rnn_window) ensures that zeros are</span>
+<span class="sd">    artificially placed at the beginning of the time series to keep the</span>
+<span class="sd">    dimension of the time series constant in the output</span>
+<span class="sd">    SlidingWindow.__len__() returns length of df). If a rnn_window is</span>
+<span class="sd">    specified, the time series is shortened. If the output length is to be</span>
+<span class="sd">    kept, Add_zeros=True must be used.</span>
+<span class="sd">    </span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Example of a pure feed forward SlidingWindow dataset </span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.datasets as ds</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;in_col&#39;: np.linspace(0, 100, 101),</span>
+<span class="sd">             &#39;out_col&#39;: np.linspace(100, 0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame(d)</span>
+<span class="sd">    &gt;&gt;&gt; sw = ds.SlidingWindow(df, 10, [&#39;out_col&#39;], [&#39;in_col&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__len__())</span>
+<span class="sd">    92</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__getitem__(1))</span>
+<span class="sd">    (tensor([[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]]), tensor([[91.]]))</span>
+
+<span class="sd">    Example of a  SlidingWindow dataset with recurrent connection</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.datasets as ds</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;in_col&#39;: np.linspace(0, 100, 101),</span>
+<span class="sd">             &#39;in_col2&#39;: np.linspace(0, 100, 101),</span>
+<span class="sd">             &#39;out_col&#39;: np.linspace(100, 0, 101)}</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame(d)</span>
+<span class="sd">    &gt;&gt;&gt; sw = ds.SlidingWindow(df, 3, [&#39;out_col&#39;], [&#39;in_col&#39;], rnn_window=3)</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__len__())</span>
+<span class="sd">    101</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__getitem__(2))</span>
+<span class="sd">    ((tensor([[0., 1., 2.]]), tensor([[  0.,   100., 99.]])), tensor([[98.]]))</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Example of a  SlidingWindow dataset with recurrent connection and</span>
+<span class="sd">    precomputed prediction</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.datasets as ds</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;in_col&#39;: np.linspace(0, 100, 101),</span>
+<span class="sd">             &#39;in_col2&#39;: np.linspace(0, 100, 101),</span>
+<span class="sd">             &#39;out_col&#39;: np.linspace(100, 0, 101), </span>
+<span class="sd">             &#39;out_col_precomp&#39;: np.linspace(100, 0, 101) + 100}</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame(d)</span>
+<span class="sd">    &gt;&gt;&gt; sw = ds.SlidingWindow(df, 3, [&#39;out_col&#39;], [&#39;in_col&#39;], rnn_window=3, </span>
+<span class="sd">                              pre_comp=[&#39;out_col_precomp&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__len__())</span>
+<span class="sd">    101</span>
+<span class="sd">    &gt;&gt;&gt; print(sw.__getitem__(2))</span>
+<span class="sd">    ((tensor([[0., 1., 2.]]), tensor([[  0., 200., 199.]])), tensor([[98.]]))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">output_columns</span><span class="p">,</span> <span class="n">input_columns</span><span class="p">,</span>
+                 <span class="n">Add_zeros</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rnn_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forecast</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">full_ds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">pre_comp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">=</span> <span class="n">windowsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_inp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_out</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_comp</span> <span class="o">=</span> <span class="n">pre_comp</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">pre_comp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="c1"># Read in important data as tensors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">output_columns</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">input_columns</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">pre_comp</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">rnn_window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subclass</span> <span class="o">=</span> <span class="n">ff_SlidingWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span>
+                                             <span class="n">full_ds</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subclass</span> <span class="o">=</span> <span class="n">rec_SlidingWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span> <span class="n">rnn_window</span><span class="p">,</span>
+                                              <span class="n">forecast</span><span class="p">,</span> <span class="n">full_ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SlidingWindow.__getitem__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.SlidingWindow.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes index and gives back time window for input and subsequent target</span>
+<span class="sd">        output</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int: the starting point for the time window</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            if rnn_window is None: Tensor of shape</span>
+<span class="sd">            [len(input_columns), windowsize]</span>
+<span class="sd">            if rnn_windwo is not None: tuple of Tensors with shape</span>
+<span class="sd">            ([len(input_columns), windowsize], [len(output_columns), rnn_window])</span>
+<span class="sd">        y : torch.Tensor</span>
+<span class="sd">            Tensor of shape [output_channels, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subclass</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SlidingWindow.__len__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.SlidingWindow.__len__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number_of_samples : int</span>
+<span class="sd">            Samples in Dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subclass</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="rec_SlidingWindow">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.rec_SlidingWindow">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">rec_SlidingWindow</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subclass for SlidingWindow class</span>
+<span class="sd">    two tensors are generated for each time step, where one tensor defines the</span>
+<span class="sd">    input x  and the second one the past output data with length of</span>
+<span class="sd">    rnn_window and width of len(output_columns)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    windowsize : int</span>
+<span class="sd">        sliding window length.</span>
+<span class="sd">    data_x : torch.tensor</span>
+<span class="sd">        input data</span>
+<span class="sd">    data_y : torch.tensor</span>
+<span class="sd">        output data as well as data that serves as second input </span>
+<span class="sd">    rnn_window : int, optional</span>
+<span class="sd">        use an additional sliding window as input in which the past output</span>
+<span class="sd">        values are saved. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">data_x</span><span class="p">,</span> <span class="n">data_y</span><span class="p">,</span> <span class="n">rnn_window</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span>
+                 <span class="n">full_ds</span><span class="p">,</span> <span class="n">data_y_pre</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">=</span> <span class="n">windowsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span> <span class="o">=</span> <span class="n">full_ds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre</span> <span class="o">=</span> <span class="n">pre</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="n">data_y_pre</span>
+
+        <span class="c1"># use modulus to define datast length that is divisable by forecast</span>
+        <span class="k">if</span> <span class="n">rnn_window</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">windowsize</span><span class="o">-</span><span class="n">forecast</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">-</span> <span class="n">windowsize</span> <span class="o">+</span> <span class="n">forecast</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">-</span> <span class="n">forecast</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Add Zeros to the beginning of input and output data</span>
+        <span class="n">zeros_inp_begin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">zeros_out_begin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+
+        <span class="c1"># Add zeros at the end to match dimensions for forcasting horizon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">forecast</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_inp_begin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_out_begin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_out_begin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span> <span class="o">=</span> <span class="n">forecast</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span>
+            <span class="n">zeros_inp_end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span><span class="p">))</span>
+            <span class="n">zeros_out_end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_inp_begin</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                                     <span class="n">zeros_inp_end</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_out_begin</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span>
+                                     <span class="n">zeros_out_end</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_out_begin</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span><span class="p">,</span>
+                                         <span class="n">zeros_out_end</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="rec_SlidingWindow.__getitem__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.rec_SlidingWindow.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes index and gives back time window for input and subsequent target</span>
+<span class="sd">        output</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int: the starting point for the time window</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            tuple of Tensors with shape</span>
+<span class="sd">            ([len(input_columns), windowsize], [len(output_columns), rnn_window])</span>
+<span class="sd">        y : torch.Tensor</span>
+<span class="sd">            Tensor of shape [output_channels, 1]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">[:,</span> <span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y_pre</span><span class="p">[:,</span>
+                             <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">):</span>
+                             <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[:,</span>
+                             <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">):</span>
+                             <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">x2</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[:,</span> <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="rec_SlidingWindow.__len__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.rec_SlidingWindow.__len__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number_of_samples : int</span>
+<span class="sd">            Samples in Dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">samples</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">samples</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ff_SlidingWindow">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.ff_SlidingWindow">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ff_SlidingWindow</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subclass for SlidingWindow class (feed forward)</span>
+<span class="sd">    two tensors are generated for each time step, where one tensor defines the</span>
+<span class="sd">    input x  and the second one the past output data with length of</span>
+<span class="sd">    rnn_window and width of len(output_columns)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    windowsize : int</span>
+<span class="sd">        sliding window length.</span>
+<span class="sd">    data_x : torch.tensor</span>
+<span class="sd">        input data</span>
+<span class="sd">    data_y : torch.tensor</span>
+<span class="sd">        output data</span>
+<span class="sd">    Add_zeros : bool</span>
+<span class="sd">        Adds zeros at the beginning of the time series with length of</span>
+<span class="sd">        windowsize-1.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowsize</span><span class="p">,</span> <span class="n">data_x</span><span class="p">,</span> <span class="n">data_y</span><span class="p">,</span> <span class="n">Add_zeros</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span>
+                 <span class="n">full_ds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">=</span> <span class="n">windowsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Add_zeros</span> <span class="o">=</span> <span class="n">Add_zeros</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span> <span class="o">=</span> <span class="n">full_ds</span>
+
+        <span class="k">if</span> <span class="n">Add_zeros</span><span class="p">:</span>
+            <span class="c1"># Add Zeros to the beginning of input and data</span>
+            <span class="n">zeros_inp_begin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="n">windowsize</span> <span class="o">-</span> <span class="n">forecast</span><span class="p">))</span>
+            <span class="n">zeros_out_begin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="n">windowsize</span> <span class="o">-</span> <span class="n">forecast</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_inp_begin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">zeros_out_begin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Add zeros at the end to match dimensions for forcasting horizon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">windowsize</span> <span class="o">+</span> <span class="n">forecast</span><span class="p">)</span> <span class="o">%</span> <span class="n">forecast</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span> <span class="o">=</span> <span class="n">forecast</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span>
+            <span class="n">zeros_inp_end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span><span class="p">))</span>
+            <span class="n">zeros_out_end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">,</span>
+                                     <span class="n">zeros_inp_end</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">,</span>
+                                     <span class="n">zeros_out_end</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_zero</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="ff_SlidingWindow.__getitem__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.ff_SlidingWindow.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes index and gives back time window for input and subsequent target</span>
+<span class="sd">        output</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int: the starting point for the time window</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            shape: [len(input_columns), windowsize]</span>
+<span class="sd">        y : torch.Tensor</span>
+<span class="sd">            Tensor of shape [output_channels, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">[:,</span> <span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[:,</span> <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="ff_SlidingWindow.__len__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.ff_SlidingWindow.__len__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number_of_samples : int</span>
+<span class="sd">            Samples in Dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Add_zeros</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_ds</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">samples</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">samples</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="batch_rec_SW">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.batch_rec_SW">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">batch_rec_SW</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Batching of multiple sliding window classes for parallelisation purposes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_of_sw: list of SlidingWindow</span>
+<span class="sd">        list of individual SlidingWindow classes for batching</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_sw</span><span class="p">):</span>
+        <span class="c1"># directly use the subclass instead of the wrapper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sws</span> <span class="o">=</span> <span class="p">[</span><span class="n">sw</span><span class="o">.</span><span class="n">subclass</span> <span class="k">for</span> <span class="n">sw</span> <span class="ow">in</span> <span class="n">list_of_sw</span><span class="p">]</span>
+
+        <span class="c1"># Get some important parameters from class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_inp</span> <span class="o">=</span> <span class="n">list_of_sw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">num_inp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_out</span> <span class="o">=</span> <span class="n">list_of_sw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">num_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">windowsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rnn_window</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span> <span class="k">for</span> <span class="n">sw</span> <span class="ow">in</span> <span class="n">list_of_sw</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sws</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">,</span>
+                                                <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">),</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">))][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">)</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">ii</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="n">num</span><span class="p">]</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_inp</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+                                 <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_out</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+                                 <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sws</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span>
+                        <span class="p">:</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">data_x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span>
+                        <span class="p">:</span><span class="n">sw</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="o">.</span><span class="n">data_y</span>
+
+<div class="viewcode-block" id="batch_rec_SW.__getitem__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.batch_rec_SW.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes index and gives back time window for input and subsequent target</span>
+<span class="sd">        output. Ouput is batches for individual time series.</span>
+<span class="sd">        </span>
+<span class="sd">        batch_size depends on the numbr of SlidingWindow datasaets that have</span>
+<span class="sd">        .__len__() &gt;= index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int: the starting point for the time window</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        x : (torch.Tensor, torch.Tensor) </span>
+<span class="sd">                Tensor with shape</span>
+<span class="sd">                ([batch_size, len(input_columns), windowsize], [batch_size, len(output_columns), rnn_window])</span>
+
+<span class="sd">        y : torch.Tensor</span>
+<span class="sd">                Tensor of shape [batch_size, output_channels, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_x</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="p">:,</span>
+                         <span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+
+        <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="p">:,</span>
+                         <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">):</span>
+                             <span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">)]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">x2</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_y</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="p">:,</span>
+                        <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">windowsize</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="batch_rec_SW.__len__">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.batch_rec_SW.__len__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number_of_samples : int</span>
+<span class="sd">            Samples in Dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__lengths__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of int</span>
+<span class="sd">            sorted list with length of each time series considered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__widths__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of int dim:[self.__len__()]</span>
+<span class="sd">            number of SlidingWindow classes for which the index is valid.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_sws</span>
+
+<div class="viewcode-block" id="batch_rec_SW.permutation">
+<a class="viewcode-back" href="../../datasets.html#softsensor.datasets.batch_rec_SW.permutation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of int dim:[len(list_of_sw)]</span>
+<span class="sd">            returns original indizes before permutation</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_ind</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

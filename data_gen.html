@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Generation for Synthetic Data &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Measurment Handling" href="meas_handling.html" />
+    <link rel="prev" title="Data Preprocessing" href="reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Data Preprocessing</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Generation for Synthetic Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.get_academic_data"><code class="docutils literal notranslate"><span class="pre">get_academic_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.duffing"><code class="docutils literal notranslate"><span class="pre">duffing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.pendulum"><code class="docutils literal notranslate"><span class="pre">pendulum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.duffing_fp"><code class="docutils literal notranslate"><span class="pre">duffing_fp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.two_mass_oscillator"><code class="docutils literal notranslate"><span class="pre">two_mass_oscillator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.vd_Pol"><code class="docutils literal notranslate"><span class="pre">vd_Pol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.sine"><code class="docutils literal notranslate"><span class="pre">sine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sine.comp"><code class="docutils literal notranslate"><span class="pre">sine.comp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sine.comp_dt"><code class="docutils literal notranslate"><span class="pre">sine.comp_dt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.sine_2"><code class="docutils literal notranslate"><span class="pre">sine_2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sine_2.comp"><code class="docutils literal notranslate"><span class="pre">sine_2.comp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sine_2.comp_dt"><code class="docutils literal notranslate"><span class="pre">sine_2.comp_dt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.sweep"><code class="docutils literal notranslate"><span class="pre">sweep</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sweep.comp"><code class="docutils literal notranslate"><span class="pre">sweep.comp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.sweep.comp_dt"><code class="docutils literal notranslate"><span class="pre">sweep.comp_dt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.white_noise"><code class="docutils literal notranslate"><span class="pre">white_noise</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.white_noise.comp"><code class="docutils literal notranslate"><span class="pre">white_noise.comp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.white_noise.comp_dt"><code class="docutils literal notranslate"><span class="pre">white_noise.comp_dt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.data_gen.Zero"><code class="docutils literal notranslate"><span class="pre">Zero</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.Zero.comp"><code class="docutils literal notranslate"><span class="pre">Zero.comp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.data_gen.Zero.comp_dt"><code class="docutils literal notranslate"><span class="pre">Zero.comp_dt()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="meas_handling.html">Measurment Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Data Generation for Synthetic Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/data_gen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.data_gen">
+<span id="data-generation-for-synthetic-data"></span><h1>Data Generation for Synthetic Data<a class="headerlink" href="#module-softsensor.data_gen" title="Link to this heading"></a></h1>
+<p>Created on Tue Mar  1 11:01:26 2022</p>
+<p>&#64;author: Tobias Westmeier CR/AMP4</p>
+<p>The described scripts are used for the synthetic generation of time data for
+testing models. The class: ‘get_academic_data’ is used for the numerical
+integration of the described differential equations.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.get_academic_data">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">get_academic_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#get_academic_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.get_academic_data" title="Link to this definition"></a></dt>
+<dd><p>Define Dataframe with the response of academic examples equation to given
+force</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – A sequence of time points for which to solve for y. The initial value
+point should be the first element of this sequence. This sequence must
+be monotonically increasing or monotonically decreasing; repeated
+values are allowed.</p></li>
+<li><p><strong>Model</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either ‘Duffing’ ‘Duffing_fp’ or ‘vd_pol’ to define academic
+model.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Define Parameters for the models.
+if Model = ‘Duffing’ dict must contain c_nlin and D.
+if Model = ‘vd_Pol’ dict must contain epsilon.</p></li>
+<li><p><strong>F</strong> (<em>Force</em><em>, </em><em>optional</em>) – Force to apply to the ems. Must be callable by F.comp and F.comp_dt and
+must include self.F and self.dF with the same time steps as time
+The default is None.</p></li>
+<li><p><strong>x0</strong> (<em>array</em><em>, </em><em>optional</em>) – initial conditions. The default is [0, 0].</p></li>
+<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – relative tolerance for the numerical integration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>df</strong> – Dataframe of response with columns [‘F(t)’, ‘x’, ‘v’].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;c_nlin&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">get_academic_data</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">Model</span><span class="o">=</span><span class="s1">&#39;Duffing&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(1000, 3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.duffing">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">duffing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_nlin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#duffing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.duffing" title="Link to this definition"></a></dt>
+<dd><p>Duffing oscillator with external forcing as described in
+<a class="reference external" href="https://en.wikipedia.org/wiki/Duffing_equation">https://en.wikipedia.org/wiki/Duffing_equation</a></p>
+<div class="math notranslate nohighlight">
+\[dz1 = z2\]</div>
+<div class="math notranslate nohighlight">
+\[dz2 = - 2 \cdot D \cdot z2 - z1 - c_{nlin} \cdot z1^{3} + F.comp(t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array</em><em> of </em><em>size 2</em>) – initial conditions. System state (z1, z2)</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step at which the force F is computed.</p></li>
+<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – damping of the system.</p></li>
+<li><p><strong>F</strong> (<em>Force class</em>) – Abstract class for the force excitation at the mass.</p></li>
+<li><p><strong>c_nlin</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – indicating the nonlinearity of the system. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>(dz1, dz2)</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Derivatives of the duffing equation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">)</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">duffing</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">D</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">c_nlin</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">))</span>
+<span class="go">(0, 0.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.pendulum">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">pendulum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#pendulum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.pendulum" title="Link to this definition"></a></dt>
+<dd><p>Pendulum equation with external forcing and damping
+<a class="reference external" href="https://en.wikipedia.org/wiki/Pendulum_(mechanics">https://en.wikipedia.org/wiki/Pendulum_(mechanics</a>)</p>
+<div class="math notranslate nohighlight">
+\[dz1 = z2\]</div>
+<div class="math notranslate nohighlight">
+\[dz2 = - 2 \cdot D \cdot z2 - sine(z1) + F.comp(t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array</em><em> of </em><em>size 2</em>) – initial conditions. System state (z1, z2)</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step at which the force F is computed.</p></li>
+<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – damping of the system.</p></li>
+<li><p><strong>F</strong> (<em>Force class</em>) – Abstract class for the force excitation at the mass.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>(dz1, dz2)</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Derivatives of the pendulum equation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">)</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">pendulum</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">D</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">c_nlin</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">))</span>
+<span class="go">(0, 0.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.duffing_fp">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">duffing_fp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_nlin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#duffing_fp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.duffing_fp" title="Link to this definition"></a></dt>
+<dd><p>Duffing oscillator with excitation at the base point as described in
+<a class="reference external" href="https://en.wikipedia.org/wiki/Duffing_equation">https://en.wikipedia.org/wiki/Duffing_equation</a></p>
+<div class="math notranslate nohighlight">
+\[dz1 = z2\]</div>
+<div class="math notranslate nohighlight">
+\[dz2 = 2 \cdot D \cdot (z.comp_dt(t) - z2) - z1 + c_{nlin} \cdot (z.comp(t) - z1)^3\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array</em><em> of </em><em>size 2</em>) – initial conditions. System state (z1, z2)</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step at which the Force is computed.</p></li>
+<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – damping of the system.</p></li>
+<li><p><strong>c_nlin</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – indicating the nonlinearity of the system.</p></li>
+<li><p><strong>F</strong> (<em>Force class</em>) – Abstract class for the force excitation at the mass.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>(dz1, dz2)</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Derivatives of the duffing equation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">)</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">duffing_fp</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">D</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">c_nlin</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">F</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">))</span>
+<span class="go">(0, 0.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.two_mass_oscillator">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">two_mass_oscillator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#two_mass_oscillator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.two_mass_oscillator" title="Link to this definition"></a></dt>
+<dd><p>Two Mass oscillator with damping and Forcing on the first mass
+Coverning Equation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix} 1 &amp; 0 \\ 0 &amp; \mu \end{bmatrix}
+\begin{bmatrix} q_1^{''}\\ q_2^{''} \end{bmatrix}
++
+2D
+\begin{bmatrix} 1 + \delta &amp; -\delta \\ -\delta &amp; \delta \end{bmatrix}
+\begin{bmatrix} q_1^{'}\\ q_2^{'} \end{bmatrix}
++
+\begin{bmatrix} 1 + \kappa &amp; -\kappa \\ -\kappa &amp; \kappa \end{bmatrix}
+\begin{bmatrix} q_1\\ q_2 \end{bmatrix}
+=
+\begin{bmatrix} F.comp(t)\\ 0 \end{bmatrix}\end{split}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}z_{11} = q_{1}, z_{12} = q_{1}^{'}\\z_{21} = q_{2}, z_{22} = q_{2}^{'}\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>matrix</em><em> of </em><em>size 4</em>) – initial conditions. System state [z11, z12, z21, z22]</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step at which the Force is computed.</p></li>
+<li><p><strong>D</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – damping of the system.</p></li>
+<li><p><strong>mue</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – relative mass of the system m2/m1</p></li>
+<li><p><strong>kappa</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – relative restoring force of the system c2/c1</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – relative damping of the system d2/d1</p></li>
+<li><p><strong>F</strong> (<em>Force class</em>) – Abstract class for the force excitation at the mass.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>([dz11, dz12], [dz21, dz22])</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Derivatives of the duffing equation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">)</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">duffing_fp</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">D</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">c_nlin</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">F</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">))</span>
+<span class="go">(0, 0.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.data_gen.vd_Pol">
+<span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">vd_Pol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#vd_Pol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.vd_Pol" title="Link to this definition"></a></dt>
+<dd><p>van der Pol oscillation as described in
+<a class="reference external" href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">https://en.wikipedia.org/wiki/Van_der_Pol_oscillator</a></p>
+<div class="math notranslate nohighlight">
+\[dz1 = z2\]</div>
+<div class="math notranslate nohighlight">
+\[dz2 = epsilon \cdot (1 - z1^2) \cdot z2 - z1 + F.comp(t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array</em><em> of </em><em>size 2</em>) – initial conditions.</p></li>
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step at which the Force is computed.</p></li>
+<li><p><strong>epsilon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – indicating the nonlinearity and the strength of the damping.</p></li>
+<li><p><strong>F</strong> (<em>Force class</em>) – forcing term of van der Pol equation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>(dz1, dz2)</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Derivatives of the duffing equation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">)</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">vd_Pol</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">epsilon</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">dz1</span><span class="p">,</span> <span class="n">dz2</span><span class="p">))</span>
+<span class="go">(0, 0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">sine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine" title="Link to this definition"></a></dt>
+<dd><p>Generate Sine Wave</p>
+<div class="math notranslate nohighlight">
+\[gamma \cdot sin(w_0 \cdot time)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – time array at which the sines are computed.</p></li>
+<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – amplification sine wave. The default is 1.</p></li>
+<li><p><strong>w0</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – frequency of sine wave. The default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine.comp">
+<span class="sig-name descname"><span class="pre">comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine.comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine.comp" title="Link to this definition"></a></dt>
+<dd><p>Compute sine at specific timestep</p>
+<div class="math notranslate nohighlight">
+\[gamma \cdot sin(w_0 \cdot t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute sine at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – sine at the specific time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine.comp_dt">
+<span class="sig-name descname"><span class="pre">comp_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine.comp_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine.comp_dt" title="Link to this definition"></a></dt>
+<dd><p>Compute derivative of the sine wave at specific timestep</p>
+<div class="math notranslate nohighlight">
+\[gamma \cdot w_0 \cdot cos(w_0 \cdot t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – derivative at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine_2">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">sine_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w01</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w02</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">26.4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine_2" title="Link to this definition"></a></dt>
+<dd><p>Generate the addition of two sine oscillation</p>
+<div class="math notranslate nohighlight">
+\[gamma1 \cdot sin(w_{01} \cdot time) + gamma2 \cdot sin(w_{02} \cdot time)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – time array at which the sines are computed.</p></li>
+<li><p><strong>gamma1</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – amplification of first sine wave. The default is 1.</p></li>
+<li><p><strong>w01</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – frequency of first sine wave. The default is 1.</p></li>
+<li><p><strong>gamma2</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – amplification of second sine wave. The default is 0.5.</p></li>
+<li><p><strong>w02</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – frequency of second sine wave. The default is 26.4.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine_2.comp">
+<span class="sig-name descname"><span class="pre">comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine_2.comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine_2.comp" title="Link to this definition"></a></dt>
+<dd><p>Compute sines at specific timestep</p>
+<div class="math notranslate nohighlight">
+\[gamma1 \cdot sin(w_{01} \cdot t) + gamma2 \cdot sin(w_{02} \cdot t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute sines at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – sines at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sine_2.comp_dt">
+<span class="sig-name descname"><span class="pre">comp_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sine_2.comp_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sine_2.comp_dt" title="Link to this definition"></a></dt>
+<dd><p>Compute derivative of sine waves at specific timestep</p>
+<div class="math notranslate nohighlight">
+\[gamma1 \cdot w_{01} \cdot cos(w_{01} \cdot t) + gamma2 \cdot w_{02} \cdot cos(w_{02} \cdot t)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – derivative at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.data_gen.sweep">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'up'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sweep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sweep" title="Link to this definition"></a></dt>
+<dd><p>Define sweep signal and derivative based on the scipy implementation:
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.chirp.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.chirp.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – time array at which the sweep is computed.</p></li>
+<li><p><strong>f0</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – start frequency.</p></li>
+<li><p><strong>f1</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – stop frequency.</p></li>
+<li><p><strong>t1</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time at which end frequency is met.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Kind of frequency sweep. The default is ‘linear’. options are:
+[‘linear’, ‘quadratic’, ‘logarithmic’, ‘hyperbolic’]</p></li>
+<li><p><strong>direction</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – either ‘up’ or ‘down’. The default is ‘up’.</p></li>
+<li><p><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – Amplification factor of the sweep. The default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sweep.comp">
+<span class="sig-name descname"><span class="pre">comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sweep.comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sweep.comp" title="Link to this definition"></a></dt>
+<dd><p>Compute sweep at specific timestep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute sweep at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – sweep at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.sweep.comp_dt">
+<span class="sig-name descname"><span class="pre">comp_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#sweep.comp_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.sweep.comp_dt" title="Link to this definition"></a></dt>
+<dd><p>Compute derivative of the sweep at specific timestep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – derivative at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.data_gen.white_noise">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">white_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#white_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.white_noise" title="Link to this definition"></a></dt>
+<dd><p>Generate White Noise signal for a defined time with numpy.random.randn
+method:
+<a class="reference external" href="https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html">https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – time array at which the white noise is computed.</p></li>
+<li><p><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em><em>, </em><em>optional</em>) – Amplification factor of the white noise. The default is 1.</p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Seed for the random number generator to ensure reproducibility.
+The default is None, i.e. no seed is provided.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.white_noise.comp">
+<span class="sig-name descname"><span class="pre">comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#white_noise.comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.white_noise.comp" title="Link to this definition"></a></dt>
+<dd><p>Compute white noise at specific timestep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute white noise at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – white noise at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.white_noise.comp_dt">
+<span class="sig-name descname"><span class="pre">comp_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#white_noise.comp_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.white_noise.comp_dt" title="Link to this definition"></a></dt>
+<dd><p>Compute derivative of white noise at specific timestep. Derivation is
+realised via interpolatable splines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step to compute derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>w</strong> – derivative at the time step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.data_gen.Zero">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.data_gen.</span></span><span class="sig-name descname"><span class="pre">Zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#Zero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.Zero" title="Link to this definition"></a></dt>
+<dd><p>Generate an array of Zeros as input Force</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<em>array</em>) – an array of the same length as the array of zeros</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.Zero.comp">
+<span class="sig-name descname"><span class="pre">comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#Zero.comp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.Zero.comp" title="Link to this definition"></a></dt>
+<dd><p>Give back zero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>zero.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.data_gen.Zero.comp_dt">
+<span class="sig-name descname"><span class="pre">comp_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/data_gen.html#Zero.comp_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.data_gen.Zero.comp_dt" title="Link to this definition"></a></dt>
+<dd><p>Give back zero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>(</em><em>)</em>) – time step.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>zero.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reference.html" class="btn btn-neutral float-left" title="Data Preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="meas_handling.html" class="btn btn-neutral float-right" title="Measurment Handling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recurrent Neural Network(RNN) Models &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Ensemble Methods" href="ensemble_wrappers.html" />
+    <link rel="prev" title="Autoregressive Models" href="autoreg_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html">Autoregressive Models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Recurrent Neural Network(RNN) Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN"><code class="docutils literal notranslate"><span class="pre">AR_RNN</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN.estimate_uncertainty_mean_std"><code class="docutils literal notranslate"><span class="pre">AR_RNN.estimate_uncertainty_mean_std()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN.forward"><code class="docutils literal notranslate"><span class="pre">AR_RNN.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN.forward_sens"><code class="docutils literal notranslate"><span class="pre">AR_RNN.forward_sens()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN.get_recurrent_weights"><code class="docutils literal notranslate"><span class="pre">AR_RNN.get_recurrent_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.AR_RNN.prediction"><code class="docutils literal notranslate"><span class="pre">AR_RNN.prediction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN"><code class="docutils literal notranslate"><span class="pre">RNN_DNN</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN.estimate_uncertainty_mean_std"><code class="docutils literal notranslate"><span class="pre">RNN_DNN.estimate_uncertainty_mean_std()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN.forward"><code class="docutils literal notranslate"><span class="pre">RNN_DNN.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN.forward_sens"><code class="docutils literal notranslate"><span class="pre">RNN_DNN.forward_sens()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN.get_recurrent_weights"><code class="docutils literal notranslate"><span class="pre">RNN_DNN.get_recurrent_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.RNN_DNN.prediction"><code class="docutils literal notranslate"><span class="pre">RNN_DNN.prediction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.recurrent_models.parr_RNN_DNN"><code class="docutils literal notranslate"><span class="pre">parr_RNN_DNN</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.parr_RNN_DNN.estimate_uncertainty_mean_std"><code class="docutils literal notranslate"><span class="pre">parr_RNN_DNN.estimate_uncertainty_mean_std()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.parr_RNN_DNN.forward"><code class="docutils literal notranslate"><span class="pre">parr_RNN_DNN.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.recurrent_models.parr_RNN_DNN.prediction"><code class="docutils literal notranslate"><span class="pre">parr_RNN_DNN.prediction()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html">Ensemble Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Recurrent Neural Network(RNN) Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/recurrent_models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.recurrent_models">
+<span id="recurrent-neural-network-rnn-models"></span><h1>Recurrent Neural Network(RNN) Models<a class="headerlink" href="#module-softsensor.recurrent_models" title="Link to this heading"></a></h1>
+<p>Created on Wed May 18 19:52:41 2022</p>
+<p>&#64;author: WET2RNG</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.recurrent_models.</span></span><span class="sig-name descname"><span class="pre">AR_RNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocktype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LSTM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Pred_Type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Point'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN" title="Link to this definition"></a></dt>
+<dd><p>Autoregressive Recurrent Network that utilises the past outputs in
+combination with hidden cells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of input channels</p></li>
+<li><p><strong>pred_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of predicted values</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Size of the sliding window applied to the time series</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Window Size of the Recurent Connection</p></li>
+<li><p><strong>blocks</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of parallel recurrent blocks.</p></li>
+<li><p><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – nunmber of recurernt blocks.(depth of the recurretn part)</p></li>
+<li><p><strong>blocktype</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – blocktype, options are: ‘RNN’, ‘GRU’ and ‘LSTM’. The default is ‘LSTM’.</p></li>
+<li><p><strong>hidden_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – List gives the size of hidden units. The default is None.</p></li>
+<li><p><strong>activation</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Activation function to activate the feature space.
+The default is ‘relu’.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, bias weights are used. The default is True.</p></li>
+<li><p><strong>dropout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> [</em><em>0</em><em>,</em><em>1</em><em>]</em><em>, </em><em>optional</em>) – Adds dropout layers after each Linear Layer. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.recurrent_models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">softsensor</span><span class="o">.</span><span class="n">recurrent_models</span><span class="o">.</span><span class="n">AR_RNN</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">AR_RNN(</span>
+<span class="go">  (RecBlock): _LSTM(</span>
+<span class="go">    (lstm): LSTM(30, 16, batch_first=True)</span>
+<span class="go">  )</span>
+<span class="go">  (DNN): Feed_ForwardNN(</span>
+<span class="go">    (DNN): Sequential(</span>
+<span class="go">      (0): Linear(in_features=16, out_features=1, bias=True)</span>
+<span class="go">    )</span>
+<span class="go">  )</span>
+<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rec_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">rec_input</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([32, 1, 1])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN.estimate_uncertainty_mean_std">
+<span class="sig-name descname"><span class="pre">estimate_uncertainty_mean_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN.estimate_uncertainty_mean_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN.estimate_uncertainty_mean_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN.forward" title="Link to this definition"></a></dt>
+<dd><p>Forward function to propagate through the network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp</strong> (<em>torch.tensor dtype=torch.float</em>) – Input tensor for forward propagation,
+shape=[batch size, external channels, window_size]</p></li>
+<li><p><strong>x_rec</strong> (<em>torch.tensor</em><em>, </em><em>dtype=torch.float</em>) – Recurrent Input for forward Propagation.
+shape=[batch size, pred_size, rnn_window]</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. Needed because of the storage of the hidden
+cells. The default is ‘cpu’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – shape=[batch size, pred_size, forecast]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.tensor dtype=torch.float()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN.forward_sens">
+<span class="sig-name descname"><span class="pre">forward_sens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN.forward_sens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN.forward_sens" title="Link to this definition"></a></dt>
+<dd><p>Forward function to propagate through the network, but only with one input tensor
+that is already concatenated to allow for gradient-based sensitivity analysis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp</strong> (<em>torch.tensor dtype=torch.float</em>) – Input tensor for forward propagation,
+shape=[batch size, flatten_size]</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. Needed because of the storage of the hidden
+cells. The default is ‘cpu’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – shape=[batch size, pred_size, forecast]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.tensor dtype=torch.float()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN.get_recurrent_weights">
+<span class="sig-name descname"><span class="pre">get_recurrent_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN.get_recurrent_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN.get_recurrent_weights" title="Link to this definition"></a></dt>
+<dd><p>Function that returns the weight that effect the Recurrent input of the
+Network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recurrent_weights</strong> – List of the Weights that effect the Recurren input of the Network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of weight Tensors</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Based on the example in the introduction</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rec_w</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rec_w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([64, 16])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rec_w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([64, 10])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.AR_RNN.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataloader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#AR_RNN.prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.AR_RNN.prediction" title="Link to this definition"></a></dt>
+<dd><p>Prediction of a whole Time Series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataloader</strong> (<em>Dataloader</em>) – Dataloader to predict output</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. The default is ‘cpu’.</p></li>
+<li><p><strong>sens_params</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Dictionary that contains the parameters for the sensitivity analysis.
+Key ‘method’ defines the method for sensitivity analysis: ‘gradient’ or ‘perturbation’.
+Key ‘comp’ defines whether gradients are computed for sensitivity analysis.
+Key ‘plot’ defines whether the results of the sensitivity analysis are visualized.
+Key ‘sens_length’ defines the number of randomly sampled subset of timesteps for the analysis.
+(If not a multiple of the model’s forecast, the number will be rounded up to the next multiple.)
+The default is None, i.e. no sensitivity analysis is computed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>if comp_sens is False</em></p></li>
+<li><p><strong>torch.Tensor</strong> (<em>Tensor of same langth as input, containing the predictions.</em>)</p></li>
+<li><p><em>if comp_sens is True</em> – (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.
+Key is the prediction type, value is the sensitivity tensor.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.recurrent_models.</span></span><span class="sig-name descname"><span class="pre">RNN_DNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocktype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LSTM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Pred_Type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Point'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN" title="Link to this definition"></a></dt>
+<dd><p>Recurrent Network that utilises a hidden state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of input channels</p></li>
+<li><p><strong>pred_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of predicted values</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Size of the sliding window applied to the time series</p></li>
+<li><p><strong>blocks</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of parallel recurrent blocks.</p></li>
+<li><p><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – nunmber of recurernt blocks.(depth of the recurretn part)</p></li>
+<li><p><strong>blocktype</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – blocktype, options are: ‘RNN’, ‘GRU’ and ‘LSTM’. The default is ‘LSTM’.</p></li>
+<li><p><strong>hidden_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – List gives the size of hidden units. The default is None.</p></li>
+<li><p><strong>activation</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Activation function to activate the feature space.
+The default is ‘relu’.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, bias weights are used. The default is True.</p></li>
+<li><p><strong>dropout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> [</em><em>0</em><em>,</em><em>1</em><em>]</em><em>, </em><em>optional</em>) – Adds dropout layers after each Linear Layer. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.recurrent_models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">softsensor</span><span class="o">.</span><span class="n">recurrent_models</span><span class="o">.</span><span class="n">RNN_DNN</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">RNN_DNN(</span>
+<span class="go">  (RecBlock): _LSTM(</span>
+<span class="go">    (lstm): LSTM(20, 16, batch_first=True)</span>
+<span class="go">  )</span>
+<span class="go">  (DNN): Feed_ForwardNN(</span>
+<span class="go">    (DNN): Sequential(</span>
+<span class="go">      (0): Linear(in_features=16, out_features=1, bias=True)</span>
+<span class="go">    )</span>
+<span class="go">  )</span>
+<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([32, 1, 1])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;inp1&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="go">         &#39;out&#39;: np.random.randn(101)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">Meas_handling</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">t</span><span class="p">)],</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span>
+<span class="go">                               [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loader</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">give_list</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s1">&#39;training&#39;</span><span class="p">,</span>
+<span class="go">                               batch_size=32, Add_zeros=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">loader</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([1, 101])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN.estimate_uncertainty_mean_std">
+<span class="sig-name descname"><span class="pre">estimate_uncertainty_mean_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN.estimate_uncertainty_mean_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN.estimate_uncertainty_mean_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN.forward" title="Link to this definition"></a></dt>
+<dd><p>Forward function to probagate through the network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp</strong> (<em>torch.tensor dtype=torch.float</em>) – Input tensor for forward propagation,
+shape=[batch size, external channels, window_size]</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. Needed because of the storage of the hidden
+cells. The default is ‘cpu’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – shape=[batch size, pred_size, forecast]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.tensor dtype=torch.float()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN.forward_sens">
+<span class="sig-name descname"><span class="pre">forward_sens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN.forward_sens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN.forward_sens" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN.get_recurrent_weights">
+<span class="sig-name descname"><span class="pre">get_recurrent_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN.get_recurrent_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN.get_recurrent_weights" title="Link to this definition"></a></dt>
+<dd><p>Function that returns the weight that effect the Recurrent input of the
+Network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recurrent_weights</strong> – List of the Weights that effect the Recurren input of the Network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of weight Tensors</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Based on the example in the introduction</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rec_w</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_recurrent_weights</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rec_w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">torch.Size([64, 16])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.RNN_DNN.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataloader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#RNN_DNN.prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.RNN_DNN.prediction" title="Link to this definition"></a></dt>
+<dd><p>Prediction of a whole Time Series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataloader</strong> (<em>Dataloader</em>) – Dataloader to predict output</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device to compute on. The default is ‘cpu’.</p></li>
+<li><p><strong>sens_params</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Dictionary that contains the parameters for the sensitivity analysis.
+Key ‘method’ defines the method for sensitivity analysis: ‘gradient’ or ‘perturbation’.
+Key ‘comp’ defines whether gradients are computed for sensitivity analysis.
+Key ‘plot’ defines whether the results of the sensitivity analysis are visualized.
+Key ‘sens_length’ defines the number of randomly sampled subset of timesteps for the analysis.
+(If not a multiple of the model’s forecast, the number will be rounded up to the next multiple.)
+The default is None, i.e. no sensitivity analysis is computed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>if comp_sens is False</em></p></li>
+<li><p><strong>torch.Tensor</strong> (<em>Tensor of same langth as input, containing the predictions.</em>)</p></li>
+<li><p><em>if comp_sens is True</em> – (torch.Tensor, dict) : Tuple of Tensor of same length as input and sensitivity dict.
+Key is the prediction type, value is the sensitivity tensor.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.parr_RNN_DNN">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.recurrent_models.</span></span><span class="sig-name descname"><span class="pre">parr_RNN_DNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocktype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LSTM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Pred_Type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Point'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#parr_RNN_DNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.parr_RNN_DNN" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.parr_RNN_DNN.estimate_uncertainty_mean_std">
+<span class="sig-name descname"><span class="pre">estimate_uncertainty_mean_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#parr_RNN_DNN.estimate_uncertainty_mean_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.parr_RNN_DNN.estimate_uncertainty_mean_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.parr_RNN_DNN.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#parr_RNN_DNN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.parr_RNN_DNN.forward" title="Link to this definition"></a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.recurrent_models.parr_RNN_DNN.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataloader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/recurrent_models.html#parr_RNN_DNN.prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.recurrent_models.parr_RNN_DNN.prediction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autoreg_models.html" class="btn btn-neutral float-left" title="Autoregressive Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ensemble_wrappers.html" class="btn btn-neutral float-right" title="Ensemble Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

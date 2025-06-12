@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frequency Response Function (FRF) &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Model helpers" href="model.html" />
+    <link rel="prev" title="AutoRegressive Moving Average with eXogenous input (ARMAX)" href="armax.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arx.html">AutoRegressive model with eXogenous input (ARX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="armax.html">AutoRegressive Moving Average with eXogenous input (ARMAX)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Frequency Response Function (FRF)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.linear_methods.tf"><code class="docutils literal notranslate"><span class="pre">tf</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.linear_methods.tf.fit"><code class="docutils literal notranslate"><span class="pre">tf.fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.linear_methods.tf.isfft"><code class="docutils literal notranslate"><span class="pre">tf.isfft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.linear_methods.tf.prediction"><code class="docutils literal notranslate"><span class="pre">tf.prediction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.linear_methods.tf.sfft"><code class="docutils literal notranslate"><span class="pre">tf.sfft()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.linear_methods.tf.tf_mimo"><code class="docutils literal notranslate"><span class="pre">tf.tf_mimo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Frequency Response Function (FRF)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/linear_methods.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.linear_methods">
+<span id="frequency-response-function-frf"></span><h1>Frequency Response Function (FRF)<a class="headerlink" href="#module-softsensor.linear_methods" title="Link to this heading"></a></h1>
+<p>Created on Fri Mar  4 13:04:39 2022</p>
+<p>&#64;author: Daniel Kreuter</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.linear_methods.</span></span><span class="sig-name descname"><span class="pre">tf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spectrum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf" title="Link to this definition"></a></dt>
+<dd><p>linear methods based on FFT and short term FFT
+Calculate the linear MiMo Transferfunction similar to Matlab tfestimate:
+<a class="reference external" href="https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e">https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NFFT</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Length of the fft. The default ist 512.</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – sample frequency. The default ist 1024.</p></li>
+<li><p><strong>no_overlap</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Points overlapping. If None, than it is defined by no_overlap = np.fix(0.67 * NFFT)
+The default is None.</p></li>
+<li><p><strong>spectrum_type</strong> (<em>str:</em>) – ‘spectrum’ or ‘psd’. The default is ‘spectrum’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Computing the linear transfer function of a linear system with white noise
+excitation</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.data_gen</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.linear_methods</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s1">&#39;c_nlin&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">white_noise</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">dg</span><span class="o">.</span><span class="n">get_academic_data</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">Model</span><span class="o">=</span><span class="s1">&#39;Duffing&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">tf</span><span class="p">(</span><span class="n">NFFT</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">no_overlap</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">df</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;F(t)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;original&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prediciton&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="C:/Users/wet2rng/Desktop/Coding/SoftSensor/doc/img/lienar_tf.png" src="C:/Users/wet2rng/Desktop/Coding/SoftSensor/doc/img/lienar_tf.png" />
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inp_sens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit linear TF to list of dfs by taking the mean transfer function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_list</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>pd.DataFrame</em>) – list of training Files.</p></li>
+<li><p><strong>inp_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – input sensors.</p></li>
+<li><p><strong>out_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – output sensors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf.isfft">
+<span class="sig-name descname"><span class="pre">isfft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Zxx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ampl_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf.isfft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf.isfft" title="Link to this definition"></a></dt>
+<dd><p>Computes the inverse Fourier transformation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Zxx</strong> (<em>Array</em><em>,</em>) – Fourier transformed signal.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>col names</em><em>, </em><em>optional</em>) – Column names of the output df. The default is None.</p></li>
+<li><p><strong>ampl_dist</strong> (<em>None</em><em>, </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – if STFT is a PSD, you can define the amplitude distribution with a Raleigh or mixed distribution.
+Options are <em>None</em>, <em>‘rayleigh’</em> or <em>‘mixed’</em>.
+The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TS_IFFT</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TYPE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf.prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf.prediction" title="Link to this definition"></a></dt>
+<dd><p>Predict test_df</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_df</strong> (<em>pd.DataFrame</em>) – dtaFrame for the precition, needs columns that have the same name
+as in fit.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – names for the prediction. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ts_pred</strong> – returns dataframe with linear_TF prediction as column.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf.sfft">
+<span class="sig-name descname"><span class="pre">sfft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf.sfft"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf.sfft" title="Link to this definition"></a></dt>
+<dd><p>computes the short term fast Fourier transformation (stft) for each input column of the
+DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ts</strong> (<em>pd.DataFrame</em>) – pandas data frame.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>STFT</strong> – The Fourier transformed signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.linear_methods.tf.tf_mimo">
+<span class="sig-name descname"><span class="pre">tf_mimo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/linear_methods.html#tf.tf_mimo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.linear_methods.tf.tf_mimo" title="Link to this definition"></a></dt>
+<dd><p>ToDo: replace with scipy.signal.csd
+Calculate the linear MiMo Transferfunction similar to Matlab tfestimate:
+<a class="reference external" href="https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e">https://uk.mathworks.com/help/signal/ref/tfestimate.html#bufqg8e</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp_df</strong> (<em>pandas DataFrame</em>) – input x(t) (index is time stamp),</p></li>
+<li><p><strong>out_df</strong> (<em>pandas DataFrame</em>) – output y(t) (index is time stamp),</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>tf</strong> (<em>numpy array</em>) –</p>
+<dl class="simple">
+<dt>transfer function of shape (freq steps,no of out signals,</dt><dd><p>no of input signal), complex</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>f</strong> (<em>numpy array</em>)</p></li>
+<li><p><em>corresponding frequency array</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="armax.html" class="btn btn-neutral float-left" title="AutoRegressive Moving Average with eXogenous input (ARMAX)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Model helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

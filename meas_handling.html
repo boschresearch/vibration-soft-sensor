@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Measurment Handling &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AutoRegressive model with eXogenous input (ARX)" href="arx.html" />
+    <link rel="prev" title="Data Generation for Synthetic Data" href="data_gen.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Data Preprocessing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html">Data Generation for Synthetic Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Measurment Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling"><code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.Scale"><code class="docutils literal notranslate"><span class="pre">Meas_handling.Scale()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.Resample"><code class="docutils literal notranslate"><span class="pre">Meas_handling.Resample()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.Filter"><code class="docutils literal notranslate"><span class="pre">Meas_handling.Filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.fade_in"><code class="docutils literal notranslate"><span class="pre">Meas_handling.fade_in()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.give_torch_loader"><code class="docutils literal notranslate"><span class="pre">Meas_handling.give_torch_loader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.give_list"><code class="docutils literal notranslate"><span class="pre">Meas_handling.give_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.give_Datasets"><code class="docutils literal notranslate"><span class="pre">Meas_handling.give_Datasets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.give_dataframes"><code class="docutils literal notranslate"><span class="pre">Meas_handling.give_dataframes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#softsensor.meas_handling.Meas_handling.give_dataframe"><code class="docutils literal notranslate"><span class="pre">Meas_handling.give_dataframe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Measurment Handling</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/meas_handling.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.meas_handling">
+<span id="measurment-handling"></span><h1>Measurment Handling<a class="headerlink" href="#module-softsensor.meas_handling" title="Link to this heading"></a></h1>
+<p>Created on Mon May 31 13:08:01 2021</p>
+<p>&#64;author: WET2RNG</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">softsensor.meas_handling.</span></span><span class="sig-name descname"><span class="pre">Meas_handling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_dfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_sensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_sensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_dfs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_comp_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling" title="Link to this definition"></a></dt>
+<dd><p>Measurement handling class that can be used for the
+whole data preprocessing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_dfs</strong> (<em>List</em><em> of </em><em>pd.DataFrames</em>) – List of pd.DataFrame for every Measurement used as Training data
+for subsequent models.</p></li>
+<li><p><strong>train_names</strong> (<em>List</em><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – List of Track Names corresponding to the train_dfs. Need to have the
+same length as train_dfs</p></li>
+<li><p><strong>input_sensors</strong> (<em>List</em><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Input sensors for the subsequent models, The order of the str defines
+the order in which the data is present inside the loader</p></li>
+<li><p><strong>output_sensors</strong> (<em>List</em><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Output sensors for the subsequent models, The order of of the str
+defines the order in which the data is present inside the loader</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – sample frequency.</p></li>
+<li><p><strong>test_dfs</strong> (<em>List</em><em> of </em><em>pd.DataFrames</em><em>, </em><em>optional</em>) – List of pd.DataFrame for every Measurement used as Testing data
+for subsequent models. The default is None</p></li>
+<li><p><strong>test_names</strong> (<em>List</em><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – List of Track Names corresponding to the test_dfs. Need to have the
+same length as test_dfs. The default is None</p></li>
+<li><p><strong>pre_comp_cols</strong> (<em>List</em><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Defines wheather and which a precomputed solution is in the dataset.
+Precomputed solutions might be helpfull in certain training tasks
+The default is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Define a Measurment Handling class</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xlow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xhigh</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">3000</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">:</span> <span class="n">xlow</span> <span class="o">+</span> <span class="mf">.1</span> <span class="o">*</span> <span class="n">xhigh</span><span class="p">,</span>
+<span class="go">         &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="go">         &#39;out&#39;: np.linspace(0, 1.0, 10001)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_df</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="n">xlow</span> <span class="o">+</span> <span class="mf">.1</span> <span class="o">*</span> <span class="n">xhigh</span><span class="p">,</span>
+<span class="go">               &#39;cos_inp&#39;: np.cos(2 * np.pi * 50 * t),</span>
+<span class="go">               &#39;out&#39;: np.linspace(0, 1.0, 10001)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">Meas_handling</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">t</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">t</span><span class="p">)],</span>
+<span class="go">                            [&#39;sine1&#39;, &#39;sine2&#39;],</span>
+<span class="go">                            [&#39;sine_inp&#39;, &#39;cos_inp&#39;], [&#39;out&#39;], 10000,</span>
+<span class="go">                            [pd.DataFrame(test_df, index=t)], [&#39;test&#39;])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.Scale">
+<span class="sig-name descname"><span class="pre">Scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">StandardScaler()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predef_scaler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.Scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.Scale" title="Link to this definition"></a></dt>
+<dd><p>Scale the Data. The scaler is fitted only on the traindata. Afterwards
+train and testdata is transformed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scaler</strong> (<em>sklearn.preprocessing scaler</em><em>, </em><em>optional</em>) – The default is StandardScaler().</p></li>
+<li><p><strong>predef_scaler</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, scaler needs to be fitted already and will be used to
+scale data. This might come in handy if the data used for scaling
+is no longer available or special scaling procedures are required
+The default is False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Based on the Example from class initialisation</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">give_dataframe</span><span class="p">(</span><span class="s1">&#39;sine1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">Scale</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.Resample">
+<span class="sig-name descname"><span class="pre">Resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.Resample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.Resample" title="Link to this definition"></a></dt>
+<dd><p>Resample self.train_df and self.test_df to fs using Fourier method
+along the given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – fs to resample data to.</p></li>
+<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Specifies the kind of interpolation as a string or as an integer
+specifying the order of the spline interpolator to use. The string
+has to be one of ‘linear’, ‘nearest’, ‘nearest-up’, ‘zero’,
+‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’, or ‘next’. ‘zero’,
+‘slinear’, ‘quadratic’ and ‘cubic’ refer to a spline interpolation
+of zeroth, first, second or third order; ‘previous’ and ‘next’
+simply return the previous or next value of the point; ‘nearest-up’
+nd ‘nearest’ differ when interpolating half-integers
+(e.g. 0.5, 1.5) in that ‘nearest-up’ rounds up and ‘nearest’
+down. Default is ‘linear’. see interpolate.interp1d docu</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.Filter">
+<span class="sig-name descname"><span class="pre">Filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq_lim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.Filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.Filter" title="Link to this definition"></a></dt>
+<dd><p>Function to bandpass Filter the Sensor data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>freq_lim</strong> (<em>(</em><em>low_cut</em><em>, </em><em>high cut</em><em>)</em>) – Defining the low and high cut for bandpass filtering</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Based on the Example from class initialisation,
+Result should be roughly zero</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">freq_lim</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_sine</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dev</span> <span class="o">=</span> <span class="n">xlow</span> <span class="o">-</span> <span class="n">filtered_sine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.fade_in">
+<span class="sig-name descname"><span class="pre">fade_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hanning'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.fade_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.fade_in" title="Link to this definition"></a></dt>
+<dd><p>Apply the defined window to the train and test data to fade in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_type</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Defining the window function type.
+Supported window types are: hanning, hamming, blackman, bartlette</p></li>
+<li><p><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Defining the window length of the half window.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Based on the Example from class initialisation,
+Result should be roughly zero</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;cos_inp&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">fade_in</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">test_df</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;cos_inp&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.give_torch_loader">
+<span class="sig-name descname"><span class="pre">give_torch_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'training'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Add_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5000,</span> <span class="pre">1000]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.give_torch_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.give_torch_loader" title="Link to this definition"></a></dt>
+<dd><p>Gives back a torch dataloader for training, evaluation or testing
+purpose</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Window size for input and output series.</p></li>
+<li><p><strong>keyword</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – possibilities are ‘training’, ‘testing’, ‘short’ or [‘Name’].
+‘training’ gives a training and validation dataloader using
+all training data.
+‘testing’ gives a single dataloader using all test data.
+‘short’ gives a training loader with 5000 samples and a
+validation loader with 1000 samples.
+[‘Name’], list of names, names must be present in either
+train_names or test_names
+The default is ‘training’.</p></li>
+<li><p><strong>train_ratio</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – only needed for keyword ‘training’. Defines the ration of training
+data compared to validation data. The default is .8.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Batchsize for the dataloader. The default is 32.</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Window size of the recurrent window. The default is None.</p></li>
+<li><p><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Loader is shuffled or not. The default is False.</p></li>
+<li><p><strong>Add_zeros</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – only needed if rnn_window is False, Adds zeros to the beginning of
+the time series. The default is True</p></li>
+<li><p><strong>forecast</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – forcasting horizon</p></li>
+<li><p><strong>pre_comp</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – using precomputed solution or not. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>one dataloader if train_ratio  = 1, otherwise two dataloaders for
+training and validation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.dataloader</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.give_list">
+<span class="sig-name descname"><span class="pre">give_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'testing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Add_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.give_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.give_list" title="Link to this definition"></a></dt>
+<dd><p>Gives List of DataLoader</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Window size for input and output series.</p></li>
+<li><p><strong>keyword</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – possibilities are ‘training’, ‘testing’, ‘short’ or [Name].
+‘training’ gives a training and validation dataloader using
+all training data.
+‘testing’ gives a single dataloader using all test data.
+‘short’ gives a training loader with 5000 samples and a
+validation loader with 1000 samples.
+[Name], gives back a unshuffled loader corresponding to the track
+name define in init
+The default is ‘training’.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Batchsize for the dataloader. The default is 32.</p></li>
+<li><p><strong>Add_zeros</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Appends zeros at the beginning for Autoregressive models.
+The default is False.</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Window size of the recurrent window. The default is None.</p></li>
+<li><p><strong>forecast</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – forecasting horizon</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>list_loader</strong> – list of dataloaders with individual Measurements.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of torch.dataloader</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.give_Datasets">
+<span class="sig-name descname"><span class="pre">give_Datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'training'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnn_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Add_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.give_Datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.give_Datasets" title="Link to this definition"></a></dt>
+<dd><p>Gives List of DataSets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Window size for input and output series.</p></li>
+<li><p><strong>keyword</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – possibilities are ‘training’, ‘testing’, ‘short’ or [Name].
+‘training’ gives a training and validation dataloader using
+all training data.
+‘testing’ gives a single dataloader using all test data.
+‘short’ gives a training loader with 5000 samples and a
+validation loader with 1000 samples.
+[Name], gives back a unshuffled loader corresponding to the track
+name define in init
+The default is ‘training’.</p></li>
+<li><p><strong>Add_zeros</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Appends zeros at the beginning for Autoregressive models.
+The default is False.</p></li>
+<li><p><strong>rnn_window</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Window size of the recurrent window. The default is None.</p></li>
+<li><p><strong>forecast</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – forcasting horizon</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>set_list</strong> – list of Datsets with individual Measurements.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of SlidingWindow Datasets</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.give_dataframes">
+<span class="sig-name descname"><span class="pre">give_dataframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.give_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.give_dataframes" title="Link to this definition"></a></dt>
+<dd><p>Returns list f dataframes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keywords</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><em>'training'</em><em> or </em><em>'testing'</em>) – rdefines which dataframes will be returned.
+list of str return list of same length with dataframes
+‘training’ or ‘testing’ return list of dfs in training / testing</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dfs</strong> – List of Dataframes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of dfs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="softsensor.meas_handling.Meas_handling.give_dataframe">
+<span class="sig-name descname"><span class="pre">give_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/meas_handling.html#Meas_handling.give_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.meas_handling.Meas_handling.give_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Gives back Dataframe corresponding to the specific name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – String that matches train or test name defined in init.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>df</strong> – DataFrame that corresponds to the given Name.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_gen.html" class="btn btn-neutral float-left" title="Data Generation for Synthetic Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="arx.html" class="btn btn-neutral float-right" title="AutoRegressive model with eXogenous input (ARX)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

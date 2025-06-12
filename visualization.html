@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualization Methods &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="frequency_methods.html" />
+    <link rel="prev" title="Evaluation Tools" href="eval_tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html">Homoscedastic Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">Uncertainty Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html">Evaluation Tools</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualization Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_all_weight_matrices"><code class="docutils literal notranslate"><span class="pre">plot_all_weight_matrices()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_calibration_curve"><code class="docutils literal notranslate"><span class="pre">plot_calibration_curve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_feature_importance"><code class="docutils literal notranslate"><span class="pre">plot_feature_importance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_first_weight_matrix"><code class="docutils literal notranslate"><span class="pre">plot_first_weight_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_grad_sens_comparison"><code class="docutils literal notranslate"><span class="pre">plot_grad_sens_comparison()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_sens_analysis"><code class="docutils literal notranslate"><span class="pre">plot_sens_analysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_uncertainty"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_uncertainty_both"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty_both()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.visualization.plot_uncertainty_sens"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty_sens()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Visualization Methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/visualization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.visualization">
+<span id="visualization-methods"></span><h1>Visualization Methods<a class="headerlink" href="#module-softsensor.visualization" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_all_weight_matrices">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_all_weight_matrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_all_weight_matrices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_all_weight_matrices" title="Link to this definition"></a></dt>
+<dd><p>Visualize all weight matrices of the model as heatmaps and their distributions
+as histograms, highlighting the percentage of weights that fall within a
+certain threshold range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>nn.module</em>) – Model consisting of nn.Modules</p></li>
+<li><p><strong>abs_values</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If the absolute values of the weight matrix entries should be plotted.
+The default is False.</p></li>
+<li><p><strong>rel_threshold</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Threshold value for the percentage of weights that fall within the range [-threshold, threshold].
+The default is 0.1, i.e. 10 % of the maximum absolute value of each weight matrix.</p></li>
+<li><p><strong>use_case</strong> (<em>string</em><em>, </em><em>optional</em>) – Use case for the channel names. The default is None.</p></li>
+<li><p><strong>save_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save the plots. The default is None, i.e. the plots are not saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_calibration_curve">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_calibration_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.,</span> <span class="pre">0.05,</span> <span class="pre">0.1,</span> <span class="pre">0.15,</span> <span class="pre">0.2,</span> <span class="pre">0.25,</span> <span class="pre">0.3,</span> <span class="pre">0.35,</span> <span class="pre">0.4,</span> <span class="pre">0.45,</span> <span class="pre">0.5,</span> <span class="pre">0.55,</span> <span class="pre">0.6,</span> <span class="pre">0.65,</span> <span class="pre">0.7,</span> <span class="pre">0.75,</span> <span class="pre">0.8,</span> <span class="pre">0.85,</span> <span class="pre">0.9,</span> <span class="pre">0.95,</span> <span class="pre">1.])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_calibration_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_calibration_curve" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Runs the model prediction on track and plots the calibration at different quantile levels</dt><dd><p>Assumes that Quantile Regression models have QR in their name and that all other models predict mean and variance</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>uncertainty models</em><em>]</em>) – Models to use for prediction</p></li>
+<li><p><strong>track</strong> (<em>torch.Dataloader</em>) – Single track</p></li>
+<li><p><strong>track_number</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of track in the test set</p></li>
+<li><p><strong>out_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>string</em><em>]</em>) – Names of output sensors</p></li>
+<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Output sensor to plot. The default is 0.</p></li>
+<li><p><strong>quantiles</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>x</em><em>]</em><em>, </em><em>x in</em><em> (</em><em>0</em><em>,</em><em>1</em><em>)</em>) – Quantile levels to analyze for calibration curve. The default is np.arange(0.0, 1.05, 0.05)</p></li>
+<li><p><strong>fig_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save fig. The default is None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_feature_importance">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_feature_importance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_feature_importance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_feature_importance" title="Link to this definition"></a></dt>
+<dd><p>Visualize the feature importance of the sensitivity tensor for a given model, at a specific time step.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_first_weight_matrix">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_first_weight_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_first_weight_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_first_weight_matrix" title="Link to this definition"></a></dt>
+<dd><p>Visualize the model’s first weight matrix and subsequent slices of it
+as heatmaps, to compare with the sensitivity plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>nn.module</em>) – Model consisting of nn.Modules</p></li>
+<li><p><strong>abs_values</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If the absolute values of the weight matrix entries should be plotted.
+The default is False.</p></li>
+<li><p><strong>save_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save the plots. The default is None, i.e. the plots are not saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_grad_sens_comparison">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_grad_sens_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vals_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_mean_std_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scientific_notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_grad_sens_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_grad_sens_comparison" title="Link to this definition"></a></dt>
+<dd><p>Visualize the comparison of the sensitivity tensors of different models
+for the same prediction type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vals_dict</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Dict, containing the mode to compare, e.g. alpha, excitation amplitude/frequency;
+as well as the values to compare, e.g. [0.1, 0.2, 0.3]</p></li>
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>Model consisting</em><em> of </em><em>nn.Modules</em><em>]</em>) – Models consisting of nn.Modules</p></li>
+<li><p><strong>sum_mean_std_list</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>torch.Tensor</em>) – List of sensitivity tensors that contain the gradients of the output with respect to the inputs</p></li>
+<li><p><strong>ch_names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>strings</em><em>, </em><em>optional</em>) – List of channel names. The default is None, i.e. the channel names are not provided and
+will be generated in the style of ‘Inp_ch_i’ and ‘Rec_ch_i’.</p></li>
+<li><p><strong>scientific_notation</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If the plot legends should be displayed in LaTeX scientific notation. The default is False.</p></li>
+<li><p><strong>save_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save the plots. The default is None, i.e. the plots are not saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_sens_analysis">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_sens_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_sens_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_sens_analysis" title="Link to this definition"></a></dt>
+<dd><p>Visualize different metrics/insights of the post-processed arrays,
+coming from differently averaged sensitivities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>Model consisting</em><em> of </em><em>nn.Modules</em>)</p></li>
+<li><p><strong>sensitivity</strong> (<em>torch.Tensor</em>) – Sensitivity tensor that contains the gradients of the output with respect to the inputs</p></li>
+<li><p><strong>ch_names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>strings</em><em>, </em><em>optional</em>) – List of channel names. The default is None, i.e. the channel names are not provided and
+will be generated in the style of ‘Inp_ch_i’ and ‘Rec_ch_i’.</p></li>
+<li><p><strong>title</strong> (<em>string</em><em>, </em><em>optional</em>) – Title for the plot series. The default is None, i.e. no title is displayed.</p></li>
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If the plot should contain the percentages of the channel-wise mean sensitivities.
+The default is False.</p></li>
+<li><p><strong>orig_length</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Original length of the time series. Only needed when sensitivity analysis is performed on
+subset of the data. The default is None, i.e. the original length is not provided.</p></li>
+<li><p><strong>save_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save the plots. The default is None, i.e. the plots are not saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_uncertainty">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_uncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_uncertainty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_uncertainty" title="Link to this definition"></a></dt>
+<dd><p>Plots the prediction with distributional uncertainty</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>torch.Tensor</em>) – Point prediction</p></li>
+<li><p><strong>std</strong> (<em>torch.Tensor</em>) – Uncertainty estimate</p></li>
+<li><p><strong>t_start</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Start of plotting window</p></li>
+<li><p><strong>t_end</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – End of plotting window</p></li>
+<li><p><strong>ground_truth</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – Ground truth of point prediction</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Sampling rate. The default is 10</p></li>
+<li><p><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Amount of standard deviations to plot. The default is 2</p></li>
+<li><p><strong>show_legend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Show legend in the plot. The default is False</p></li>
+<li><p><strong>title</strong> (<em>string</em><em>, </em><em>optional</em>) – Title for the plot. The default is None</p></li>
+<li><p><strong>title_info</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><em>string</em><em>,</em><em>string</em><em>]</em><em>, </em><em>optional</em>) – Must contain keys [‘dataset’, ‘model’, ‘track’, ‘sensor’]. The default is None.</p></li>
+<li><p><strong>fig_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save fig. The default is None</p></li>
+<li><p><strong>is_duffing</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether it is position prediction (like Duffing dataset) or acceleration prediction. The default is True.</p></li>
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If the plot should be displayed. The default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_uncertainty_both">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_uncertainty_both</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epistemic_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aleatoric_var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_uncertainty_both"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_uncertainty_both" title="Link to this definition"></a></dt>
+<dd><p>Plots the prediction with aleatoric and epistemic uncertainty</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>torch.Tensor</em>) – Point prediction</p></li>
+<li><p><strong>epistemic_std</strong> (<em>torch.Tensor</em>) – Epistemic uncertainty estimate (e.g. ensemble, mcdo)</p></li>
+<li><p><strong>aleatoric_std</strong> (<em>torch.Tensor</em>) – Aleatoric uncertainty estimate (e.g. mve)</p></li>
+<li><p><strong>t_start</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Start of plotting window</p></li>
+<li><p><strong>t_end</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – End of plotting window</p></li>
+<li><p><strong>ground_truth</strong> (<em>torch.Tensor</em><em>, </em><em>optional</em>) – Ground truth of point prediction</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Sampling rate. The default is 10</p></li>
+<li><p><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Amount of standard deviations to plot. The default is 2</p></li>
+<li><p><strong>show_legend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Show legend in the plot. The default is False</p></li>
+<li><p><strong>title</strong> (<em>string</em><em>, </em><em>optional</em>) – Title for the plot. The default is None</p></li>
+<li><p><strong>title_info</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><em>string</em><em>,</em><em>string</em><em>]</em><em>, </em><em>optional</em>) – Must contain keys [‘dataset’, ‘model’, ‘track’, ‘sensor’]. The default is None.</p></li>
+<li><p><strong>fig_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save fig</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.visualization.plot_uncertainty_sens">
+<span class="sig-prename descclassname"><span class="pre">softsensor.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_uncertainty_sens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_uq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplification</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/visualization.html#plot_uncertainty_sens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.visualization.plot_uncertainty_sens" title="Link to this definition"></a></dt>
+<dd><p>Visualize the uncertainty of the sensitivity tensor for a given model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>Model consisting</em><em> of </em><em>nn.Modules</em>)</p></li>
+<li><p><strong>sens_uq</strong> (<em>torch.Tensor</em>) – Sensitivity tensor that contains the gradients of the output with respect to the inputs</p></li>
+<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Epsilon value for the uncertainty quantification</p></li>
+<li><p><strong>ch_names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>strings</em>) – List of channel names</p></li>
+<li><p><strong>use_case</strong> (<em>string</em><em>, </em><em>optional</em>) – Use case for the channel names. The default is use_case.</p></li>
+<li><p><strong>amplification</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Amplification factor for the uncertainty quantification of sensitivities of MVE models. The default is 1.</p></li>
+<li><p><strong>save_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Path to save the plots. The default is None, i.e. the plots are not saved.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eval_tools.html" class="btn btn-neutral float-left" title="Evaluation Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frequency_methods.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

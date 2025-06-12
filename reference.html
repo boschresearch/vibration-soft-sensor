@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Preprocessing &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Generation for Synthetic Data" href="data_gen.html" />
+    <link rel="prev" title="Hybrid Virtual Sensors" href="tutorials/05_Hybrid_Models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preprocessing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html">Data Generation for Synthetic Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meas_handling.html">Measurment Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#linear-methods">Linear Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arx.html">AutoRegressive model with eXogenous input (ARX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="armax.html">AutoRegressive Moving Average with eXogenous input (ARMAX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_methods.html">Frequency Response Function (FRF)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#neural-networks">Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers.html">Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html">Autoregressive Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recurrent_models.html">Recurrent Neural Network(RNN) Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html">Ensemble Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#training-methods">Training Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses.html">Loss Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html">Stability Scheduling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="train_model.html">Model Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyperparameter_optimization.html">Hyperparameter Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#postprocessing">Postprocessing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html">Homoscedastic Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">Uncertainty Calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html">Evaluation Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">Visualization Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#frequency-methods">Frequency Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html"><code class="docutils literal notranslate"><span class="pre">FDS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.calculate_coherence"><code class="docutils literal notranslate"><span class="pre">calculate_coherence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.get_amplitude"><code class="docutils literal notranslate"><span class="pre">get_amplitude()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.get_phase"><code class="docutils literal notranslate"><span class="pre">get_phase()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.interpolate_log_series"><code class="docutils literal notranslate"><span class="pre">interpolate_log_series()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_moment"><code class="docutils literal notranslate"><span class="pre">psd_moment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_parameters_from_moments"><code class="docutils literal notranslate"><span class="pre">psd_parameters_from_moments()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_smoothing"><code class="docutils literal notranslate"><span class="pre">psd_smoothing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_statistics"><code class="docutils literal notranslate"><span class="pre">psd_statistics()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.reshape_stpsd"><code class="docutils literal notranslate"><span class="pre">reshape_stpsd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.scale_PSD"><code class="docutils literal notranslate"><span class="pre">scale_PSD()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Data Preprocessing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-preprocessing">
+<h1>Data Preprocessing<a class="headerlink" href="#data-preprocessing" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data_gen.html">Data Generation for Synthetic Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.get_academic_data"><code class="docutils literal notranslate"><span class="pre">get_academic_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.duffing"><code class="docutils literal notranslate"><span class="pre">duffing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.pendulum"><code class="docutils literal notranslate"><span class="pre">pendulum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.duffing_fp"><code class="docutils literal notranslate"><span class="pre">duffing_fp()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.two_mass_oscillator"><code class="docutils literal notranslate"><span class="pre">two_mass_oscillator()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.vd_Pol"><code class="docutils literal notranslate"><span class="pre">vd_Pol()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.sine"><code class="docutils literal notranslate"><span class="pre">sine</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.sine_2"><code class="docutils literal notranslate"><span class="pre">sine_2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.sweep"><code class="docutils literal notranslate"><span class="pre">sweep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.white_noise"><code class="docutils literal notranslate"><span class="pre">white_noise</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_gen.html#softsensor.data_gen.Zero"><code class="docutils literal notranslate"><span class="pre">Zero</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="meas_handling.html">Measurment Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="meas_handling.html#softsensor.meas_handling.Meas_handling"><code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="linear-methods">
+<h1>Linear Methods<a class="headerlink" href="#linear-methods" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="arx.html">AutoRegressive model with eXogenous input (ARX)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arx.html#softsensor.arx.ARX"><code class="docutils literal notranslate"><span class="pre">ARX</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="armax.html">AutoRegressive Moving Average with eXogenous input (ARMAX)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="armax.html#softsensor.armax.ARMAX"><code class="docutils literal notranslate"><span class="pre">ARMAX</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="linear_methods.html">Frequency Response Function (FRF)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_methods.html#softsensor.linear_methods.tf"><code class="docutils literal notranslate"><span class="pre">tf</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="neural-networks">
+<h1>Neural Networks<a class="headerlink" href="#neural-networks" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model helpers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.html#softsensor.model.CNN"><code class="docutils literal notranslate"><span class="pre">CNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#softsensor.model.Feed_ForwardNN"><code class="docutils literal notranslate"><span class="pre">Feed_ForwardNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#softsensor.model.Freq_Att_CNN"><code class="docutils literal notranslate"><span class="pre">Freq_Att_CNN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="layers.html#softsensor.layers.ConcreteDropout"><code class="docutils literal notranslate"><span class="pre">ConcreteDropout</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autoreg_models.html">Autoregressive Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html#softsensor.autoreg_models.ARNN"><code class="docutils literal notranslate"><span class="pre">ARNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html#softsensor.autoreg_models.DensityEstimationARNN"><code class="docutils literal notranslate"><span class="pre">DensityEstimationARNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html#softsensor.autoreg_models.QuantileARNN"><code class="docutils literal notranslate"><span class="pre">QuantileARNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoreg_models.html#softsensor.autoreg_models.SeparateMVEARNN"><code class="docutils literal notranslate"><span class="pre">SeparateMVEARNN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="recurrent_models.html">Recurrent Neural Network(RNN) Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recurrent_models.html#softsensor.recurrent_models.AR_RNN"><code class="docutils literal notranslate"><span class="pre">AR_RNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="recurrent_models.html#softsensor.recurrent_models.RNN_DNN"><code class="docutils literal notranslate"><span class="pre">RNN_DNN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="recurrent_models.html#softsensor.recurrent_models.parr_RNN_DNN"><code class="docutils literal notranslate"><span class="pre">parr_RNN_DNN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ensemble_wrappers.html">Ensemble Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncEnsemble"><code class="docutils literal notranslate"><span class="pre">AsyncEnsemble</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropout"><code class="docutils literal notranslate"><span class="pre">AsyncMCDropout</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMCDropoutMVE"><code class="docutils literal notranslate"><span class="pre">AsyncMCDropoutMVE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html#softsensor.ensemble_wrappers.AsyncMVEEnsemble"><code class="docutils literal notranslate"><span class="pre">AsyncMVEEnsemble</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble_wrappers.html#softsensor.ensemble_wrappers.SyncEnsemble"><code class="docutils literal notranslate"><span class="pre">SyncEnsemble</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="training-methods">
+<h1>Training Methods<a class="headerlink" href="#training-methods" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="losses.html">Loss Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#softsensor.losses.BetaNLL"><code class="docutils literal notranslate"><span class="pre">BetaNLL</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#softsensor.losses.DistributionalMSELoss"><code class="docutils literal notranslate"><span class="pre">DistributionalMSELoss</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#softsensor.losses.GaussianNLLLoss"><code class="docutils literal notranslate"><span class="pre">GaussianNLLLoss</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#softsensor.losses.PSDLoss"><code class="docutils literal notranslate"><span class="pre">PSDLoss</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses.html#softsensor.losses.PinballLoss"><code class="docutils literal notranslate"><span class="pre">PinballLoss</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stab_scheduler.html">Stability Scheduling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.Stability_Criterion"><code class="docutils literal notranslate"><span class="pre">Stability_Criterion()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.Stability_Loss"><code class="docutils literal notranslate"><span class="pre">Stability_Loss</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.arnn_threshold"><code class="docutils literal notranslate"><span class="pre">arnn_threshold()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.const_stab"><code class="docutils literal notranslate"><span class="pre">const_stab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.get_scheduler"><code class="docutils literal notranslate"><span class="pre">get_scheduler()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.heaviside_stab"><code class="docutils literal notranslate"><span class="pre">heaviside_stab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.linear_stab"><code class="docutils literal notranslate"><span class="pre">linear_stab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.local_weight_decay"><code class="docutils literal notranslate"><span class="pre">local_weight_decay()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.local_weight_product"><code class="docutils literal notranslate"><span class="pre">local_weight_product()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.log_lin_stab"><code class="docutils literal notranslate"><span class="pre">log_lin_stab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stab_scheduler.html#softsensor.stab_scheduler.none_stab"><code class="docutils literal notranslate"><span class="pre">none_stab</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="train_model.html">Model Training</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="train_model.html#softsensor.train_model.train_model"><code class="docutils literal notranslate"><span class="pre">train_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="train_model.html#softsensor.train_model.early_stopping"><code class="docutils literal notranslate"><span class="pre">early_stopping</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparameter_optimization.html">Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hyperparameter_optimization.html#softsensor.hyperparameter_optimization.grid_search"><code class="docutils literal notranslate"><span class="pre">grid_search()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyperparameter_optimization.html#softsensor.hyperparameter_optimization.hyperopt_search"><code class="docutils literal notranslate"><span class="pre">hyperopt_search()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyperparameter_optimization.html#softsensor.hyperparameter_optimization.random_search"><code class="docutils literal notranslate"><span class="pre">random_search()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="postprocessing">
+<h1>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.WassersteinDistance"><code class="docutils literal notranslate"><span class="pre">WassersteinDistance</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.compute_quantile_metrics"><code class="docutils literal notranslate"><span class="pre">compute_quantile_metrics()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.crps"><code class="docutils literal notranslate"><span class="pre">crps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.distance_calc"><code class="docutils literal notranslate"><span class="pre">distance_calc()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.ece"><code class="docutils literal notranslate"><span class="pre">ece()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.heteroscedasticity"><code class="docutils literal notranslate"><span class="pre">heteroscedasticity()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.log_area_error"><code class="docutils literal notranslate"><span class="pre">log_area_error()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.mae"><code class="docutils literal notranslate"><span class="pre">mae()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.mpiw"><code class="docutils literal notranslate"><span class="pre">mpiw()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.nll"><code class="docutils literal notranslate"><span class="pre">nll()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.nll_statistic"><code class="docutils literal notranslate"><span class="pre">nll_statistic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.pearson"><code class="docutils literal notranslate"><span class="pre">pearson()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.picp"><code class="docutils literal notranslate"><span class="pre">picp()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.quantile_ece"><code class="docutils literal notranslate"><span class="pre">quantile_ece()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.r2"><code class="docutils literal notranslate"><span class="pre">r2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.rmse"><code class="docutils literal notranslate"><span class="pre">rmse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.rmv"><code class="docutils literal notranslate"><span class="pre">rmv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html#softsensor.metrics.wf_distribution"><code class="docutils literal notranslate"><span class="pre">wf_distribution</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="homoscedastic_model.html">Homoscedastic Uncertainty</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html#softsensor.homoscedastic_model.HomoscedasticModel"><code class="docutils literal notranslate"><span class="pre">HomoscedasticModel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html#softsensor.homoscedastic_model.fit_homoscedastic_var"><code class="docutils literal notranslate"><span class="pre">fit_homoscedastic_var()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Uncertainty Calibration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html#softsensor.calibration.TemperatureScaling"><code class="docutils literal notranslate"><span class="pre">TemperatureScaling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html#softsensor.calibration.optimize_temperature"><code class="docutils literal notranslate"><span class="pre">optimize_temperature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="eval_tools.html">Evaluation Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_batch"><code class="docutils literal notranslate"><span class="pre">comp_batch()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_error"><code class="docutils literal notranslate"><span class="pre">comp_error()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_mean_metrics"><code class="docutils literal notranslate"><span class="pre">comp_mean_metrics()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_metrics"><code class="docutils literal notranslate"><span class="pre">comp_metrics()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_pred"><code class="docutils literal notranslate"><span class="pre">comp_pred()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.comp_psd"><code class="docutils literal notranslate"><span class="pre">comp_psd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eval_tools.html#softsensor.eval_tools.load_model"><code class="docutils literal notranslate"><span class="pre">load_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_all_weight_matrices"><code class="docutils literal notranslate"><span class="pre">plot_all_weight_matrices()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_calibration_curve"><code class="docutils literal notranslate"><span class="pre">plot_calibration_curve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_feature_importance"><code class="docutils literal notranslate"><span class="pre">plot_feature_importance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_first_weight_matrix"><code class="docutils literal notranslate"><span class="pre">plot_first_weight_matrix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_grad_sens_comparison"><code class="docutils literal notranslate"><span class="pre">plot_grad_sens_comparison()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_sens_analysis"><code class="docutils literal notranslate"><span class="pre">plot_sens_analysis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_uncertainty"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_uncertainty_both"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty_both()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#softsensor.visualization.plot_uncertainty_sens"><code class="docutils literal notranslate"><span class="pre">plot_uncertainty_sens()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="frequency-methods">
+<h1>Frequency Methods<a class="headerlink" href="#frequency-methods" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html"><code class="docutils literal notranslate"><span class="pre">FDS</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.FDS.calculate_fds"><code class="docutils literal notranslate"><span class="pre">FDS.calculate_fds()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.FDS.calculate_psd"><code class="docutils literal notranslate"><span class="pre">FDS.calculate_psd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.calculate_coherence"><code class="docutils literal notranslate"><span class="pre">calculate_coherence()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.get_amplitude"><code class="docutils literal notranslate"><span class="pre">get_amplitude()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.get_phase"><code class="docutils literal notranslate"><span class="pre">get_phase()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.interpolate_log_series"><code class="docutils literal notranslate"><span class="pre">interpolate_log_series()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_moment"><code class="docutils literal notranslate"><span class="pre">psd_moment()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_parameters_from_moments"><code class="docutils literal notranslate"><span class="pre">psd_parameters_from_moments()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_smoothing"><code class="docutils literal notranslate"><span class="pre">psd_smoothing()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.psd_statistics"><code class="docutils literal notranslate"><span class="pre">psd_statistics()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.reshape_stpsd"><code class="docutils literal notranslate"><span class="pre">reshape_stpsd()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="frequency_methods.html#softsensor.frequency_methods.scale_PSD"><code class="docutils literal notranslate"><span class="pre">scale_PSD()</span></code></a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials/05_Hybrid_Models.html" class="btn btn-neutral float-left" title="Hybrid Virtual Sensors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_gen.html" class="btn btn-neutral float-right" title="Data Generation for Synthetic Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

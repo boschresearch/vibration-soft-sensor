@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.homoscedastic_model &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.homoscedastic_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.homoscedastic_model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">_prediction</span>
+
+
+<div class="viewcode-block" id="fit_homoscedastic_var">
+<a class="viewcode-back" href="../../homoscedastic_model.html#softsensor.homoscedastic_model.fit_homoscedastic_var">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_homoscedastic_var</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="n">model_out</span><span class="p">,</span> <span class="n">target_out</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines a homoscedastic uncertainty as the average sample variance on the training set</span>
+<span class="sd">    where each point prediction is regarded as a single sample from a distribution with the ground truth as mean.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : torch.Module</span>
+<span class="sd">        Point prediction model</span>
+<span class="sd">    train_list : list[Dataloader]</span>
+<span class="sd">        dataset to fit the homoscedastic variance</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    homoscedastic_var: tensor[float], shape=[model.pred_size]</span>
+<span class="sd">        Homoscedastic variance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">var_list</span> <span class="o">=</span> <span class="p">[]</span>
+ 
+    <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">dataframes</span><span class="p">:</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="n">model_out</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="n">target_out</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
+        <span class="n">homoscedastic_var</span> <span class="o">=</span> <span class="n">_fit_var</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        <span class="n">var_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">homoscedastic_var</span><span class="p">)</span>
+        
+    <span class="n">homoscedastic_var</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">var_list</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">homoscedastic_var</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fit_var</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit homoscedastic variance to tensors of shape [channels, time series length]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : tensor[float] shape: [channels, ts length]</span>
+<span class="sd">        Model prediction.</span>
+<span class="sd">    targets : tensor[float] shape: [channels, ts length]</span>
+<span class="sd">        Mground truth data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    homoscedastic_var : tensor[float], shape=[channels]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">homoscedastic_var</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">mean</span> <span class="o">-</span> <span class="n">targets</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">homoscedastic_var</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="HomoscedasticModel">
+<a class="viewcode-back" href="../../homoscedastic_model.html#softsensor.homoscedastic_model.HomoscedasticModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HomoscedasticModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper class for point prediction models that uses a constant variance for all inputs</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : uncertainty model </span>
+<span class="sd">        model that is used for prediction</span>
+<span class="sd">    homoscedastic_var : tensor[float], shape=[model.pred_size]</span>
+<span class="sd">        Homoscedastic variance</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    Define Model</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.autoreg_models</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.homoscedastic_model as hm</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; m = softsensor.autoreg_models.ARNN(2, 1, 10, 10, [16, 8])</span>
+<span class="sd">    &gt;&gt;&gt; vars = torch.tensor([1])</span>
+<span class="sd">    &gt;&gt;&gt; homosc_m = hm.HomoscedasticModel(m, vars)</span>
+<span class="sd">    &gt;&gt;&gt; input = torch.randn(32, 2, 10)</span>
+<span class="sd">    &gt;&gt;&gt; rec_input = torch.randn(32, 1, 10)</span>
+<span class="sd">    &gt;&gt;&gt; output = homosc_m(input, rec_input)</span>
+<span class="sd">    &gt;&gt;&gt; print(output[0].shape)</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; print(output[1].shape)</span>
+<span class="sd">    torch.Size([32, 1, 1])</span>
+<span class="sd">    </span>
+<span class="sd">    Define Data</span>
+
+<span class="sd">    &gt;&gt;&gt; import softsensor.meas_handling as ms</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 1.0, 101)</span>
+<span class="sd">    &gt;&gt;&gt; d = {&#39;inp1&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="sd">             &#39;out&#39;: np.random.randn(101)}</span>
+<span class="sd">    &gt;&gt;&gt; handler = ms.Meas_handling([pd.DataFrame(d, index=t)], [&#39;train&#39;],</span>
+<span class="sd">                                   [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+
+<span class="sd">    Define Model with Uncertainty</span>
+
+<span class="sd">    &gt;&gt;&gt; loader = handler.give_list(window_size=10, keyword=&#39;training&#39;,</span>
+<span class="sd">                                   rnn_window=10, batch_size=1)</span>
+<span class="sd">    &gt;&gt;&gt; vars = torch.tensor([1])</span>
+<span class="sd">    &gt;&gt;&gt; homosc_m = hm.HomoscedasticModel(m, vars)</span>
+<span class="sd">    &gt;&gt;&gt; mean, var = homosc_m.prediction(loader[0])</span>
+<span class="sd">    &gt;&gt;&gt; print(mean.shape)</span>
+<span class="sd">    torch.Size([1, 101])</span>
+<span class="sd">    &gt;&gt;&gt; print(var.shape)</span>
+<span class="sd">    torch.Size([1, 101])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">homoscedastic_var</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">homoscedastic_var</span> <span class="o">=</span> <span class="n">homoscedastic_var</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn_window</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">rnn_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pred_size</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">pred_size</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pred_Type</span> <span class="o">=</span> <span class="s1">&#39;Mean_Var&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ensemble</span> <span class="o">=</span> <span class="kc">False</span>
+    
+<div class="viewcode-block" id="HomoscedasticModel.forward">
+<a class="viewcode-back" href="../../homoscedastic_model.html#softsensor.homoscedastic_model.HomoscedasticModel.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward function to propagate through the network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : input arguments </span>
+<span class="sd">            (need to be the same as the Point model in __init__() needs)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mean: torch.tensor dtype=torch.float()</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+<span class="sd">        std: torch.tensor dtype=torch.float() in [0,1]</span>
+<span class="sd">            shape=[batch size, pred_size]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1">#var = [torch.ones([mean.shape[0], 1, mean.shape[2]]) * v for v in self.homoscedastic_var]</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">homoscedastic_var</span><span class="p">):</span>
+            <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">*</span><span class="n">v</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">var</span></div>
+
+    
+
+<div class="viewcode-block" id="HomoscedasticModel.estimate_uncertainty_mean_std">
+<a class="viewcode-back" href="../../homoscedastic_model.html#softsensor.homoscedastic_model.HomoscedasticModel.estimate_uncertainty_mean_std">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_uncertainty_mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HomoscedasticModel.prediction">
+<a class="viewcode-back" href="../../homoscedastic_model.html#softsensor.homoscedastic_model.HomoscedasticModel.prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prediction of a whole Time Series</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataloader : Dataloader</span>
+<span class="sd">            Dataloader to predict output</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device to compute on. The default is &#39;cpu&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        if loss_ft=None:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor])</span>
+<span class="sd">                tuple of Torch Tensor of same length as input and var</span>
+<span class="sd">        if loss_ft=torch loss funciton:</span>
+<span class="sd">            (torch.Tensor, list[torch.Tensor], loss)</span>
+<span class="sd">                tuple of Torch Tensor of same length as input, var and loss</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

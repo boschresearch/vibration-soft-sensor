@@ -1,0 +1,906 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>softsensor.data_gen &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#postprocessing">Postprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">softsensor.data_gen</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for softsensor.data_gen</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Mar  1 11:01:26 2022</span>
+
+<span class="sd">@author: Tobias Westmeier CR/AMP4</span>
+
+<span class="sd">The described scripts are used for the synthetic generation of time data for</span>
+<span class="sd">testing models. The class: &#39;get_academic_data&#39; is used for the numerical</span>
+<span class="sd">integration of the described differential equations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_ivp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">chirp</span><span class="p">,</span> <span class="n">butter</span><span class="p">,</span> <span class="n">filtfilt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">InterpolatedUnivariateSpline</span> <span class="k">as</span> <span class="n">IUS</span>
+
+<div class="viewcode-block" id="get_academic_data">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.get_academic_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_academic_data</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define Dataframe with the response of academic examples equation to given</span>
+<span class="sd">    force</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        A sequence of time points for which to solve for y. The initial value</span>
+<span class="sd">        point should be the first element of this sequence. This sequence must</span>
+<span class="sd">        be monotonically increasing or monotonically decreasing; repeated</span>
+<span class="sd">        values are allowed.</span>
+<span class="sd">    Model : str</span>
+<span class="sd">        either &#39;Duffing&#39; &#39;Duffing_fp&#39; or &#39;vd_pol&#39; to define academic</span>
+<span class="sd">        model.</span>
+<span class="sd">    params : dict</span>
+<span class="sd">        Define Parameters for the models.</span>
+<span class="sd">        if Model = &#39;Duffing&#39; dict must contain c_nlin and D.</span>
+<span class="sd">        if Model = &#39;vd_Pol&#39; dict must contain epsilon.</span>
+<span class="sd">    F : Force, optional</span>
+<span class="sd">        Force to apply to the ems. Must be callable by F.comp and F.comp_dt and</span>
+<span class="sd">        must include self.F and self.dF with the same time steps as time</span>
+<span class="sd">        The default is None.</span>
+<span class="sd">    x0 : array, optional</span>
+<span class="sd">        initial conditions. The default is [0, 0].</span>
+<span class="sd">    rtol : float, optional</span>
+<span class="sd">        relative tolerance for the numerical integration</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Dataframe of response with columns [&#39;F(t)&#39;, &#39;x&#39;, &#39;v&#39;].</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 100, 1000)</span>
+<span class="sd">    &gt;&gt;&gt; params = {&#39;D&#39;: 0.05, &#39;c_nlin&#39;: 0.1}</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; df = dg.get_academic_data(time, Model=&#39;Duffing&#39;, F=F, params=params)</span>
+<span class="sd">    &gt;&gt;&gt; print(df.shape)</span>
+<span class="sd">    (1000, 3)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">Zero</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Duffing&#39;</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">duffing</span><span class="p">,</span> <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="o">=</span><span class="n">x0</span> <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="n">t_eval</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">],</span> <span class="n">F</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;c_nlin&#39;</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Duffing_fp&#39;</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">duffing_fp</span><span class="p">,</span> <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="o">=</span><span class="n">x0</span> <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="n">t_eval</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;c_nlin&#39;</span><span class="p">],</span> <span class="n">F</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;vd_Pol&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;offset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">vd_Pol</span><span class="p">,</span> <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="o">=</span><span class="n">x0</span> <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">t_eval</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                        <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">F</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Pendulum&#39;</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">pendulum</span><span class="p">,</span> <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="o">=</span><span class="n">x0</span> <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="n">t_eval</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">],</span> <span class="n">F</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Two_Mass_System&#39;</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">two_mass_oscillator</span><span class="p">,</span> <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="o">=</span><span class="n">x0</span> <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="n">t_eval</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">],</span> 
+                                                      <span class="n">params</span><span class="p">[</span><span class="s1">&#39;mue&#39;</span><span class="p">],</span>
+                                                      <span class="n">params</span><span class="p">[</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span>
+                                                      <span class="n">params</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">],</span> <span class="n">F</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid model given: Implemented are&quot;</span> <span class="o">+</span>
+                         <span class="s2">&quot;[&#39;Duffing, Duffing_fp, &#39;vd_Pol&#39;, &#39;Pendulum&#39;&#39;]&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Duffing_fp&#39;</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;z(t)&#39;</span><span class="p">:</span>   <span class="n">F</span><span class="o">.</span><span class="n">F</span><span class="p">,</span>
+              <span class="s1">&#39;dz(t)&#39;</span><span class="p">:</span>   <span class="n">F</span><span class="o">.</span><span class="n">dF</span><span class="p">,</span>
+              <span class="s1">&#39;x&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="s1">&#39;v&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+              <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">Model</span> <span class="o">==</span> <span class="s1">&#39;Two_Mass_System&#39;</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;F(t)&#39;</span><span class="p">:</span>   <span class="n">F</span><span class="o">.</span><span class="n">F</span><span class="p">,</span>
+              <span class="s1">&#39;x1&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="s1">&#39;v1&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+              <span class="s1">&#39;x2&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+              <span class="s1">&#39;v2&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+              <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;F(t)&#39;</span><span class="p">:</span>   <span class="n">F</span><span class="o">.</span><span class="n">F</span><span class="p">,</span>
+              <span class="s1">&#39;x&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="s1">&#39;v&#39;</span><span class="p">:</span>      <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+              <span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">freq</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="duffing">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.duffing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">duffing</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">c_nlin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Duffing oscillator with external forcing as described in</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Duffing_equation</span>
+
+<span class="sd">    .. math:: dz1 = z2</span>
+<span class="sd">    .. math:: dz2 = - 2 \cdot D \cdot z2 - z1 - c_{nlin} \cdot z1^{3} + F.comp(t)</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array of size 2</span>
+<span class="sd">        initial conditions. System state (z1, z2)</span>
+<span class="sd">    t : float()</span>
+<span class="sd">        time step at which the force F is computed.</span>
+<span class="sd">    D : float()</span>
+<span class="sd">        damping of the system.</span>
+<span class="sd">    F : Force class</span>
+<span class="sd">        Abstract class for the force excitation at the mass.</span>
+<span class="sd">    c_nlin : float(), optional</span>
+<span class="sd">        indicating the nonlinearity of the system. The default is 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (dz1, dz2) : Derivatives of the duffing equation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 100, 1000)</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; (dz1, dz2) = dg.duffing(t=0, y=(0, 0), D=0.05, F=F, c_nlin=.2)</span>
+<span class="sd">    &gt;&gt;&gt; print((dz1, dz2))</span>
+<span class="sd">    (0, 0.0)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">dz1dt</span> <span class="o">=</span> <span class="n">z2</span>
+    <span class="n">dz2dt</span> <span class="o">=</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">z1</span> <span class="o">-</span> <span class="n">c_nlin</span> <span class="o">*</span> <span class="n">z1</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">comp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">dz1dt</span><span class="p">,</span> <span class="n">dz2dt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="pendulum">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.pendulum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pendulum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pendulum equation with external forcing and damping</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Pendulum_(mechanics)</span>
+
+<span class="sd">    .. math:: dz1 = z2</span>
+<span class="sd">    .. math:: dz2 = - 2 \cdot D \cdot z2 - sine(z1) + F.comp(t)</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array of size 2</span>
+<span class="sd">        initial conditions. System state (z1, z2)</span>
+<span class="sd">    t : float()</span>
+<span class="sd">        time step at which the force F is computed.</span>
+<span class="sd">    D : float()</span>
+<span class="sd">        damping of the system.</span>
+<span class="sd">    F : Force class</span>
+<span class="sd">        Abstract class for the force excitation at the mass.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (dz1, dz2) : Derivatives of the pendulum equation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 100, 1000)</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; (dz1, dz2) = dg.pendulum(t=0, y=(0, 0), D=0.05, F=F, c_nlin=.2)</span>
+<span class="sd">    &gt;&gt;&gt; print((dz1, dz2))</span>
+<span class="sd">    (0, 0.0)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">dz1dt</span> <span class="o">=</span> <span class="n">z2</span>
+    <span class="n">dz2dt</span> <span class="o">=</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">comp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">dz1dt</span><span class="p">,</span> <span class="n">dz2dt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="duffing_fp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.duffing_fp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">duffing_fp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">c_nlin</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Duffing oscillator with excitation at the base point as described in</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Duffing_equation</span>
+<span class="sd">    </span>
+<span class="sd">    .. math:: dz1 = z2</span>
+<span class="sd">    .. math:: dz2 = 2 \cdot D \cdot (z.comp_dt(t) - z2) - z1 + c_{nlin} \cdot (z.comp(t) - z1)^3</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array of size 2</span>
+<span class="sd">        initial conditions. System state (z1, z2)</span>
+<span class="sd">    t : float()</span>
+<span class="sd">        time step at which the Force is computed.</span>
+<span class="sd">    D : float()</span>
+<span class="sd">        damping of the system.</span>
+<span class="sd">    c_nlin : float()</span>
+<span class="sd">        indicating the nonlinearity of the system.</span>
+<span class="sd">    F : Force class</span>
+<span class="sd">        Abstract class for the force excitation at the mass.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (dz1, dz2) : Derivatives of the duffing equation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 10, 100)</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; (dz1, dz2) = dg.duffing_fp(t=0, y=(0, 0), D=0.05, c_nlin=.2, z=F)</span>
+<span class="sd">    &gt;&gt;&gt; print((dz1, dz2))</span>
+<span class="sd">    (0, 0.0)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">dz1dt</span> <span class="o">=</span> <span class="n">z2</span>
+    <span class="n">dz2dt</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">comp_dt</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">z2</span><span class="p">)</span> <span class="o">-</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">c_nlin</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">comp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">z1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">dz1dt</span><span class="p">,</span> <span class="n">dz2dt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="two_mass_oscillator">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.two_mass_oscillator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">two_mass_oscillator</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mue</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">F</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Two Mass oscillator with damping and Forcing on the first mass</span>
+<span class="sd">    Coverning Equation:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; \mu \end{bmatrix}</span>
+<span class="sd">        \begin{bmatrix} q_1^{&#39;&#39;}\\ q_2^{&#39;&#39;} \end{bmatrix}</span>
+<span class="sd">        + </span>
+<span class="sd">        2D</span>
+<span class="sd">        \begin{bmatrix} 1 + \delta &amp; -\delta \\ -\delta &amp; \delta \end{bmatrix}</span>
+<span class="sd">        \begin{bmatrix} q_1^{&#39;}\\ q_2^{&#39;} \end{bmatrix}</span>
+<span class="sd">        + </span>
+<span class="sd">        \begin{bmatrix} 1 + \kappa &amp; -\kappa \\ -\kappa &amp; \kappa \end{bmatrix}</span>
+<span class="sd">        \begin{bmatrix} q_1\\ q_2 \end{bmatrix}</span>
+<span class="sd">        =</span>
+<span class="sd">        \begin{bmatrix} F.comp(t)\\ 0 \end{bmatrix}</span>
+<span class="sd">    </span>
+<span class="sd">    with</span>
+<span class="sd">        </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        z_{11} = q_{1}, z_{12} = q_{1}^{&#39;}</span>
+<span class="sd">        </span>
+<span class="sd">        z_{21} = q_{2}, z_{22} = q_{2}^{&#39;}</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : matrix of size 4</span>
+<span class="sd">        initial conditions. System state [z11, z12, z21, z22]</span>
+<span class="sd">    t : float()</span>
+<span class="sd">        time step at which the Force is computed.</span>
+<span class="sd">    D : float()</span>
+<span class="sd">        damping of the system.</span>
+<span class="sd">    mue : float()</span>
+<span class="sd">        relative mass of the system m2/m1</span>
+<span class="sd">    kappa : float()</span>
+<span class="sd">        relative restoring force of the system c2/c1</span>
+<span class="sd">    delta : float()</span>
+<span class="sd">        relative damping of the system d2/d1</span>
+<span class="sd">    F : Force class</span>
+<span class="sd">        Abstract class for the force excitation at the mass.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ([dz11, dz12], [dz21, dz22]) : Derivatives of the duffing equation.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 10, 100)</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; (dz1, dz2) = dg.duffing_fp(t=0, y=(0, 0), D=0.05, c_nlin=.2, z=F)</span>
+<span class="sd">    &gt;&gt;&gt; print((dz1, dz2))</span>
+<span class="sd">    (0, 0.0)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z11</span><span class="p">,</span> <span class="n">z12</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z21</span><span class="p">,</span> <span class="n">z22</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    
+    <span class="n">dz11</span> <span class="o">=</span> <span class="n">z12</span>
+    <span class="n">dz21</span> <span class="o">=</span> <span class="n">z22</span>
+    
+    <span class="n">dz12</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="n">delta</span><span class="p">)</span><span class="o">*</span><span class="n">z12</span> <span class="o">-</span> <span class="n">delta</span><span class="o">*</span><span class="n">z22</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">kappa</span><span class="p">)</span><span class="o">*</span><span class="n">z11</span> <span class="o">+</span> <span class="n">kappa</span><span class="o">*</span><span class="n">z21</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">comp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">dz22</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">mue</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">D</span><span class="o">*</span><span class="n">delta</span><span class="o">*</span><span class="p">(</span><span class="n">z12</span> <span class="o">-</span> <span class="n">z22</span><span class="p">)</span> <span class="o">+</span> <span class="n">kappa</span><span class="o">*</span><span class="p">(</span><span class="n">z11</span> <span class="o">-</span> <span class="n">z21</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">dz11</span><span class="p">,</span> <span class="n">dz12</span><span class="p">,</span> <span class="n">dz21</span><span class="p">,</span> <span class="n">dz22</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vd_Pol">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.vd_Pol">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">vd_Pol</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">F</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    van der Pol oscillation as described in</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Van_der_Pol_oscillator</span>
+
+<span class="sd">    .. math:: dz1 = z2</span>
+<span class="sd">    .. math:: dz2 = epsilon \cdot (1 - z1^2) \cdot z2 - z1 + F.comp(t)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array of size 2</span>
+<span class="sd">        initial conditions.</span>
+<span class="sd">    t : float()</span>
+<span class="sd">        time step at which the Force is computed.</span>
+<span class="sd">    epsilon : float()</span>
+<span class="sd">        indicating the nonlinearity and the strength of the damping.</span>
+<span class="sd">    F : Force class</span>
+<span class="sd">        forcing term of van der Pol equation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (dz1, dz2) : Derivatives of the duffing equation.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import softsensor.data_gen as dg</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; time = np.linspace(0, 10, 100)</span>
+<span class="sd">    &gt;&gt;&gt; F = dg.Zero(time)</span>
+<span class="sd">    &gt;&gt;&gt; (dz1, dz2) = dg.vd_Pol(t=0, y=(0, 0), epsilon=1, F=F)</span>
+<span class="sd">    &gt;&gt;&gt; print((dz1, dz2))</span>
+<span class="sd">    (0, 0)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">z2</span> <span class="o">=</span> <span class="n">z2</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dz1dt</span> <span class="o">=</span> <span class="n">z2</span>
+    <span class="n">dz2dt</span> <span class="o">=</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z1</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">comp</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">dz1dt</span><span class="p">,</span> <span class="n">dz2dt</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sine">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">sine</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate Sine Wave</span>
+<span class="sd">    </span>
+<span class="sd">    .. math:: gamma \cdot sin(w_0 \cdot time)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        time array at which the sines are computed.</span>
+<span class="sd">    gamma : float(), optional</span>
+<span class="sd">        amplification sine wave. The default is 1.</span>
+<span class="sd">    w0 : float(), optional</span>
+<span class="sd">        frequency of sine wave. The default is 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">w0</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w0</span> <span class="o">=</span> <span class="n">w0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="sine.comp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine.comp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute sine at specific timestep</span>
+<span class="sd">        </span>
+<span class="sd">        .. math:: gamma \cdot sin(w_0 \cdot t)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute sine at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            sine at the specific time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w0</span><span class="o">*</span><span class="n">t</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sine.comp_dt">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine.comp_dt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute derivative of the sine wave at specific timestep</span>
+<span class="sd">        </span>
+<span class="sd">        .. math:: gamma \cdot w_0 \cdot cos(w_0 \cdot t)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute derivative at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            derivative at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w0</span><span class="o">*</span><span class="n">t</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="sine_2">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine_2">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">sine_2</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate the addition of two sine oscillation</span>
+<span class="sd">    </span>
+<span class="sd">    .. math:: gamma1 \cdot sin(w_{01} \cdot time) + gamma2 \cdot sin(w_{02} \cdot time)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        time array at which the sines are computed.</span>
+<span class="sd">    gamma1 : float(), optional</span>
+<span class="sd">        amplification of first sine wave. The default is 1.</span>
+<span class="sd">    w01 : float(), optional</span>
+<span class="sd">        frequency of first sine wave. The default is 1.</span>
+<span class="sd">    gamma2 : float(), optional</span>
+<span class="sd">        amplification of second sine wave. The default is 0.5.</span>
+<span class="sd">    w02 : float(), optional</span>
+<span class="sd">        frequency of second sine wave. The default is 26.4.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">gamma1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">w01</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gamma2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">w02</span><span class="o">=</span><span class="mf">26.4</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma1</span> <span class="o">=</span> <span class="n">gamma1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w01</span> <span class="o">=</span> <span class="n">w01</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma2</span> <span class="o">=</span> <span class="n">gamma2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w02</span> <span class="o">=</span> <span class="n">w02</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="n">F1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w01</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">F2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w02</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="n">dF1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w01</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">dF2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w02</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w02</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">F1</span> <span class="o">+</span> <span class="n">F2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dF</span> <span class="o">=</span> <span class="p">(</span><span class="n">dF1</span> <span class="o">+</span> <span class="n">dF2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="sine_2.comp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine_2.comp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute sines at specific timestep</span>
+<span class="sd">        </span>
+<span class="sd">        .. math:: gamma1 \cdot sin(w_{01} \cdot t) + gamma2 \cdot sin(w_{02} \cdot t)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute sines at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            sines at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w01</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gamma2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w02</span><span class="o">*</span><span class="n">t</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="sine_2.comp_dt">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sine_2.comp_dt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute derivative of sine waves at specific timestep</span>
+<span class="sd">        </span>
+<span class="sd">        .. math:: gamma1 \cdot w_{01} \cdot cos(w_{01} \cdot t) + gamma2 \cdot w_{02} \cdot cos(w_{02} \cdot t)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute derivative at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            derivative at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w01</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gamma2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w02</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w02</span><span class="o">*</span><span class="n">t</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="sweep">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sweep">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">sweep</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define sweep signal and derivative based on the scipy implementation:</span>
+<span class="sd">    https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.chirp.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        time array at which the sweep is computed.</span>
+<span class="sd">    f0 : float()</span>
+<span class="sd">        start frequency.</span>
+<span class="sd">    f1 : float()</span>
+<span class="sd">        stop frequency.</span>
+<span class="sd">    t1 : float()</span>
+<span class="sd">        time at which end frequency is met.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Kind of frequency sweep. The default is &#39;linear&#39;. options are:</span>
+<span class="sd">        [‘linear’, ‘quadratic’, ‘logarithmic’, ‘hyperbolic’]</span>
+<span class="sd">    direction : str, optional</span>
+<span class="sd">        either &#39;up&#39; or &#39;down&#39;. The default is &#39;up&#39;.</span>
+<span class="sd">    f : float(), optional</span>
+<span class="sd">        Amplification factor of the sweep. The default is 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f0</span> <span class="o">=</span> <span class="n">f0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f1</span> <span class="o">=</span> <span class="n">f1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t1</span> <span class="o">=</span> <span class="n">t1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">*</span><span class="n">chirp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+                                  <span class="n">t1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">*</span><span class="n">chirp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span>
+                                  <span class="n">t1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span> <span class="o">=</span> <span class="n">IUS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="sweep.comp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sweep.comp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute sweep at specific timestep</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute sweep at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            sweep at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;up&#39;</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">*</span> <span class="n">chirp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span> <span class="n">t1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span>
+                               <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;down&#39;</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">*</span><span class="n">chirp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span> <span class="n">t1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t1</span><span class="p">,</span>
+                             <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="sweep.comp_dt">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.sweep.comp_dt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute derivative of the sweep at specific timestep</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute derivative at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            derivative at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="white_noise">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.white_noise">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">white_noise</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate White Noise signal for a defined time with numpy.random.randn</span>
+<span class="sd">    method: </span>
+<span class="sd">    https://numpy.org/doc/stable/reference/random/generated/numpy.random.randn.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        time array at which the white noise is computed.</span>
+<span class="sd">    f : float(), optional</span>
+<span class="sd">        Amplification factor of the white noise. The default is 1.</span>
+<span class="sd">    seed : int, optional</span>
+<span class="sd">        Seed for the random number generator to ensure reproducibility.</span>
+<span class="sd">        The default is None, i.e. no seed is provided.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">temp_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">seed</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">temp_F</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">butter</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">],</span> <span class="n">btype</span><span class="o">=</span><span class="s1">&#39;bandpass&#39;</span><span class="p">)</span>
+        <span class="n">temp_dF</span> <span class="o">=</span> <span class="n">filtfilt</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">temp_F</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpol_func</span> <span class="o">=</span> <span class="n">IUS</span><span class="p">(</span><span class="n">temp_t</span><span class="p">,</span> <span class="n">temp_F</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpol_func_dt</span> <span class="o">=</span> <span class="n">IUS</span><span class="p">(</span><span class="n">temp_t</span><span class="p">,</span> <span class="n">temp_dF</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="n">temp_F</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpol_func_dt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="white_noise.comp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.white_noise.comp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute white noise at specific timestep</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute white noise at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            white noise at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpol_func</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="white_noise.comp_dt">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.white_noise.comp_dt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute derivative of white noise at specific timestep. Derivation is</span>
+<span class="sd">        realised via interpolatable splines</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step to compute derivative at.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : float()</span>
+<span class="sd">            derivative at the time step.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpol_func_dt</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="Zero">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.Zero">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Zero</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate an array of Zeros as input Force</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : array</span>
+<span class="sd">        an array of the same length as the array of zeros</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Zero.comp">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.Zero.comp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give back zero</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            zero.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="Zero.comp_dt">
+<a class="viewcode-back" href="../../data_gen.html#softsensor.data_gen.Zero.comp_dt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comp_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give back zero</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : float()</span>
+<span class="sd">            time step.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            zero.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

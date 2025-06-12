@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluation Tools &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34f4cfc2"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Visualization Methods" href="visualization.html" />
+    <link rel="prev" title="Uncertainty Calibration" href="calibration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html#postprocessing">Postprocessing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homoscedastic_model.html">Homoscedastic Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">Uncertainty Calibration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Evaluation Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_batch"><code class="docutils literal notranslate"><span class="pre">comp_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_error"><code class="docutils literal notranslate"><span class="pre">comp_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_mean_metrics"><code class="docutils literal notranslate"><span class="pre">comp_mean_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_metrics"><code class="docutils literal notranslate"><span class="pre">comp_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_pred"><code class="docutils literal notranslate"><span class="pre">comp_pred()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.comp_psd"><code class="docutils literal notranslate"><span class="pre">comp_psd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#softsensor.eval_tools.load_model"><code class="docutils literal notranslate"><span class="pre">load_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">Visualization Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html#frequency-methods">Frequency Methods</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">Data Preprocessing</a></li>
+      <li class="breadcrumb-item active">Evaluation Tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/eval_tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-softsensor.eval_tools">
+<span id="evaluation-tools"></span><h1>Evaluation Tools<a class="headerlink" href="#module-softsensor.eval_tools" title="Link to this heading"></a></h1>
+<p>Created on Tue May  3 17:41:37 2022</p>
+<p>&#64;author: WET2RNG</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_batch">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_analysis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_batch" title="Link to this definition"></a></dt>
+<dd><p>Compute the prediction for a list of models and tracks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>models</em>) – list of models for computation. MOdels need to be defined in _model_pred.</p></li>
+<li><p><strong>data_handle</strong> (<em>Meas_handling class</em>) – Meas handling class that has internal functions to get Dataloader and
+Dataset.</p></li>
+<li><p><strong>tracks</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Names of the tracks to predict.</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Names that are added to the column name.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – device for computation. The default is ‘cpu’.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Batch size for models where batching is possible. The default is 256.</p></li>
+<li><p><strong>reduce</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, reduce the epistemic and aleatoric uncertainty to a total one.
+Only relevant for ensembles and Evidence Estimation ARNN. The default is False.</p></li>
+<li><p><strong>sens_analysis</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – <p>Dictionary that defines if and how a sensitivity analysis is computed for the prediction.
+If key ‘method’ is valid, the sensitivity analysis is computed either ‘gradient’ or ‘perturbation’-based.
+If key ‘comp’ is given &amp; True, gradients of the prediction w.r.t. inputs are computed.
+If key ‘plot’ is given &amp; True, postprocessing results of the gradients are visualized.
+If key ‘sens_length’ is given, the prediction is only computed for the n ‘sens_length’</p>
+<blockquote>
+<div><p>samples in the time series.</p>
+</div></blockquote>
+<p>The default is None, i.e. no sensitivity analysis is computed.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pred_df</strong> – pred_dfs with additional columns for the predictions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of pd.Dataframe</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Define Data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;inp1&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">101</span><span class="p">),</span>
+<span class="go">         &#39;inp2&#39;: np.random.randn(101),</span>
+<span class="go">         &#39;out&#39;: np.random.randn(101)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">Meas_handling</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">t</span><span class="p">)],</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">],</span>
+<span class="go">                               [&#39;inp1&#39;, &#39;inp2&#39;], [&#39;out&#39;], fs=100)</span>
+</pre></div>
+</div>
+<p>Compute Prediction</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_batch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.autoreg_models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;input_channels&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="go">              &#39;pred_size&#39;: 1,</span>
+<span class="go">              &#39;window_size&#39;: 10,</span>
+<span class="go">              &#39;rnn_window&#39;: 10}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">softsensor</span><span class="o">.</span><span class="n">autoreg_models</span><span class="o">.</span><span class="n">ARNN</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataframes</span> <span class="o">=</span> <span class="n">comp_batch</span><span class="p">([</span><span class="n">m</span><span class="p">],</span> <span class="n">handler</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">train_names</span><span class="p">,</span>
+<span class="go">                            [&#39;ARNN&#39;], device=&#39;cpu&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;inp1&#39;, &#39;inp2&#39;, &#39;out&#39;, &#39;out_ARNN&#39;]</span>
+</pre></div>
+</div>
+<p>Compute Prediciton wth uncertainty</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">softsensor.homoscedastic_model</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">vars</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">fit_homoscedastic_var</span><span class="p">(</span><span class="n">dataframes</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;out_ARNN&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">homosc_m</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">HomoscedasticModel</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">vars</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sepmve</span> <span class="o">=</span> <span class="n">softsensor</span><span class="o">.</span><span class="n">autoreg_models</span><span class="o">.</span><span class="n">SeparateMVEARNN</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">,</span><span class="n">mean_model</span><span class="o">=</span><span class="n">m</span><span class="p">,</span>
+<span class="go">                                                       var_hidden_size=[16, 8])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataframes</span> <span class="o">=</span> <span class="n">comp_batch</span><span class="p">([</span><span class="n">m</span><span class="p">,</span> <span class="n">homosc_m</span><span class="p">,</span> <span class="n">sepmve</span><span class="p">],</span> <span class="n">handler</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">train_names</span><span class="p">,</span>
+<span class="go">                            [&#39;ARNN&#39;, &#39;Homosc_ARNN&#39;, &#39;SepMVE&#39;], device=&#39;cpu&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;inp1&#39;,&#39;inp2&#39;,&#39;out&#39;,&#39;out_ARNN&#39;,&#39;out_Homosc_ARNN&#39;,&#39;out_Homosc_ARNN_var&#39;,&#39;out_SepMVE&#39;,&#39;out_SepMVE_var&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_error">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pred']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['MSE']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_error" title="Link to this definition"></a></dt>
+<dd><p>Computes the Error from a df with specific Names in the column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_df</strong> (<em>pandas DataFrame</em>) – DataFrame that must include the original output and the prediction
+column name of the prediction must look like: ‘out_sens_name’.</p></li>
+<li><p><strong>out_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – column names to observe</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – sampling rate of the df for psd error computation.</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – list of names that are appended to the original column.
+The default is [‘pred’].</p></li>
+<li><p><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Metrics to Evaluate in Time domain [‘MSE’, ‘MAE’, ‘MAPE’].
+The default is [‘MSE’].</p></li>
+<li><p><strong>freq_range</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – range in which the psd error is computed. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result_df</strong> – DataFrame with errors as index and names as columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Based on the examples in comp_batch. Prediction of point Metrics</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_error</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comp_error</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out_sens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;Homosc_ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;SepMVE&#39;</span><span class="p">],</span>
+<span class="go">               metrics=[&#39;MSE&#39;, &#39;MAE&#39;], freq_range=None)</span>
+<span class="go">         ARNN  Homosc_ARNN    SepMVE</span>
+<span class="go">out_MSE  1.297152     1.297152  1.297152</span>
+<span class="go">out_MAE  0.924926     0.924926  0.924926</span>
+</pre></div>
+</div>
+<p>Prediction of Distributional Metrics</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_error</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out_sens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Homosc_ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;SepMVE&#39;</span><span class="p">],</span>
+<span class="go">               metrics=[&#39;NLL&#39;, &#39;ECE&#39;], freq_range=None)</span>
+<span class="go">         Homosc_ARNN    SepMVE</span>
+<span class="go">out_NLL     0.630110  0.678553</span>
+<span class="go">out_ECE     0.023137  0.083637</span>
+</pre></div>
+</div>
+<p>Prediction of Statistical Metrics</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_error</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out_sens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;Homosc_ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;SepMVE&#39;</span><span class="p">],</span>
+<span class="go">               metrics=[&#39;JSD&#39;, &#39;Wasserstein&#39;], freq_range=None)</span>
+<span class="go">                     ARNN  Homosc_ARNN    SepMVE</span>
+<span class="go">out_JSD          0.680494     0.680494  0.680494</span>
+<span class="go">out_Wasserstein  0.073267     0.073267  0.073267</span>
+</pre></div>
+</div>
+<p>Prediction of Metrics in frequency domain (PSD)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_error</span><span class="p">(</span><span class="n">dataframes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out_sens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;Homosc_ARNN&#39;</span><span class="p">,</span> <span class="s1">&#39;SepMVE&#39;</span><span class="p">],</span>
+<span class="go">               metrics=None, freq_metrics=[&#39;MSLE&#39;], fs=100, freq_range=(5, 25))</span>
+<span class="go">                  ARNN  Homosc_ARNN    SepMVE</span>
+<span class="go">out_PSD_MSLE  0.000864     0.000864  0.000864</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_mean_metrics">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_mean_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_mean_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_mean_metrics" title="Link to this definition"></a></dt>
+<dd><p>Compute the mean metric scores of models on the test tracks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>nn.Module</em><em>]</em>) – Torch models to evaluate</p></li>
+<li><p><strong>data_handle</strong> (<em>Datahandle</em>) – Datahandle that contains track</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Sampling rate of the df for psd error computation.</p></li>
+<li><p><strong>model_names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>string</em><em>]</em>) – Names of the models</p></li>
+<li><p><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>string</em><em>]</em>) – Names of the metrics to evaluate</p></li>
+<li><p><strong>freq_range</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – range in which the psd error is computed. The default is None.</p></li>
+<li><p><strong>reduce</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True we compute the mean scores over all output variables. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>scores_df</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a>[<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a>, <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_metrics">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pred']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_metrics" title="Link to this definition"></a></dt>
+<dd><p>Compute the Errors in Time domain</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_df</strong> (<em>pandas DataFrame</em>) – <p>DataFrame that must include the original output and the prediction
+column name of the prediction must look like: ‘out_sens_name’.</p>
+<dl class="simple">
+<dt>if metric is uncertainty metric:</dt><dd><p>column name of the uncertainty must look like: ‘uncertainty_{out_sens}_{name}’.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>out_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – column names to observe</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – list of names that are appended to the original column.
+The default is [‘pred’].</p></li>
+<li><p><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Metrics to Evaluate in Time domain [‘MSE’, ‘MAE’, ‘MAPE’].
+The default is [‘MSE’].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matrix of shape [len(out_sens), len(names)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_pred">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_pred</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sens_analysis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_pred"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_pred" title="Link to this definition"></a></dt>
+<dd><p>Computes the predictions for given a DataFrame and a Track for the specific
+models</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>Models</em>) – DESCRIPTION.</p></li>
+<li><p><strong>data_handle</strong> (<em>data handle</em><em> of </em><em>the Meas Handling class</em>) – data handle that should include the track.</p></li>
+<li><p><strong>track</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the track to observe.</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>str.</em>) – str should include ‘NARX’ if its a NARX model, ‘AR’ if its an
+autoregressive model and ‘RNN’ if is an Recurrent Network</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Batch size for models where batching is possible. The default is 256.</p></li>
+<li><p><strong>reduce</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, reduce the epistemic and aleatoric uncertainty to a total one.
+Only relevant for ensembles and Evidence Estimation ARNN. The default is False.</p></li>
+<li><p><strong>sens_analysis</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – <p>Dictionary that defines if and how a sensitivity analysis is computed for the prediction.
+If key ‘method’ is valid, the sensitivity analysis is computed either ‘gradient’ or ‘perturbation’-based.
+If key ‘comp’ is given &amp; True, gradients of the prediction w.r.t. inputs are computed.
+If key ‘plot’ is given &amp; True, postprocessing results of the gradients are visualized.
+If key ‘sens_length’ is given, the prediction is only computed for the n ‘sens_length’</p>
+<blockquote>
+<div><p>samples in the time series.</p>
+</div></blockquote>
+<p>The default is None, i.e. no sensitivity analysis is computed.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>pred_df</strong> (<em>pd.DataFrame</em>) – New columns are Added for each Model prediction.</p></li>
+<li><p><em>if comp_sens</em> –</p>
+<dl class="simple">
+<dt>sens_dict<span class="classifier">dict</span></dt><dd><p>Additional list of dictionaries with the sensitivity analysis results for each model.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xlow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>       <span class="c1"># 100Hz Signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xhigh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">3000</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>     <span class="c1"># 3000Hz Signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">:</span> <span class="n">xlow</span> <span class="o">+</span> <span class="n">xhigh</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="s1">&#39;cos_inp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="s1">&#39;out&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">list_of_df</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_df</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="n">xlow</span> <span class="o">+</span> <span class="n">xhigh</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="s1">&#39;cos_inp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="s1">&#39;out&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_df</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">test_df</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_handle</span> <span class="o">=</span> <span class="n">Meas_handling</span><span class="p">(</span><span class="n">list_of_df</span><span class="p">,</span> <span class="n">train_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sine1&#39;</span><span class="p">,</span> <span class="s1">&#39;sine2&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                        <span class="n">input_sensors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sine_inp&#39;</span><span class="p">,</span> <span class="s1">&#39;cos_inp&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                        <span class="n">output_sensors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="n">fs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                        <span class="n">test_dfs</span><span class="o">=</span><span class="n">test_df</span><span class="p">,</span> <span class="n">test_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ARNN</span><span class="p">(</span><span class="n">input_channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pred_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rnn_window</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pred_df</span> <span class="o">=</span> <span class="n">comp_pred</span><span class="p">([</span><span class="n">model</span><span class="p">],</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">])</span> <span class="c1"># without sensitivity analysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pred_df</span><span class="p">,</span> <span class="n">sens_dict</span> <span class="o">=</span> <span class="n">comp_pred</span><span class="p">([</span><span class="n">model</span><span class="p">],</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARNN&#39;</span><span class="p">],</span> <span class="n">sens_analysis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;gradient&#39;</span><span class="p">,</span> <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;comp&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;plot&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span> <span class="c1"># with sensitivity analysis</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.comp_psd">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">comp_psd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['pred']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#comp_psd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.comp_psd" title="Link to this definition"></a></dt>
+<dd><p>Compute the MLPE of the PSD’s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_df</strong> (<em>pandas DataFrame</em>) – DataFrame that must include the original output and the prediction
+column name of the prediction must look like: ‘out_sens_name’.</p></li>
+<li><p><strong>out_sens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – column names to observe</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – sampling rate of the df for psd error computation.</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – list of names that are appended to the original column.
+The default is [‘pred’].</p></li>
+<li><p><strong>freq_range</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – range in which the psd error is computed. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>psd_error</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matrix of shape [len(out_sens), len(names)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="softsensor.eval_tools.load_model">
+<span class="sig-prename descclassname"><span class="pre">softsensor.eval_tools.</span></span><span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/softsensor/eval_tools.html#load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#softsensor.eval_tools.load_model" title="Link to this definition"></a></dt>
+<dd><p>load function of models
+:param Type: Type of Network [‘CNN_DNN’, ‘NARX’, ‘CNN_NARX’, ‘AR_CNN’, ‘RNN’].
+:type Type: str
+:param path: path of the Model
+:type path: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>model</strong> (<em>nn.Model with nn.Modules</em>)</p></li>
+<li><p><strong>result_df</strong> (<em>pandas.DataFrame</em>) – Results of the hyperparameter optimization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="calibration.html" class="btn btn-neutral float-left" title="Uncertainty Calibration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Visualization Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
