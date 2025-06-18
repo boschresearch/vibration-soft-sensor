@@ -264,6 +264,3 @@ def test_tf_mimo_dof_2():
             df_frf["inp_" + str(inp) + "_out_" + str(out)] = np.log10(abs(frf))
     #  Compare Data
     pd.testing.assert_frame_equal(df_tf, df_frf, rtol=1e-2)
-
-
-# %%

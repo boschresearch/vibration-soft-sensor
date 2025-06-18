@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+# %%
 from collections import defaultdict
-
 import numpy as np
 import pandas as pd
 import scipy.stats as st
@@ -10,7 +10,6 @@ from sklearn.metrics import r2_score
 from scipy.stats import rv_histogram, rv_continuous
 from scipy.interpolate import CubicSpline
 from pylife.stress.timesignal import psd_df
-from softsensor.frequency_methods import psd_moment
 
 """
 Methods to compute metrics with the same argument structure as nn.GaussianNLLLoss()
@@ -640,9 +639,9 @@ class WassersteinDistance:
 
         self.psd = psd[psd.index > 0]
 
-        moment_0 = psd_moment(self.psd, n_moment=0)
+        moment_0 = np.trapezoid(self.psd.values, self.psd.index.values, axis=0)
         self.NPSD = (
-            np.mean(self.psd.index.diff().dropna()) * self.psd / moment_0.values
+            np.mean(self.psd.index.diff().dropna()) * self.psd / moment_0
         )  # scaled to frequency delta and area
 
         ind = self.NPSD.index.values

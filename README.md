@@ -57,10 +57,13 @@ The library offers multiple sensitivity analysis methods:
 ```bash
 # Using pip
 pip install softsensor
+```
 
+```bash
 # Using poetry
 poetry add softsensor
-
+```
+```bash
 # Using uv
 uv pip install softsensor
 ```
@@ -72,31 +75,35 @@ uv pip install softsensor
 git clone https://github.com/boschresearch/vibration-soft-sensor.git
 cd vibration-soft-sensor
 ```
-
+create virtual local environment
 ```bash
-# create virtual local environment
-
 # Using conda
 conda create -p ./.venv
 conda activate ./.venv
-
+`````
+```bash
 # Using poetry
 poetry env
 poetry shell
-
+```
+```bash
 # Using uv
 uv venv .venv
 .venv/bin/activate
 ```
 
+install development dependencies
 ```bash
-# install development dependencies
 # Using pip
 pip install -e .[dev]
+```
 
+```bash
 # Using poetry
 poetry install --with dev
+```
 
+```bash
 # Using uv
 uv pip install -e .[dev]
 ```
