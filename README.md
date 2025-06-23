@@ -2,7 +2,7 @@
 
 [![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen)](https://boschresearch.github.io/vibration-soft-sensor/)
 [![PyPI](https://img.shields.io/pypi/v/softsensor)](https://pypi.org/project/softsensor/)
-[![Testsuite](https://github.com/boschresearch/softsensor/actions/workflows/pytest.yml/badge.svg)](https://github.com/boschresearch/softsensor/actions/workflows/pytest.yml)
+[![Testsuite](https://github.com/boschresearch/vibration-soft-sensor/actions/workflows/pytest.yml/badge.svg)](https://github.com/boschresearch/vibration-soft-sensor/actions/workflows/pytest.yml)
 
 A general toolbox for the development of vibrational softsensors. You can find a lot of functionality for data  preprocessing, model training and evaluation for linear and non linear methods.
 We have also adapt the general approach to a variety of signal types.
