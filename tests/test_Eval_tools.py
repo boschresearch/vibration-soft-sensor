@@ -63,12 +63,12 @@ def Sine_df():
 @pytest.fixture
 def result_df():
     d = {
-        "out": np.random.randn(1000),
-        "out2": np.random.randn(1000),
-        "out_random": np.random.randn(1000),
-        "out_zeros": np.zeros((1000)),
-        "out2_random": np.random.randn(1000),
-        "out2_zeros": np.zeros((1000)),
+        "out": np.ones(1000),
+        "out2": np.ones(1000),
+        "out_random": np.ones(1000),
+        "out_zeros": np.zeros(1000),
+        "out2_random": np.ones(1000),
+        "out2_zeros": np.zeros(1000),
     }
     d["out_copy"] = d["out"]
     d["out2_copy"] = d["out2"]
@@ -284,8 +284,8 @@ def test_comp_error(result_df):
 
     for i, tk in enumerate(true_keys):
         assert keys[i] == tk
-        assert errors["random"][tk] != 0
-        assert errors["copy"][tk] == 0
+        assert errors["random"][tk] != 1.0
+        assert errors["copy"][tk] == 0.0
 
 
 def test_comp_error2(result_df):

@@ -30,7 +30,6 @@ jobs:
         run: uv sync
       - name: Unit tests
         run: |
-          uv run pytest || exit_code_tests=$?
           uv run coverage run -m pytest
           output=$(uv run coverage report -m)
           exit_code_coverage=$?
