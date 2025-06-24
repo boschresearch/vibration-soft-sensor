@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,14 @@ jobs:
 
       - name: Install dependencies
         run: uv sync
-      - name: Unit tests
+
+      - name: Unit tests ubuntu-latest
+        if: runner.os != 'Windows'
+        run: |
+          uv run coverage run -m pytest
+
+      - name: Unit tests windows-latest
+        if: runner.os == 'Windows'
         shell: bash
         run: |
           uv run coverage run -m pytest
