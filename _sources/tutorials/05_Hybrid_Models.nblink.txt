@@ -1,0 +1,4 @@
+{
+    "path": "../../tutorials/05_Hybrid_Modelling.ipynb",
+	"extra-media": ["../../tutorials/data"]
+}
