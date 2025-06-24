@@ -29,6 +29,7 @@ jobs:
       - name: Install dependencies
         run: uv sync
       - name: Unit tests
+        shell: bash
         run: |
           uv run coverage run -m pytest
           output=$(uv run coverage report -m)
@@ -44,6 +45,6 @@ jobs:
           echo '<pre>' >> $GITHUB_STEP_SUMMARY
           echo "$output" | head -n 100 >> $GITHUB_STEP_SUMMARY
           echo '</pre>' >> $GITHUB_STEP_SUMMARY
-          if [ $exit_code_tests -ne 0 ] || [ $exit_code_coverage -ne 0 ]; then
+          if [ $exit_code_coverage -ne 0 ]; then
             exit 1
           fi
