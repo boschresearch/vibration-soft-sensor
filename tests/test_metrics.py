@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
+import pytest
 from pandas.testing import assert_frame_equal
 
 from softsensor.metrics import *
@@ -183,3 +184,37 @@ def test_wasserstein_fourier_distance():
     wd = WassersteinDistance(signal)
     wsf_distance = wd.wasserstein_fourier_distance(p=2)
     assert np.isclose(wsf_distance.iloc[0, 1], 2.0, atol=1e-2)
+
+
+def _sine_frame(freqs, T=8, N=256):
+    t = np.linspace(0, T, N + 1)
+    return pd.DataFrame(
+        {f"{f}": np.sin(2 * np.pi * f * t) for f in freqs},
+        index=pd.Index(t, name="time"),
+    )
+
+
+def test_wasserstein_fourier_distance_log():
+    wd = WassersteinDistance(_sine_frame([2, 4]))
+    dist = wd.wasserstein_fourier_distance_log(p=2)
+    assert list(dist.columns) == ["2", "4"]
+    assert np.isclose(dist.iloc[0, 0], 0.0)
+    assert np.isclose(dist.iloc[0, 1], dist.iloc[1, 0])
+    assert np.isclose(dist.iloc[0, 1], np.log10(2), atol=1e-2)
+
+    dist_oct = wd.wasserstein_fourier_distance_log(p=2, base=2)
+    assert np.isclose(dist_oct.iloc[0, 1], 1.0, atol=5e-2)
+
+    # scale invariance: (4, 8) Hz has the same log distance, but twice the linear one
+    wd2 = WassersteinDistance(_sine_frame([4, 8], T=4))
+    dist2 = wd2.wasserstein_fourier_distance_log(p=2)
+    assert np.isclose(dist2.iloc[0, 1], dist.iloc[0, 1], atol=1e-2)
+    assert np.isclose(wd2.wasserstein_fourier_distance(p=2).iloc[0, 1], 4.0, atol=5e-2)
+
+    # f_min clips the low-frequency quantiles and must be positive
+    clipped = wd.wasserstein_fourier_distance_log(p=2, f_min=3.0)
+    assert clipped.iloc[0, 1] < dist.iloc[0, 1]
+    with pytest.raises(ValueError):
+        wd.wasserstein_fourier_distance_log(f_min=0)
+    with pytest.raises(ValueError):
+        wd.wasserstein_fourier_distance_log(base=1)
