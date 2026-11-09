@@ -552,6 +552,8 @@ class WassersteinDistance:
         cdf: Calculate the cumulative density function of the data.
         inverse_cdf: Calculate the inverse cumulative density function of the data.
         wasserstein_distance_p: Calculate the p-th Wasserstein distance.
+        wasserstein_fourier_distance: Calculate the Wasserstein Fourier distance (linear frequency).
+        wasserstein_fourier_distance_log: Calculate the Wasserstein Fourier distance (log frequency).
     """
 
     def __init__(self, data, weights=None):
@@ -746,3 +748,53 @@ class WassersteinDistance:
         inverse_cdf = self.wsf_inverse_cdf(n_points=1000).dropna()
         wsf_distance = distance_calc(inverse_cdf, p)
         return wsf_distance
+
+    def wsf_inverse_cdf_log(self, n_points=1000, base=10, f_min=None):
+        """
+        Compute the inverse CDF of the normalized PSD on a logarithmic frequency axis.
+
+        Since the logarithm is monotone, the quantile function of the log-frequency
+        distribution is the logarithm of the quantile function on the linear frequency axis.
+
+        Parameters:
+            n_points (int, optional): Number of quantile points. Defaults to 1000.
+            base (float, optional): Base of the logarithm (10 -> decades, 2 -> octaves).
+                Defaults to 10.
+            f_min (float, optional): Lower frequency limit (> 0). Quantiles below
+                f_min are clipped to f_min. Defaults to None (lowest non-DC bin).
+
+        Returns:
+            pd.DataFrame: Log-frequency quantiles for each column, indexed by probability.
+        """
+        if base <= 0 or base == 1:
+            raise ValueError("base must be positive and different from 1.")
+        if f_min is not None and f_min <= 0:
+            raise ValueError("f_min must be positive.")
+        inverse_cdf = self.wsf_inverse_cdf(n_points=n_points)
+        if f_min is not None:
+            inverse_cdf = inverse_cdf.clip(lower=f_min)
+        return np.log(inverse_cdf) / np.log(base)
+
+    def wasserstein_fourier_distance_log(self, p=2, n_points=1000, base=10, f_min=None):
+        """
+        Compute the Wasserstein Fourier distance on a logarithmic frequency axis.
+
+        The cost is |log f1 - log f2|^p, i.e. relative (ratio) frequency shifts are
+        measured instead of absolute shifts in Hz. The distance is invariant to a common
+        scaling of the frequency axis. The DC component is excluded.
+
+        Parameters:
+            p (int, optional): The order of the norm used in the distance calculation.
+                Defaults to 2.
+            n_points (int, optional): Number of quantile points. Defaults to 1000.
+            base (float, optional): Base of the logarithm (10 -> decades, 2 -> octaves).
+                Defaults to 10.
+            f_min (float, optional): Lower frequency limit (> 0). Defaults to None.
+
+        Returns:
+            pd.DataFrame: The computed pairwise log-frequency Wasserstein Fourier distances.
+        """
+        inverse_cdf = self.wsf_inverse_cdf_log(
+            n_points=n_points, base=base, f_min=f_min
+        ).dropna()
+        return distance_calc(inverse_cdf, p)
