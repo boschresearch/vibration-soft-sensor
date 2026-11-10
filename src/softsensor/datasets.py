@@ -124,13 +124,13 @@ class SlidingWindow(Dataset):
 
         # Read in important data as tensors
         self.data_y = df[output_columns]
-        self.data_y = torch.transpose(torch.tensor(self.data_y.values), 0, 1)
+        self.data_y = torch.transpose(torch.tensor(self.data_y.values.copy()), 0, 1)
         self.data_x = df[input_columns]
-        self.data_x = torch.transpose(torch.tensor(self.data_x.values), 0, 1)
+        self.data_x = torch.transpose(torch.tensor(self.data_x.values.copy()), 0, 1)
         
         if self.pre:
             self.data_y_pre = df[pre_comp]
-            self.data_y_pre = torch.transpose(torch.tensor(self.data_y_pre.values), 0, 1)
+            self.data_y_pre = torch.transpose(torch.tensor(self.data_y_pre.values.copy()), 0, 1)
         else:
             self.data_y_pre = None
 

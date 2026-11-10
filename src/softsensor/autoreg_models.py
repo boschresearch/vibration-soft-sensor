@@ -1865,7 +1865,7 @@ def _comp_perturb_sens(model, inputs, pred, perturb_size=10, std_dev=0.2, correl
         
         if correlated:
             auto_cor = auto_corrs[ch][win_size-1-pos : 2*win_size-1-pos]
-            zero_intersecs = np.where(np.diff(np.sign(auto_cor)) != 0)[0]
+            zero_intersecs = np.where(np.diff(np.sign(auto_cor.numpy())) != 0)[0]
             p = np.min(np.abs(zero_intersecs - pos)) if len(zero_intersecs) > 0 else win_size-idx
             start, stop = max(0, pos-p), min(pos+p+1, win_size)
             decay = auto_cor[start:stop]

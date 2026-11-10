@@ -6,6 +6,7 @@ Created on Wes Aug 26 16:08:00 2022
 """
 
 import numpy as np
+import pytest
 import pandas as pd
 from softsensor.data_gen import white_noise, sine, get_academic_data
 from sklearn.metrics import mean_squared_error as mse
@@ -62,7 +63,8 @@ def test_arx_duffing():
 
     order = (2, 6)
     arx = ARX(order=order)
-    arx.fit(train_df, inp_sens, out_sens, verbose=True)
+    with pytest.warns(UserWarning, match='unstable'):
+        arx.fit(train_df, inp_sens, out_sens, verbose=True)
     assert len(arx.parameters) == order[0] + order[1] * len(inp_sens)
 
     prediction = arx.prediction(test_df)

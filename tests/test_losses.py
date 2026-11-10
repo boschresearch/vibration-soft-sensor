@@ -53,7 +53,7 @@ def test_pinball_loss():
     assert not loss.distributional_loss
 
     score = loss(outputs, targets)
-    assert not np.isnan(score)
+    assert not torch.isnan(score)
 
 
 def example_ts(n):

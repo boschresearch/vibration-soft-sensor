@@ -7,7 +7,10 @@ Created on Thu Aug 24 13:38:17 2023
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from darts.models.forecasting.tft_submodels import _GatedResidualNetwork
+try:
+    from darts.models.components.tft_submodels import _GatedResidualNetwork
+except ModuleNotFoundError:
+    from darts.models.forecasting.tft_submodels import _GatedResidualNetwork
 
 from softsensor.recurrent_models import _parallel_RNN, _pred_lstm, _filter_parameters
 
