@@ -1,0 +1,4 @@
+{
+    "path": "../../tutorials/03_RNN.ipynb",
+	"extra-media": ["../../tutorials/data"]
+}

@@ -1,0 +1,4 @@
+{
+    "path": "../../tutorials/04_hyperopt.ipynb",
+	"extra-media": ["../../tutorials/data"]
+}

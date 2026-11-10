@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyperparameter Optimization &mdash; Template-Python</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=f65bdc5e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/fix-rtd-property.css?v=3d3ddd9d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d83ce196"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/thebelab-helper.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Hybrid Virtual Sensors" href="05_Hybrid_Models.html" />
+    <link rel="prev" title="Recurrent Neural Networks" href="03_RNN.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            softsensor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">vibration-soft-sensor   <!-- omit in toc --></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_linear_models.html">Linear Virtual Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_ARNN.html">Autoregressive Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_RNN.html">Recurrent Neural Networks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hyperparameter Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Loading-Data">Loading Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Plot-the-Data">Plot the Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-Preprocessing">Data Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Grid-Search">Grid Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Visualization">Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Sequential-model-based-optimization">Sequential model-based optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Model-Evaluation">Model Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="05_Hybrid_Models.html">Hybrid Virtual Sensors</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#linear-methods">Linear Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#neural-networks">Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#training-methods">Training Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html#postprocessing">Postprocessing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">softsensor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Hyperparameter Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/04_hyperopt.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Hyperparameter-Optimization">
+<h1>Hyperparameter Optimization<a class="headerlink" href="#Hyperparameter-Optimization" title="Link to this heading"></a></h1>
+<p>In this tutorial we will use autoregressive approaches for virtual sensors to calculate the system response of an ESP System with external force from a shaker. This Tutorial introduces the concept of Hyperparameter optimization to find optimal parameters for our model. Please make sure to go through the basic tutorials <code class="docutils literal notranslate"><span class="pre">linear_models.ipynb</span></code>, ‘<code class="docutils literal notranslate"><span class="pre">ARNN.ipynb</span></code> and <code class="docutils literal notranslate"><span class="pre">RNN.ipynb</span></code>. We will start by loading the data in the same way as before.</p>
+<p>The optimisation of hyperparameters defines a key point in the creation of deep learning models. The exact choice of hyperparameters is usually model and problem dependent, making hyperparameter optimisation necessary for most use cases.</p>
+<p>Hyperparameters are all adjustable model and training variables that are not adjusted by a gradient-based method. In deep learning research, there is a great deal of work on optimisation. This tutorial focuses on grid search and model-based sequential optimisation.</p>
+<section id="Loading-Data">
+<h2>Loading Data<a class="headerlink" href="#Loading-Data" title="Link to this heading"></a></h2>
+<p>In a first step we load the already measured data and convert them into <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code>. Our example Data consists of three individually Measured datasets. To load the data properly we need information about the specific sensors. In our case we define sensors:</p>
+<ul class="simple">
+<li><p>12 input sensors</p></li>
+<li><p>3 output sensors</p></li>
+</ul>
+<p>Furthermore, (if not given as <code class="docutils literal notranslate"><span class="pre">time</span></code> in the mat file) we need the corrosponsing sampling rate <code class="docutils literal notranslate"><span class="pre">fs</span></code> of the data.In our case:</p>
+<ul class="simple">
+<li><p>fs=50000</p></li>
+</ul>
+<p>Fixing the sampling rate will raise an Attention Message. We save the individual Measurments in a list of <code class="docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span> <span class="s1">'data'</span><span class="p">)</span>
+
+<span class="n">input_sensors</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'input_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="n">output_sensors</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'output_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
+
+<span class="n">file_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span> <span class="k">if</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+<span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">]</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[1]</span><span class="ansi-green-fg">, line 11</span>
+<span class="ansi-green-fg">      7</span> output_sensors = [f&#39;output_{i}&#39; <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> i <span class="ansi-bold" style="color: rgb(0,135,0)">in</span> range(<span class="ansi-green-fg">1</span>, <span class="ansi-green-fg">4</span>)]
+<span class="ansi-green-fg">      8</span>
+<span class="ansi-green-fg">      9</span> file_names = [f for f in os.listdir(data_path) if
+<span class="ansi-green-fg">     10</span>                     os.path.isfile(os.path.join(data_path, f))]
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">11</span> df_list = [pd.read_parquet(os.path.join(data_path, n)) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> n <span class="ansi-bold" style="color: rgb(0,135,0)">in</span> file_names]
+<span class="ansi-green-fg">     12</span> fs = <span class="ansi-green-fg">1</span>/np.mean(df_list[<span class="ansi-green-fg">0</span>].index.diff().dropna())
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/vibration-soft-sensor/vibration-soft-sensor/.venv/lib/python3.13/site-packages/pandas/io/parquet.py:757</span>, in <span class="ansi-cyan-fg">read_parquet</span><span class="ansi-blue-fg">(path, engine, columns, storage_options, dtype_backend, filesystem, filters, to_pandas_kwargs, **kwargs)</span>
+<span class="ansi-green-fg">    755</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> engine <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> lib.no_default:
+<span class="ansi-green-fg">    756</span>     engine = <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">auto</span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">757</span> impl = <span class="ansi-black-fg ansi-yellow-bg">get_engine</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">engine</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    758</span> check_dtype_backend(dtype_backend)
+<span class="ansi-green-fg">    760</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> impl.read(
+<span class="ansi-green-fg">    761</span>     path,
+<span class="ansi-green-fg">    762</span>     columns=columns,
+<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    768</span>     **kwargs,
+<span class="ansi-green-fg">    769</span> )
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/work/vibration-soft-sensor/vibration-soft-sensor/.venv/lib/python3.13/site-packages/pandas/io/parquet.py:73</span>, in <span class="ansi-cyan-fg">get_engine</span><span class="ansi-blue-fg">(engine)</span>
+<span class="ansi-green-fg">     70</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">ImportError</span> <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> err:
+<span class="ansi-green-fg">     71</span>             error_msgs += <span class="ansi-yellow-fg">&#34;</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg"> - </span><span class="ansi-yellow-fg">&#34;</span> + <span style="color: rgb(0,135,0)">str</span>(err)
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">73</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">ImportError</span>(
+<span class="ansi-green-fg">     74</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Unable to find a usable engine; </span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     75</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">tried using: </span><span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">pyarrow</span><span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">, </span><span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">fastparquet</span><span class="ansi-yellow-fg">&#39;</span><span class="ansi-yellow-fg">.</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     76</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">A suitable version of </span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     77</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">pyarrow or fastparquet is required for parquet </span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     78</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">support.</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     79</span>         <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">Trying to import the above resulted in these errors:</span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     80</span>         <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">&#34;</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>error_msgs<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span class="ansi-yellow-fg">&#34;</span>
+<span class="ansi-green-fg">     81</span>     )
+<span class="ansi-green-fg">     83</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> engine == <span class="ansi-yellow-fg">&#34;</span><span class="ansi-yellow-fg">pyarrow</span><span class="ansi-yellow-fg">&#34;</span>:
+<span class="ansi-green-fg">     84</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> PyArrowImpl()
+
+<span class="ansi-red-fg">ImportError</span>: Unable to find a usable engine; tried using: &#39;pyarrow&#39;, &#39;fastparquet&#39;.
+A suitable version of pyarrow or fastparquet is required for parquet support.
+Trying to import the above resulted in these errors:
+ - `Import pyarrow` failed. pyarrow is required for parquet support. Use pip, conda, or your preferred package management tool to install the pyarrow package.
+ - `Import fastparquet` failed. fastparquet is required for parquet support. Use pip, conda, or your preferred package management tool to install the fastparquet package.
+</pre></div></div>
+</div>
+</section>
+<section id="Plot-the-Data">
+<h2>Plot the Data<a class="headerlink" href="#Plot-the-Data" title="Link to this heading"></a></h2>
+<p>Before we start with the actual preprocessing we want to plot the given data to get a feeling for the properties. These are high-frequency acceleration data recorded on a shaker. For convinience we just plot the first entry of our list of DataFrames <img alt="" class="no-scaled-link" src="tutorials/img/Mehrachspruefstand_hitl.jpg" width="600" />.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">subplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[2]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> df_list[<span class="ansi-green-fg">0</span>].plot(subplots=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>, sharex=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>, figsize=(<span class="ansi-green-fg">12</span>,<span class="ansi-green-fg">12</span>))
+
+<span class="ansi-red-fg">NameError</span>: name &#39;df_list&#39; is not defined
+</pre></div></div>
+</div>
+</section>
+<section id="Data-Preprocessing">
+<h2>Data Preprocessing<a class="headerlink" href="#Data-Preprocessing" title="Link to this heading"></a></h2>
+<p>When looking at the data, the high range in which the accelerations move is striking. For many machine learning models, preprocessing is therefore necessary. Our toolbox uses the class <code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code> for the entire preprocessing. <code class="docutils literal notranslate"><span class="pre">Meas_handling</span></code> is used to transform the data into a normally distributed range. Furthermore, the entire frequency range is not relevant for our analysis.</p>
+<p>Furtehrmore we split the data in training and evaluation data. We use the first two Measurments as training and the last one as evaluation</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.meas_handling</span><span class="w"> </span><span class="kn">import</span> <span class="n">Meas_handling</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">data_handle</span> <span class="o">=</span> <span class="n">Meas_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">file_names</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">input_sensors</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span>
+                            <span class="n">df_list</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">file_names</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">freq_lim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">4000</span><span class="p">)</span>
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">freq_lim</span><span class="p">)</span>
+<span class="n">data_handle</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[3]</span><span class="ansi-green-fg">, line 4</span>
+<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> softsensor.meas_handling <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> Meas_handling
+<span class="ansi-green-fg">      2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> sklearn.preprocessing <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> StandardScaler
+<span class="ansi-green-fg">      3</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">4</span> data_handle = Meas_handling(df_list[:2], file_names[:2], input_sensors, output_sensors, fs,
+<span class="ansi-green-fg">      5</span>                             df_list[<span class="ansi-green-fg">2</span>:], file_names[<span class="ansi-green-fg">2</span>:])
+<span class="ansi-green-fg">      6</span>
+<span class="ansi-green-fg">      7</span> data_handle.Resample(fs=<span class="ansi-green-fg">10000</span>)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;df_list&#39; is not defined
+</pre></div></div>
+</div>
+<p>The optimisation of hyperparameters is a complex problem that requires a high computational capacity. It therefore makes sense to optimise on a GPU. Therefore, the first step is to check whether a GPU is available.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda:0"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Training on'</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Training on cpu
+</pre></div></div>
+</div>
+</section>
+<section id="Grid-Search">
+<h2>Grid Search<a class="headerlink" href="#Grid-Search" title="Link to this heading"></a></h2>
+<p>For an autoregressive neural network, the hyperparameters are composed of model parameters and training parameters. We start our consideration with a grid search. This is an extensive procedure that considers each parameter combination in a grid individually. With an increasing number of parameters, the number of models to be trained increases exponentially. We therefore focus on the parameters <code class="docutils literal notranslate"><span class="pre">learning</span> <span class="pre">rate</span></code> and <code class="docutils literal notranslate"><span class="pre">stabilizer</span></code> as two training parameters. If possible, it makes sense to
+perform the optimisation either on a gpu or a remote computer.</p>
+<p>To optimise the hyperparameters, the softsensor toolbox contains the <code class="docutils literal notranslate"><span class="pre">Hyperparameter_optimisation</span></code> tools which include the grid search. For execution, all static parameters and the parameter grid must be defined.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.hyperparameter_optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid_search</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="n">static_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'input_channels'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s1">'pred_size'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s1">'window_size'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                <span class="s1">'rnn_window'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                <span class="s1">'max_epochs'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1"># 30,</span>
+                <span class="s1">'patience'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s1">'hidden_size'</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+                <span class="s1">'optimizer'</span><span class="p">:</span> <span class="s1">'Adam'</span><span class="p">,</span>
+                <span class="s1">'stab_method'</span><span class="p">:</span> <span class="s1">'const'</span>
+                <span class="p">}</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'s1'</span><span class="p">:</span> <span class="p">[</span><span class="mf">5e-4</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">],</span><span class="c1">#, 1.5e-3, 2e-3],</span>
+        <span class="s1">'lr'</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">]</span><span class="c1">#, 1.5e-2, 2e-2]</span>
+       <span class="p">}</span>
+
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">model_type</span> <span class="o">=</span> <span class="s1">'ARNN'</span>
+<span class="n">result_df</span><span class="p">,</span> <span class="n">best_model</span> <span class="o">=</span> <span class="n">grid_search</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">static_params</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">val_prediction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">'short'</span><span class="p">,</span> <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[5]</span><span class="ansi-green-fg">, line 21</span>
+<span class="ansi-green-fg">     17</span>        }
+<span class="ansi-green-fg">     18</span>
+<span class="ansi-green-fg">     19</span> criterion = nn.MSELoss()
+<span class="ansi-green-fg">     20</span> model_type = <span class="ansi-yellow-fg">&#39;ARNN&#39;</span>
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">21</span> result_df, best_model = grid_search(data_handle, criterion, model_type, static_params, grid, val_prediction=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>, device=device, key=<span class="ansi-yellow-fg">&#39;short&#39;</span>, print_results=<span class="ansi-bold" style="color: rgb(0,135,0)">False</span>)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;data_handle&#39; is not defined
+</pre></div></div>
+</div>
+</section>
+<section id="Visualization">
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Link to this heading"></a></h2>
+<p>We now visualise the loss over the individual hyperparameters. For 2 hyperparameters it makes sense to display them as even in the 3 dimensional space. For more parameters, other techniques such as scatter plots must be used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">cm</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">"projection"</span><span class="p">:</span> <span class="s2">"3d"</span><span class="p">},</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="s1">'lr'</span><span class="p">]</span>
+<span class="n">stab_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result_df</span><span class="p">[</span><span class="s1">'stabelizer'</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">'eta'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">stab_list</span><span class="p">]</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="s1">'loss'</span><span class="p">]</span>
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_trisurf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'lr'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'stabelizer'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[6]</span><span class="ansi-green-fg">, line 4</span>
+<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> matplotlib.pyplot <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> plt
+<span class="ansi-green-fg">      2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> matplotlib <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> cm
+<span class="ansi-green-fg">      3</span> fig, ax = plt.subplots(subplot_kw={<span class="ansi-yellow-fg">&#34;projection&#34;</span>: <span class="ansi-yellow-fg">&#34;3d&#34;</span>}, figsize=(<span class="ansi-green-fg">8</span>,<span class="ansi-green-fg">8</span>))
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">4</span> X = result_df[<span class="ansi-yellow-fg">&#39;lr&#39;</span>]
+<span class="ansi-green-fg">      5</span> stab_list = list(result_df[<span class="ansi-yellow-fg">&#39;stabelizer&#39;</span>])
+<span class="ansi-green-fg">      6</span> Y = [dic[<span class="ansi-yellow-fg">&#39;eta&#39;</span>][<span class="ansi-green-fg">0</span>] <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> dic <span class="ansi-bold" style="color: rgb(0,135,0)">in</span> stab_list]
+<span class="ansi-green-fg">      7</span> Z = result_df[<span class="ansi-yellow-fg">&#39;loss&#39;</span>]
+
+<span class="ansi-red-fg">NameError</span>: name &#39;result_df&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_hyperopt_11_1.png" src="../_images/tutorials_04_hyperopt_11_1.png" />
+</div>
+</div>
+<!-- empty raw cell --></section>
+<section id="Sequential-model-based-optimization">
+<h2>Sequential model-based optimization<a class="headerlink" href="#Sequential-model-based-optimization" title="Link to this heading"></a></h2>
+<p>In contrast to grid search, model-based optimisation does not specify a parameter grid in advance, but only limits. The optimisation works with the so-called Tree of Parzan Estimator which samples from a space of hyperparameters. The aim is to proceed sequentially towards the optimal hyperparameters. In each case, a combination of hyperparameters is selected and then a substitute model is used to determine which combination is likely to produce the best results. Mathematically, the optimisation
+works with the so-called Tree of Parzan Estimator.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.hyperparameter_optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">hyperopt_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hyperopt</span><span class="w"> </span><span class="kn">import</span> <span class="n">hp</span>
+
+<span class="n">static_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'input_channels'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                <span class="s1">'pred_size'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s1">'window_size'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                <span class="s1">'rnn_window'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                <span class="s1">'max_epochs'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span><span class="c1"># 30,</span>
+                <span class="s1">'patience'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s1">'hidden_size'</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+                <span class="s1">'optimizer'</span><span class="p">:</span> <span class="s1">'Adam'</span><span class="p">,</span>
+                <span class="s1">'stab_method'</span><span class="p">:</span> <span class="s1">'const'</span>
+                <span class="p">}</span>
+
+<span class="n">grid_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lr'</span><span class="p">:</span> <span class="n">hp</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="s1">'lr'</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">),</span>
+              <span class="s1">'s1'</span><span class="p">:</span> <span class="n">hp</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="s1">'s1'</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">)</span>
+               <span class="p">}</span>
+
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">model_type</span> <span class="o">=</span> <span class="s1">'ARNN'</span>
+<span class="n">result_df</span><span class="p">,</span> <span class="n">best_model</span> <span class="o">=</span> <span class="n">hyperopt_search</span><span class="p">(</span><span class="n">data_handle</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span>
+                                        <span class="n">static_params</span><span class="p">,</span> <span class="n">grid_params</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                        <span class="n">val_prediction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">'short'</span><span class="p">,</span>
+                                        <span class="n">print_results</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[7]</span><span class="ansi-green-fg">, line 21</span>
+<span class="ansi-green-fg">     17</span>                }
+<span class="ansi-green-fg">     18</span>
+<span class="ansi-green-fg">     19</span> criterion = nn.MSELoss()
+<span class="ansi-green-fg">     20</span> model_type = <span class="ansi-yellow-fg">&#39;ARNN&#39;</span>
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">21</span> result_df, best_model = hyperopt_search(data_handle, criterion, model_type,
+<span class="ansi-green-fg">     22</span>                                         static_params, grid_params, max_iterations=<span class="ansi-green-fg">4</span>,
+<span class="ansi-green-fg">     23</span>                                         val_prediction=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>, device=device, key=<span class="ansi-yellow-fg">&#39;short&#39;</span>,
+<span class="ansi-green-fg">     24</span>                                         print_results=<span class="ansi-bold" style="color: rgb(0,135,0)">False</span>)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;data_handle&#39; is not defined
+</pre></div></div>
+</div>
+</section>
+<section id="id1">
+<h2>Visualization<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>We now visualise the loss over the individual hyperparameters. For 2 hyperparameters it makes sense to display them as even in the 3 dimensional space. For more parameters, other techniques such as scatter plots must be used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">"projection"</span><span class="p">:</span> <span class="s2">"3d"</span><span class="p">},</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="s1">'lr'</span><span class="p">]</span>
+<span class="n">stab_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result_df</span><span class="p">[</span><span class="s1">'stabelizer'</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">'eta'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">stab_list</span><span class="p">]</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">result_df</span><span class="p">[</span><span class="s1">'loss'</span><span class="p">]</span>
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_trisurf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'lr'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'stabelizer'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[8]</span><span class="ansi-green-fg">, line 2</span>
+<span class="ansi-green-fg">      1</span> fig, ax = plt.subplots(subplot_kw={<span class="ansi-yellow-fg">&#34;projection&#34;</span>: <span class="ansi-yellow-fg">&#34;3d&#34;</span>}, figsize=(<span class="ansi-green-fg">8</span>,<span class="ansi-green-fg">8</span>))
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">2</span> X = result_df[<span class="ansi-yellow-fg">&#39;lr&#39;</span>]
+<span class="ansi-green-fg">      3</span> stab_list = list(result_df[<span class="ansi-yellow-fg">&#39;stabelizer&#39;</span>])
+<span class="ansi-green-fg">      4</span> Y = [dic[<span class="ansi-yellow-fg">&#39;eta&#39;</span>][<span class="ansi-green-fg">0</span>] <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> dic <span class="ansi-bold" style="color: rgb(0,135,0)">in</span> stab_list]
+<span class="ansi-green-fg">      5</span> Z = result_df[<span class="ansi-yellow-fg">&#39;loss&#39;</span>]
+
+<span class="ansi-red-fg">NameError</span>: name &#39;result_df&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_hyperopt_16_1.png" src="../_images/tutorials_04_hyperopt_16_1.png" />
+</div>
+</div>
+</section>
+<section id="Model-Evaluation">
+<h2>Model Evaluation<a class="headerlink" href="#Model-Evaluation" title="Link to this heading"></a></h2>
+<p>To Evaluate our model on testing data we use the predefined functions <code class="docutils literal notranslate"><span class="pre">comp_pred</span></code>, which computes the prediction for a defined track in the data_handle class. As track we choose our testing track, which can be accessed using the internal variable <code class="docutils literal notranslate"><span class="pre">test_names</span></code>. Furthermore we compute</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.eval_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">comp_pred</span><span class="p">,</span> <span class="n">comp_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">softsensor.linear_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">tf</span>
+
+<span class="n">tf_class</span> <span class="o">=</span> <span class="n">tf</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="n">hop</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">tf_class</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data_handle</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">input_sensors</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">)</span>
+
+<span class="n">track</span> <span class="o">=</span> <span class="n">data_handle</span><span class="o">.</span><span class="n">test_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">best_model</span><span class="p">,</span> <span class="n">tf_class</span><span class="p">]</span>
+<span class="n">pred_df</span> <span class="o">=</span> <span class="n">comp_pred</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">data_handle</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">'Neural Network'</span><span class="p">,</span> <span class="s1">'TF'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[9]</span><span class="ansi-green-fg">, line 5</span>
+<span class="ansi-green-fg">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> softsensor.eval_tools <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> comp_pred, comp_error
+<span class="ansi-green-fg">      2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> softsensor.linear_methods <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> tf
+<span class="ansi-green-fg">      3</span>
+<span class="ansi-green-fg">      4</span> tf_class = tf(window_size=<span class="ansi-green-fg">1024</span>,hop=<span class="ansi-green-fg">512</span>, fs=<span class="ansi-green-fg">10000</span>)
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">5</span> tf_class.fit(data_handle.train_df, input_sensors, output_sensors)
+<span class="ansi-green-fg">      6</span>
+<span class="ansi-green-fg">      7</span> track = data_handle.test_names[<span class="ansi-green-fg">0</span>]
+<span class="ansi-green-fg">      8</span> models = [best_model, tf_class]
+
+<span class="ansi-red-fg">NameError</span>: name &#39;data_handle&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">'a_PCB_P10_A1S_Z'</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">pred_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">'a_PCB_P10_A1S_Z'</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mf">1.02</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[10]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> pred_df.filter(regex=<span class="ansi-yellow-fg">&#39;a_PCB_P10_A1S_Z&#39;</span>).plot(figsize=(<span class="ansi-green-fg">12</span>,<span class="ansi-green-fg">4</span>))
+<span class="ansi-green-fg">      2</span> pred_df.filter(regex=<span class="ansi-yellow-fg">&#39;a_PCB_P10_A1S_Z&#39;</span>)[<span class="ansi-green-fg">1</span>:<span class="ansi-green-fg">1.02</span>].plot(figsize=(<span class="ansi-green-fg">12</span>,<span class="ansi-green-fg">4</span>))
+
+<span class="ansi-red-fg">NameError</span>: name &#39;pred_df&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">error</span> <span class="o">=</span> <span class="n">comp_error</span><span class="p">(</span><span class="n">pred_df</span><span class="p">,</span> <span class="n">output_sensors</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">'Neural Network'</span><span class="p">,</span> <span class="s1">'TF'</span><span class="p">],</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'MSE'</span><span class="p">,</span> <span class="s1">'MAE'</span><span class="p">],</span> <span class="n">freq_range</span><span class="o">=</span><span class="n">freq_lim</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'MSE'</span><span class="p">,</span> <span class="s1">'MAE'</span><span class="p">]:</span>
+    <span class="n">error</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[11]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> error = comp_error(pred_df, output_sensors, fs, names=[<span class="ansi-yellow-fg">&#39;Neural Network&#39;</span>, <span class="ansi-yellow-fg">&#39;TF&#39;</span>], metrics=[<span class="ansi-yellow-fg">&#39;MSE&#39;</span>, <span class="ansi-yellow-fg">&#39;MAE&#39;</span>], freq_range=freq_lim)
+<span class="ansi-green-fg">      2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> n <span class="ansi-bold" style="color: rgb(0,135,0)">in</span> [<span class="ansi-yellow-fg">&#39;MSE&#39;</span>, <span class="ansi-yellow-fg">&#39;MAE&#39;</span>]:
+<span class="ansi-green-fg">      3</span>     error.filter(regex=n, axis=<span class="ansi-green-fg">0</span>).plot.bar(ylabel=f&#39;{n}&#39;, rot=<span class="ansi-green-fg">45</span>)
+
+<span class="ansi-red-fg">NameError</span>: name &#39;pred_df&#39; is not defined
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="03_RNN.html" class="btn btn-neutral float-left" title="Recurrent Neural Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="05_Hybrid_Models.html" class="btn btn-neutral float-right" title="Hybrid Virtual Sensors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Bosch CR.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
