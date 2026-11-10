@@ -200,7 +200,7 @@ def test_tft(handler):
     data = handler.give_list(windowsize, keyword='training', Add_zeros=False,
                              forecast=1, full_ds=False)
 
-    model = TFT(input_channels=2, pred_size=2, blocks=16, hidden_window=10,
+    model = TFT(input_channels=2, pred_size=1, blocks=16, hidden_window=10,
                 num_layers=1, blocktype='LSTM', n_heads=4, bias=True, dropout=None,
                 forecast=1)
     
@@ -215,7 +215,7 @@ def test_tft(handler):
                                       model.state_dict().items()):
         assert not any(torch.flatten(torch.eq(key_item_1[1], key_item_2[1])))
 
-    model = TFT(input_channels=2, pred_size=2, blocks=16, hidden_window=10,
+    model = TFT(input_channels=2, pred_size=1, blocks=16, hidden_window=10,
                 num_layers=1, blocktype='GRU', n_heads=1, bias=True, dropout=None,
                 forecast=1, Pred_Type='Mean_Var', GRN=False)
     

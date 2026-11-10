@@ -85,7 +85,7 @@ def test_white_noise():
     npt.assert_almost_equal(np.mean(F.dF), 0, decimal=1)
 
     test_statistic = diagn.acorr_ljungbox(F.F, lags=[20], return_df=True)
-    assert float(test_statistic['lb_pvalue']) > 0.01
+    assert float(test_statistic['lb_pvalue'].iloc[0]) > 0.01
 
     F = white_noise(time, f=0)
 

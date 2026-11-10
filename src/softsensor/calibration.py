@@ -44,12 +44,13 @@ def _optimize_scale_factor(
         Scaling factor that is used for calibration of the predictive std
     """
     def obj(ratio):
+        ratio = float(ratio)
         # If ratio is 0, return worst-possible calibration metric
         if ratio == 0:
             return worst_cal
         
         curr_cal = criterion(mean, targets, ratio**2 * var)
-        return curr_cal
+        return float(curr_cal)
 
     result = minimize_scalar(fun=obj, bounds=optimizer_bounds)
     opt_ratio = result.x

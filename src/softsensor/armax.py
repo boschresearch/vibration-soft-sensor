@@ -89,7 +89,7 @@ class ARMAX(ARX):
         self.prediction_error = self.output_matrix - output_predicted
 
         # extend parameters and regression matrix
-        self.parameters = np.row_stack((self.parameters, np.zeros((self.nc, self.num.output_sensors))))
+        self.parameters = np.vstack((self.parameters, np.zeros((self.nc, self.num.output_sensors))))
         self.regression_matrix = self._extended_regression_matrix()
 
         deltas = [self._fit_single_output(i) for i in range(self.num.output_sensors)]

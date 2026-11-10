@@ -39,6 +39,13 @@ from softsensor.recurrent_models import AR_RNN, RNN_DNN
 from softsensor.visualization import plot_sens_analysis, plot_uncertainty_sens
 
 
+def _to_numpy(x):
+    """Convert a tensor or array-like to a numpy array."""
+    if isinstance(x, torch.Tensor):
+        return x.detach().cpu().numpy()
+    return np.asarray(x)
+
+
 def load_model(Type, path):
     """
     load function of models
@@ -284,12 +291,12 @@ def _model_pred(
             uncertainty_labels = [
                 f"{out_name}_{n}_ep_var" for out_name in data_handle.output_sensors
             ]
-            pred_df.loc[:, uncertainty_labels] = np.array(pred[1].transpose(1, 0))
+            pred_df.loc[:, uncertainty_labels] = _to_numpy(pred[1].transpose(1, 0))
 
             uncertainty_labels = [
                 f"{out_name}_{n}_al_var" for out_name in data_handle.output_sensors
             ]
-            pred_df.loc[:, uncertainty_labels] = np.array(pred[2].transpose(1, 0))
+            pred_df.loc[:, uncertainty_labels] = _to_numpy(pred[2].transpose(1, 0))
             pred = pred[0]
 
         elif m.Pred_Type == "Mean_Var" and m.Ensemble and reduce:
@@ -297,7 +304,7 @@ def _model_pred(
             uncertainty_labels = [
                 f"{out_name}_{n}_var" for out_name in data_handle.output_sensors
             ]
-            pred_df.loc[:, uncertainty_labels] = np.array(pred[1].transpose(1, 0))
+            pred_df.loc[:, uncertainty_labels] = _to_numpy(pred[1].transpose(1, 0))
             pred = pred[0]
 
         elif m.Pred_Type == "Mean_Var" or m.Ensemble:
@@ -305,7 +312,7 @@ def _model_pred(
             uncertainty_labels = [
                 f"{out_name}_{n}_var" for out_name in data_handle.output_sensors
             ]
-            pred_df.loc[:, uncertainty_labels] = np.array(pred[1].transpose(1, 0))
+            pred_df.loc[:, uncertainty_labels] = _to_numpy(pred[1].transpose(1, 0))
             pred = pred[0]
 
         elif m.Pred_Type == "Quantile":
@@ -431,7 +438,7 @@ def _model_pred(
                 f"{out_name}_{n}_var" for out_name in data_handle.output_sensors
             ]
             # pred_df[uncertainty_labels] = pred[1].transpose(1, 0)
-            pred_df.loc[:, uncertainty_labels] = np.array(pred[1].transpose(1, 0))
+            pred_df.loc[:, uncertainty_labels] = _to_numpy(pred[1].transpose(1, 0))
             pred = pred[0]
 
         pred = pred.transpose(1, 0)
